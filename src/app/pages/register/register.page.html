@@ -1,0 +1,60 @@
+<section class="lgn" > 
+  <section class="cmpt-login animated bounceIn" id="btn-scroll">
+    <div class="img-container">
+      <img src="assets/imgs/login/login.png" alt="">
+
+      
+    </div>
+    <div class="img-logo">
+      <img src="assets/imgs/logo-sup.png" alt="">
+    </div>
+  
+    <section class="input-login">
+      <div class="input-format">
+        <label for="input-mail">Username *</label>
+        <input [(ngModel)]="data.email.value" type="text" id="input-mail" placeholder="educacion@gmail.com" [ngClass]="{'error': data.email.error}">
+      </div>
+
+      <div class="input-format">
+        <label for="input-mail">Nombre *</label>
+        <input [(ngModel)]="data.nombre.value" type="text" id="input-mail" placeholder="Pablo" [ngClass]="{'error': data.nombre.error}">
+      </div>
+
+      <div class="input-format">
+        <label for="input-mail">Apellido Paterno *</label>
+        <input [(ngModel)]="data.apellido_paterno.value" type="text" id="input-mail" placeholder="Gutierrez" [ngClass]="{'error': data.apellido_paterno.error}">
+      </div>
+
+      <div class="input-format">
+        <label for="input-mail">Apellido Materno</label>
+        <input [(ngModel)]="data.apellido_materno.value" type="text" id="input-mail" placeholder="Martínez" [ngClass]="{'error': data.apellido_materno.error}">
+      </div>
+  
+      <div class="input-format-dual">
+        <label for="input-pass">Contraseña *</label>
+        <input [(ngModel)]="data.pass.value" type="password" id="input-pass" placeholder="******" [ngClass]="{'error': data.pass.error}">
+        <div class="icon-input" (touchstart)="change()" (touchend)="change()">
+          <ion-icon name="eye-outline"></ion-icon>
+        </div>
+      </div>
+
+      <div class="input-format">
+        <label for="input-pass">Confirmar contraseña *</label>
+        <input [(ngModel)]="data.confirm_pass.value" type="password" id="input-pass2" placeholder="******" [ngClass]="{'error': data.confirm_pass.error}">
+      </div>
+  
+      
+
+  
+    </section>
+    <div class="btn-ind register">
+      <button (click)="register()">{{ 'login.register' | translate }}</button>
+    </div>
+  </section>
+
+  <div class="backing">
+    <button (click)="backing()"><i class="material-icons">arrow_back_ios</i></button>
+  </div>
+
+  
+</section>

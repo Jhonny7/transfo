@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+  appId: 'mx.com.shark.technologies.education',
   appName: 'educacion',
   webDir: 'www',
   bundledWebRuntime: false
