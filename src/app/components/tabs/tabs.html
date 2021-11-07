@@ -1,0 +1,10 @@
+<section class="tabbs" [style.background-color]="genericService.getColorHex()"
+[style.color]="genericService.getColorFont()">
+  <div class="tab-ind" *ngFor="let tab of tabs" [style]="{ 'width': percent + '%' }" 
+  [class]="tabConfig?.extraClass" >
+    <section class="no-active" (click)="renderComponent(tab)" [class]="{ 'activo' : tab.active }">
+      <ion-icon [name]="tab.active ? tab.icon : tab.icon + '-outline'"></ion-icon>
+      <p>{{tab.title}}</p>
+    </section>
+  </div>
+</section>

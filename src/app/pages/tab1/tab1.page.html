@@ -1,0 +1,33 @@
+<header [title]="'menu.home'"></header>
+
+<ion-content>
+  
+  <container-app>
+
+    <container>
+      <!-- <swiper [config]="config">
+        <div *ngFor="let ap of ase" >
+          {{ ap.text }}
+        </div>
+      </swiper> -->
+      <section class="buscando">
+        <img src="assets/imgs/home/builder.png" alt="">
+        <input type="text" placeholder="{{ 'home.search' | translate }}">
+      </section>
+
+      <section class="cats animated fadeInRight">
+        <scrolling-cards [cards]="categorias"></scrolling-cards>
+      </section>
+      
+      <div>
+        <btn-sham [btnInfo]="b" *ngFor="let b of btns"></btn-sham>
+      </div>
+
+      <section class="posts">
+        <tarjeta-comentario></tarjeta-comentario>
+      </section>
+    </container>
+
+  </container-app>
+
+</ion-content>

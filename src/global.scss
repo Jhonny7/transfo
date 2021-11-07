@@ -24,3 +24,93 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+@import "./assets/css/animations.scss";
+@import '~swiper/swiper.min.css';
+
+/*Login global*/
+@import "./app/css-global/login.scss";
+//@import "./app/css-global/login.scss";
+
+.popover-class {
+    .popover-wrapper {
+        .popover-content {
+            top: 25px !important;
+            left: unset !important;
+            right: 5px !important;
+        }
+
+        .popover-arrow:after{
+            display: none !important;
+        }
+    }
+
+    .popover-wrapper:after {
+        content: "";
+        position: absolute;
+        top: 7px;
+        left: unset;
+        right: 12px;
+        margin: 0 auto;
+        width: 0;
+        height: 0;
+        border-top: solid 10px transparent;
+        border-left: solid 10px transparent;
+        border-right: solid 10px transparent;
+        border-bottom: solid 10px #fff;
+    }
+}
+
+.ion-page{
+    background-color: #f3efef;
+    --ion-background-color: #f3efef;
+}
+
+ion-content{
+    position: unset;
+}
+
+body.swal2-height-auto {
+    height: inherit;
+}
+
+.swal2-container{
+    //position: relative !important;
+}
+
+.alerta-vista-warn{
+    .swal2-actions{
+        button{
+            background-color: #ffde46;
+            color: #5e5e5e;
+        }
+    }
+
+    .swal2-content{
+        div{
+          .mensaje{
+             p{
+                 font-weight: 600;
+             } 
+          }  
+        }
+    }
+}
+
+.alerta-vista-error{
+    .swal2-actions{
+        button{
+            background-color: #ff0707;
+            color: #fff;
+        }
+    }
+
+    .swal2-content{
+        div{
+          .mensaje{
+             p{
+                 font-weight: 600;
+             } 
+          }  
+        }
+    }
+}

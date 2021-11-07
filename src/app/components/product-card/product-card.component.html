@@ -1,0 +1,16 @@
+<section class="travel-card">
+  <div
+    class="contenedor-image"
+    [style.background]="'url(' + card.arrayImage[0]?.url + ')'"
+  >
+    <section class="favorito" *ngIf="card.applyFavorite"> 
+      <sn-icon icon="sn-CHAN025"></sn-icon>
+    </section>
+  </div>
+  <div class="contenedor-textos">
+    <p class="titulo" [ngStyle]="{'margin-top': card.applyFavorite ? '21px' : '8px'}">{{ card.name }}</p>
+    <div class="precios">
+      <p class="descripcion">{{ card.summary }}</p>
+    </div>
+  </div>
+</section>
