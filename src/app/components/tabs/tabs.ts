@@ -1,6 +1,6 @@
 import { TranslateService } from '@ngx-translate/core';
 import { AdDirective } from './../../directives/ad.directive';
-import { Tab1Page } from './../../pages/tab1/tab1.page';
+import { Tab1Page } from '../../pages/home/tab1/tab1.page';
 import { GenericService } from './../../services/generic.service';
 import { Component, Input, ViewChild, OnInit, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { UtilService } from 'src/app/services/util.service';
@@ -37,16 +37,18 @@ export class TabsComponent implements OnInit{
   public percent:number = 100;
 
   constructor(
-    private genericService: GenericService,
+    public genericService: GenericService,
     
   ) {
+    console.log("tab 1");
+    
   }
 
   ngOnInit(){
     if(this.tabs){
 
       this.percent = this.percent / this.tabs.length;
-      console.log(this.percent);
+      //console.log(this.percent);
       
       this.tabs.forEach((tab:Tabs) => {
         if(tab.active){

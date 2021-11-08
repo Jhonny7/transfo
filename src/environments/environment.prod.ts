@@ -1,5 +1,7 @@
 export const path:string = "http://localhost/api_educacion/educacion/";
 
+export const pathSettlementsCity = "https://olam-systems.com.mx/api_suite_home/settlements/getMunicipios";
+
 export const emulado = false;
 
 export const idEmpresa = 126;
@@ -12,6 +14,7 @@ export const environment = {
   loadPDF:`${path}load-pdf`,
   getImagenIndividual: `${path}image/`,
   getPDF: `${path}pdf/`,
+  loadBlobOnly:`${path}load-blob-only`,
 };
 
 export const firebaseConfig = {

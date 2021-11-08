@@ -1,3 +1,9 @@
+import { MaterialModule } from 'src/app/material.module';
+import { TabsPage } from './pages/home/tabs.page';
+import { Tab3Page } from './pages/home/tab3/tab3.page';
+import { Tab2Page } from './pages/home/tab2/tab2.page';
+import { Tab1Page } from './pages/home/tab1/tab1.page';
+import { IonicModule } from '@ionic/angular';
 import { ScrollingCardsComponent } from './components/scrolling-cards/scrolling-cards';
 import { OpcionesComponent } from './components/opciones/opciones.component';
 import { HeaderComponent } from './components/header/header';
@@ -12,11 +18,10 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ContainerComponent } from './components/container/container';
 import { ContainerAppComponent } from './components/container-app/container-app';
-import { NewComponent } from './components/new/new';
-import { AdministratorComponent } from './pages/administrator/administrator.component';
-import { CardCategoriaComponent } from './components/card-categoria/card-categoria';
-import { BtnShamComponent } from './components/btn-sham/btn-sham';
-import { TarjetaComentarioComponent } from './components/tarjeta-comentario/tarjeta-comentario';
+import { AdministratorComponent } from './pages/administrador/administrator/administrator.component';
+import { AdDirective } from './directives/ad.directive';
+import { TriviaAdmonPage } from './pages/administrador/trivia-admon/trivia-admon.page';
+import { GenericModalComponent } from './pages/administrador/generic-modal/generic-modal.component';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
@@ -27,35 +32,43 @@ export function createTranslateLoader(http: HttpClient) {
         SpinnerOverlayComponent,
         SpinnerComponent,
         TabsComponent,
+        TabsPage,
+        Tab1Page,
+        Tab2Page,
+        Tab3Page,
         HeaderComponent,
         ContainerComponent,
         ContainerAppComponent,
         OpcionesComponent,
-        NewComponent,
         ScrollingCardsComponent,
         AdministratorComponent,
-        CardCategoriaComponent,
-        BtnShamComponent,
-        TarjetaComentarioComponent
+        AdDirective,
+        TriviaAdmonPage,
+        GenericModalComponent
     ],
     exports:[
         SpinnerOverlayComponent,
         SpinnerComponent,
         TabsComponent,
+        TabsPage,
+        Tab1Page,
+        Tab2Page,
+        Tab3Page,
         HeaderComponent,
         ContainerComponent,
         ContainerAppComponent,
         OpcionesComponent,
-        NewComponent,
         ScrollingCardsComponent,
         AdministratorComponent,
-        CardCategoriaComponent,
-        BtnShamComponent,
-        TarjetaComentarioComponent
+        AdDirective,
+        TriviaAdmonPage,
+        GenericModalComponent
     ],
     imports: [
         CommonModule,
         FormsModule,
+        IonicModule.forRoot(),
+        MaterialModule,
         TranslateModule.forChild(
             {
                 loader: {

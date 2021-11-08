@@ -1,15 +1,13 @@
-import { OnDestroy, OnInit } from '@angular/core';
-import { TabsPage } from './../../pages/tabs/tabs.page';
-import { GenericService } from './../../services/generic.service';
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { PopoverController } from '@ionic/angular';
-import { OpcionesComponent } from '../opciones/opciones.component';
-import { EventService } from 'src/app/services/event.service';
 import { Subscription } from 'rxjs';
+import { EventService } from 'src/app/services/event.service';
 import { ThemeService } from 'src/app/services/theme.service';
+import { OpcionesComponent } from '../opciones/opciones.component';
+import { GenericService } from './../../services/generic.service';
 
 @Component({
-  selector: 'header',
+  selector: 'app-header',
   templateUrl: './header.html',
   styleUrls: ['./header.scss'],
   //encapsulation: ViewEncapsulation.None

@@ -1,3 +1,5 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from './material.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -19,6 +21,7 @@ import { SwiperModule } from 'ngx-swiper-wrapper';
 
 import { SWIPER_CONFIG } from 'ngx-swiper-wrapper';
 import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
+import { FormsModule } from '@angular/forms';
  
 const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
   direction: 'horizontal',
@@ -33,7 +36,7 @@ export function createTranslateLoader(http: HttpClient) {
   declarations: [AppComponent],
   entryComponents: [],
   imports: [
-    BrowserModule,
+    
     IonicModule.forRoot(),
     AppRoutingModule,
     ProvidersModule,
@@ -51,7 +54,11 @@ export function createTranslateLoader(http: HttpClient) {
     CommonModule,
     /* AngularFireModule.initializeApp(firebaseConfig), //Modulo 1 a importa
     AngularFireAuthModule, // Modulo 2 a importar, */
-    SwiperModule
+    SwiperModule,
+    MaterialModule,
+
+    BrowserModule,
+    BrowserAnimationsModule,
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
@@ -60,7 +67,13 @@ export function createTranslateLoader(http: HttpClient) {
       useValue: DEFAULT_SWIPER_CONFIG
     }
   ],
-  exports:[TranslateModule],
+  exports:[
+    TranslateModule, 
+    MaterialModule, 
+    BrowserModule,
+    BrowserAnimationsModule,
+    CommonModule,
+    FormsModule,],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

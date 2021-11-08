@@ -1,0 +1,33 @@
+<section class="product-create">
+    <div class="close-exit" (click)="onConfirmClick()">
+        <i class="material-icons">clear</i>
+    </div>
+
+    <section [ngSwitch]="data.id">
+
+        <section *ngSwitchCase="1">
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Descripción *</label>
+                <input type="text" id="nombre" [(ngModel)]="data.current.label" placeholder="Biología...">
+            </div>
+          
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Imagen</label>
+                <label for="filere" class="ctn-img">
+                    <img src="assets/imgs/noAvail.jpeg" alt="" *ngIf="!data.current.id_archivo && data.current.b64.length == 0">
+                    <img [src]="img + data.current.id_archivo" alt="" *ngIf="data.current.id_archivo && data.current.b64.length == 0">
+                    <img [src]="data.current.b64" alt="" *ngIf="!data.current.id_archivo && data.current.b64.length > 0">
+                </label>
+                <input type="file" id="filere" style="visibility: hidden;padding: 0;height: 0px;" 
+                (change)="changeImg($event)">
+            </div>
+        </section>
+
+    </section>
+
+    
+    <div class="btn-end">
+        <button (click)="add()">{{ data.status ? 'Actualizar' : 'Agregar' }}</button>
+    </div>
+</section>
