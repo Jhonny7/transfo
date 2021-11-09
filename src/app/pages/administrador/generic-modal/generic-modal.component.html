@@ -1,0 +1,107 @@
+<section class="product-create">
+    <div class="close-exit" (click)="onConfirmClick()">
+        <i class="material-icons">clear</i>
+    </div>
+
+    <section [ngSwitch]="data.id">
+
+        <section *ngSwitchCase="1">
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Descripción *</label>
+                <input type="text" id="nombre" [(ngModel)]="data.current.label" placeholder="Biología...">
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Imagen</label>
+                <label for="filere" class="ctn-img">
+                    <img src="assets/imgs/noAvail.jpeg" alt=""
+                        *ngIf="!data.current.id_archivo && data.current.b64.length == 0">
+                    <img [src]="img + data.current.id_archivo" alt=""
+                        *ngIf="data.current.id_archivo && data.current.b64.length == 0">
+                    <img [src]="data.current.b64" alt=""
+                        *ngIf="!data.current.id_archivo && data.current.b64.length > 0">
+                </label>
+                <input type="file" id="filere" style="visibility: hidden;padding: 0;height: 0px;"
+                    (change)="changeImg($event)">
+            </div>
+        </section>
+
+        <section *ngSwitchCase="2">
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Tema *</label>
+                <select [(ngModel)]="data.current.id_tema">
+                    <option [value]="tema.id" *ngFor="let tema of temas">{{ tema.label }}</option>
+                </select>
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Pregunta *</label>
+                <input type="text" id="nombre" [(ngModel)]="data.current.pregunta" placeholder="¿Qué es...">
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Respuesta *</label>
+                <input type="text" id="nombre" [(ngModel)]="data.current.respuesta"
+                    placeholder="La biología es la ciencia que...">
+            </div>
+        </section>
+
+        <section *ngSwitchCase="3">
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Tema *</label>
+                <select [(ngModel)]="data.current.id_tema">
+                    <option [value]="tema.id" *ngFor="let tema of temas">{{ tema.label }}</option>
+                </select>
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Complejidad *</label>
+                <select [(ngModel)]="data.current.id_complejidad">
+                    <option [value]="complejidad.id" *ngFor="let complejidad of complejidades">{{ complejidad.label }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Pregunta *</label>
+                <input type="text" id="nombre" [(ngModel)]="data.current.pregunta" placeholder="¿Qué es...">
+            </div>
+
+            <div class="input-container" style="width: 100%;position: relative;">
+                <label for="nomre">Respuesta</label>
+                <input type="text" id="nombre" [(ngModel)]="respuestaTemporal" placeholder="¿Qué es...">
+                <button class="aniadir" (click)="aniadir()">Añadir</button>
+            </div>
+
+
+            <section class="respuestas">
+                <p>Respuestas</p>
+                <div>
+
+                    <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                        [(ngModel)]="data.current.respuesta">
+                        <mat-radio-button class="example-radio-button" *ngFor="let categoria of data.current.respuestas; let i = index"
+                            [value]="categoria.id" (change)="cambio($event)">
+                            {{ categoria.respuesta }}
+                            <button (click)="remove(i)" class="borrad">
+                                <span class="material-icons-outlined">
+                                    close
+                                </span>
+                            </button>
+                        </mat-radio-button>
+                    </mat-radio-group>
+
+
+                </div>
+            </section>
+        </section>
+    </section>
+
+
+    <div class="btn-end">
+        <button (click)="add()">{{ data.status ? 'Actualizar' : 'Agregar' }}</button>
+    </div>
+</section>

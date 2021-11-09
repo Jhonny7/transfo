@@ -1,10 +1,13 @@
+import { environment, pathSettlementsCity } from './../../../environments/environment.prod';
+import { GenericService } from './../../services/generic.service';
 import { LoaderService } from './../../services/loading-service';
 import { LoadingService } from './../../services/loading.service';
 import { SqlGenericService } from './../../services/sqlGenericService';
 import { AlertService } from './../../services/alert.service';
 import { Component, OnInit } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { idEmpresa } from 'src/environments/environment.prod';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -41,19 +44,76 @@ export class RegisterPage implements OnInit {
     },
   };
 
+  public dataInvitado: any = {
+    edad: {
+      error: false,
+      value: ""
+    }, municipio: {
+      error: false,
+      value: ""
+    }, rol: {
+      error: false,
+      value: ""
+    },
+  };
+
+  public invitado: number = 0;
+
+  public municipios: any[] = [];
+  public roles: any[] = [];
+
   constructor(
     private alertService: AlertService,
     private sqlGenericService: SqlGenericService,
-    private loadingService: LoaderService
+    private loadingService: LoaderService,
+    private route: ActivatedRoute,
+    private genericService: GenericService,
+    private router: Router
   ) {
+    let expiredSession = new Date();
+    expiredSession.setDate(expiredSession.getDate() + 1);
+    let str:string = JSON.stringify(expiredSession);
 
+    let fecha = new Date(JSON.parse(str));
+    
   }
 
   ngOnInit() {
     //this.alertService.errorAlert("Oops!","Datos incorrectos");
-    
+    this.invitado = Number(this.route.snapshot.params.invitado);
+    this.getStates();
+    this.getRoles();
   }
 
+  getRoles() {
+    let sql: string = `SELECT 
+    id as value, 
+    nombre as label 
+    FROM catalogo 
+    WHERE id_tipo_catalogo = 29 AND id_empresa = ${idEmpresa}`;
+    this.loadingService.show("Espere...");
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
+      this.roles = response.parameters;
+      this.dataInvitado.rol.value = "129";
+      this.loadingService.hide();
+    }, (error: HttpErrorResponse) => {
+      this.loadingService.hide();
+      this.alertService.errorAlert("Oops", `El usuario ${this.data.email.value} no se ha registrado, intenta nuevamente`);
+    });
+  }
+
+  getStates() {
+    let httpParams: HttpParams = new HttpParams();
+    httpParams = httpParams.append("idState", 15);//definido por sharkit
+    this.genericService.sendGetParams(pathSettlementsCity, httpParams).subscribe((response: any) => {
+      this.dataInvitado.municipio.value = "0";
+      this.municipios = response.parameters;
+      console.log(this.dataInvitado);
+
+    }, (error: HttpErrorResponse) => {
+
+    });
+  }
 
   register() {
     let keys: any = Object.keys(this.data);
@@ -96,6 +156,48 @@ export class RegisterPage implements OnInit {
         }
       }, (error: HttpErrorResponse) => {
 
+      });
+    }
+  }
+
+  registerInvitado() {
+    let keys: any = Object.keys(this.dataInvitado);
+    let error: number = 0;
+
+    keys.forEach(key => {
+      if ((this.dataInvitado[key].value.length <= 0 && 
+        !this.dataInvitado[key].exclude) 
+        || this.dataInvitado[key].value == "0") {
+        this.dataInvitado[key].error = true;
+        error++;
+      } else {
+        this.dataInvitado[key].error = false;
+      }
+    });
+    console.log(error);
+    
+    this.loadingService.show("Registrando...");
+    if (error > 0) {
+      this.loadingService.hide();
+      this.alertService.warnAlert("Oops!", "Llena todos los campos marcados con (*)");
+    } else {
+      let now = Date.now();
+      let sql: string = `INSERT INTO usuario (id_tipo_usuario, id_empresa, uuid, token, language, last_session, username, edad, municipio) VALUES (${this.dataInvitado.rol.value}, '${idEmpresa}', 'temporal', 'temporal', 'es', now(), '${now}', '${this.dataInvitado.edad.value}', '${this.dataInvitado.municipio.value}')`;
+      this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
+        keys.forEach(key => {
+          this.dataInvitado[key].value = "";
+        });
+
+        let expiredSession = new Date();
+        expiredSession.setDate(expiredSession.getDate() + 1);
+        localStorage.setItem("expiredSession", JSON.stringify(expiredSession));
+        this.router.navigate(["home"]);
+        this.loadingService.hide();
+        
+        ////console.log(response);
+      }, (error: HttpErrorResponse) => {
+        this.loadingService.hide();
+        this.alertService.errorAlert("Oops", `El usuario ${this.data.email.value} no se ha registrado, intenta nuevamente`);
       });
     }
   }

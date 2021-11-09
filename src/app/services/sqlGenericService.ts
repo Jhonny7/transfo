@@ -230,6 +230,14 @@ export class SqlGenericService {
 
     excecuteQueryString(query:string, whitReturn:number = 1){
         let queryEncript: any = this.localStorageEncryptService.encryptBack(query);
+        console.log(query);
+        
+        let sqlplit: any[] = query.split(" ");
+        if (sqlplit[0].toUpperCase() == "insert".toUpperCase()) {
+            whitReturn = 4;
+        }else if (sqlplit[0].toUpperCase() == "update".toUpperCase()) {
+            whitReturn = 4;
+        }
         
         let request:any = {
             query: queryEncript,

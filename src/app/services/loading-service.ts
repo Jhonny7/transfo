@@ -37,6 +37,7 @@ export class LoaderService {
     
       public hide() {
         if(this.activo){
+          this.activo = false;
           if (!!this.overlayRef) {
             this.overlayRef.detach();
           }

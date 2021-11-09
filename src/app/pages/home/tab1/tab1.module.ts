@@ -1,9 +1,14 @@
-import { LoginComponent } from './login.component';
-import { LoginRoutingModule } from './login-routing.module';
+import { SwiperModule } from 'ngx-swiper-wrapper';
+import { ComponentsModule } from '../../../components.module';
+import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
 import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Tab1Page } from './tab1.page';
+//import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+
+import { Tab1PageRoutingModule } from './tab1-routing.module';
 
 import {  HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -19,7 +24,8 @@ export function createTranslateLoader(http: HttpClient) {
     IonicModule,
     CommonModule,
     FormsModule,
-    LoginRoutingModule,
+    ExploreContainerComponentModule,
+    Tab1PageRoutingModule,
     TranslateModule.forChild(
       {
         loader:{
@@ -28,8 +34,10 @@ export function createTranslateLoader(http: HttpClient) {
           deps: [HttpClient]
         }
       }
-    )
+    ),
+    ComponentsModule,
+    SwiperModule
   ],
-  declarations: [LoginComponent]
+  declarations: [Tab1Page]
 })
-export class LoginModule {}
+export class Tab1PageModule {}
