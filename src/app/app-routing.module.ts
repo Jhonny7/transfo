@@ -47,11 +47,7 @@ const routes: Routes = [
     path: "root",
     children:[
       {
-        path: 'videos-admon',
-        loadChildren: () => import('./pages/administrador/videos-admon/videos-admon.module').then( m => m.VideosAdmonPageModule)
-      },
-      {
-        path: 'trivia-admon',
+        path: 'administrador',
         component: TriviaAdmonPage
         //loadChildren: () => import('./pages/administrador/trivia-admon/trivia-admon.module').then( m => m.TriviaAdmonPageModule)
       },{

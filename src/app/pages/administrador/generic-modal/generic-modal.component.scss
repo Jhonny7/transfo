@@ -233,3 +233,43 @@
         margin-top: 15px;
     }
 }
+
+.aniadir {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 15px;
+    padding: 8px;
+    color: #fff;
+    background-color: #3498db;
+    border-radius: 4px;
+    outline: none;
+}
+
+.respuestas {
+    p {
+        padding: 12px;
+        font-size: 20px;
+        font-weight: 600;
+    }
+
+    div {
+        padding: 12px;
+        .mat-radio-button {
+            width: 100%;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+    }
+}
+
+.borrad {
+    background-color: #e20000;
+    color: #fff;
+    outline: none;
+    border-radius: 50%;
+    padding: 0;
+    span {
+        font-size: 15px;
+    }
+}

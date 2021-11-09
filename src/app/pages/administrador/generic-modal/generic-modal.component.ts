@@ -18,6 +18,10 @@ export class GenericModalComponent implements OnInit {
 
   public img: any = environment.getImagenIndividual;
   public filesInfo: any = {};
+  public temas: any[] = [];
+  public complejidades: any[] = [];
+  public respuestaTemporal: string = "";
+  public respuestasTemporales: any[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -30,11 +34,23 @@ export class GenericModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    /*
+    pregunta: "",
+          respuesta: "",
+          id_tema: null,
+          id: null
+    */
     switch (this.data.id) {
       case 1:
         this.data.idArchivo = this.data.current.id_archivo;
         break;
-
+      case 2:
+        this.cargarTemas();
+        break;
+      case 3:
+        this.cargarTemas();
+        this.cargarComplejidades();
+        break;
       default:
         break;
     }
@@ -132,7 +148,20 @@ export class GenericModalComponent implements OnInit {
           this.createTema();
         }
         break;
-
+      case 2:
+        if (this.data.status) {
+          this.editPregunta();
+        } else {
+          this.createPregunta();
+        }
+        break;
+      case 3:
+        if (this.data.status) {
+          this.editTrivia();
+        } else {
+          this.createTrivia();
+        }
+        break;
       default:
         break;
     }
@@ -211,6 +240,74 @@ export class GenericModalComponent implements OnInit {
     }
   }
 
+  createPregunta() {
+    if (this.data.current.pregunta.length == 0 ||
+      this.data.current.respuesta.length == 0 ||
+      this.data.current.id_tema == 0 ||
+      this.data.current.id_tema == null) {
+      this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
+    } else {
+
+      let sqlTema2 = `INSERT INTO preguntas_frecuentes (id_tema, id_empresa, pregunta, respuesta) VALUES (${this.data.current.id_tema}, ${idEmpresa}, '${this.data.current.pregunta}', '${this.data.current.respuesta}')`;
+
+      this.sqlGenericService.excecuteQueryString(sqlTema2).subscribe((resp: any) => {
+        //Se registra correctamente nuevo usuario
+        this.alertService.successAlert("Bien!", "Pregunta Frecuente creada exitosamente");
+        this.parentDilogRef.close(false);
+        this.loadingService.hide();
+        //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+        //this.listenNotifications();
+      }, (err: HttpErrorResponse) => {
+        this.loadingService.hide();
+      });
+
+    }
+  }
+
+  createTrivia() {
+    let error: number = 0;
+
+    this.data.current.respuestas.forEach(element => {
+      if (!element.correcto) {
+        error++;
+      }
+    });
+    console.log(this.data.current);
+
+    if (this.data.current.pregunta.length == 0 ||
+      this.data.current.id_tema == 0 ||
+      this.data.current.id_tema == null ||
+      this.data.current.id_complejidad == 0 ||
+      this.data.current.id_complejidad == null) {
+      this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
+    } else if (this.data.current.respuestas.length < 4) {
+      this.alertService.warnAlert("Espera!", "Agrega por lo menos 4 respuestas");
+    } else if (!this.data.current.respuesta) {
+      this.alertService.warnAlert("Espera!", "Selecciona una respuesta correcta");
+    } else {
+      let jsonObj: any = {
+        pregunta: this.data.current.pregunta,
+        respuestas: this.data.current.respuestas,
+        respuesta: this.data.current.respuesta
+      };
+
+      let json = JSON.stringify(jsonObj);
+      let sqlTema2 = `INSERT INTO trivia (id_tema, id_complejidad, id_empresa, json_trivia) VALUES (${this.data.current.id_tema}, ${this.data.current.id_complejidad}, ${idEmpresa}, '${json}')`;
+
+      this.sqlGenericService.excecuteQueryString(sqlTema2).subscribe((resp: any) => {
+        //Se registra correctamente nuevo usuario
+        this.alertService.successAlert("Bien!", "Trivia creada exitosamente");
+        this.parentDilogRef.close(false);
+        this.loadingService.hide();
+        //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+        //this.listenNotifications();
+      }, (err: HttpErrorResponse) => {
+        this.loadingService.hide();
+      });
+
+    }
+  }
+
   editTema() {
     if (this.data.current.label.length == 0) {
       this.alertService.warnAlert("Espera!", "El campo descripción es requerido");
@@ -279,5 +376,122 @@ export class GenericModalComponent implements OnInit {
         });
       }
     }
+  }
+
+  editPregunta() {
+    if (this.data.current.pregunta.length == 0 ||
+      this.data.current.respuesta.length == 0 ||
+      this.data.current.id_tema == 0 ||
+      this.data.current.id_tema == null) {
+      this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
+    } else {
+
+      let sqlTema = `UPDATE preguntas_frecuentes SET pregunta = '${this.data.current.pregunta}', respuesta = '${this.data.current.respuesta}', id_tema = ${this.data.current.id_tema} WHERE id = ${this.data.current.id}`;
+      console.log(sqlTema);
+
+      this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
+        //Se registra correctamente nuevo usuario
+        this.alertService.successAlert("Bien!", "Pregunta Frecuente actualizada exitosamente");
+        this.parentDilogRef.close(false);
+        this.loadingService.hide();
+        //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+        //this.listenNotifications();
+      }, (err: HttpErrorResponse) => {
+        this.loadingService.hide();
+      });
+
+    }
+  }
+
+  editTrivia() {
+    let error: number = 0;
+    console.log(this.data);
+    
+    this.data.current.respuestas.forEach(element => {
+      if (!element.correcto) {
+        error++;
+      }
+    });
+    if (this.data.current.pregunta.length == 0 ||
+      this.data.current.id_tema == 0 ||
+      this.data.current.id_tema == null ||
+      this.data.current.id_complejidad == 0 ||
+      this.data.current.id_complejidad == null) {
+      this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
+    } else if (this.data.current.respuestas.length < 4) {
+      this.alertService.warnAlert("Espera!", "Agrega por lo menos 4 respuestas");
+    } else if (!this.data.current.respuesta) {
+      this.alertService.warnAlert("Espera!", "Selecciona una respuesta correcta");
+    } else {
+      let jsonObj: any = {
+        pregunta: this.data.current.pregunta,
+        respuestas: this.data.current.respuestas,
+        respuesta: this.data.current.respuesta
+      };
+
+      let json = JSON.stringify(jsonObj);
+      let sqlTema = `UPDATE trivia SET json_trivia = '${json}', id_tema = ${this.data.current.id_tema}, id_complejidad = ${this.data.current.id_complejidad} WHERE id = ${this.data.current.id}`;
+      console.log(sqlTema);
+
+      this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
+        //Se registra correctamente nuevo usuario
+        this.alertService.successAlert("Bien!", "Trivia actualizada exitosamente");
+        this.parentDilogRef.close(false);
+        this.loadingService.hide();
+        //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+        //this.listenNotifications();
+      }, (err: HttpErrorResponse) => {
+        this.loadingService.hide();
+      });
+
+    }
+  }
+
+  /**Combos */
+  cargarTemas() {
+    let sql: string = `SELECT id, descripcion as label FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
+
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
+      //Se registra correctamente nuevo usuario
+      this.temas = resp.parameters;
+      this.temas.unshift({ id: null, label: "[--Selecciona--]" });
+    }, (err: HttpErrorResponse) => {
+      this.loadingService.hide();
+    });
+  }
+
+  cargarComplejidades() {
+    let sql: string = `SELECT id, descripcion as label FROM catalogo WHERE id_tipo_catalogo = 32 AND id_empresa = ${idEmpresa}`;
+
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
+      //Se registra correctamente nuevo usuario
+      this.complejidades = resp.parameters;
+      this.complejidades.unshift({ id: null, label: "[--Selecciona--]" });
+    }, (err: HttpErrorResponse) => {
+      this.loadingService.hide();
+    });
+  }
+
+  /**Operaciones variadas */
+  aniadir() {
+    let epoch = Date.now();
+    if (this.respuestaTemporal.length > 0) {
+      this.data.current.respuestas.push({
+        correcta: false,
+        respuesta: this.respuestaTemporal,
+        id: epoch
+      });
+      this.respuestaTemporal = "";
+    }
+  }
+
+  remove(position) {
+    this.data.current.respuestas.splice(position, 1);
+  }
+
+  cambio(evt: any, position) {
+    /* console.log(evt);
+    console.log(this.data.current.respuesta);
+     */
   }
 }
