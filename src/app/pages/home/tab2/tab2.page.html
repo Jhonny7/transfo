@@ -1,5 +1,5 @@
 
-<header [title]="'menu.FAQs'"></header>
+<app-header [title]="'Preguntas Frecuentes'"></app-header>
 
 <ion-content>
   
@@ -26,7 +26,7 @@
     <container *ngIf="!viewFAQs">
       <ion-list>
         <ion-item class="list_materias" *ngFor="let item of listMaterias">
-          <ion-label (click)="getFAQ(item)" [style.color]="genericService.getColorHex()" >{{item}}</ion-label>
+          <ion-label (click)="getFAQ(item)" [style.color]="genericService.getColorHex()" >{{item.label}}</ion-label>
         </ion-item>
       </ion-list>
     </container>

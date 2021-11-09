@@ -4,7 +4,7 @@ import { FAQs } from 'src/app/interfaces/FAQs';
 import { GenericService } from 'src/app/services/generic.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SqlGenericService } from 'src/app/services/sqlGenericService';
-import { idEmpresa } from '../../../environments/environment.prod';
+import { idEmpresa } from '../../../../environments/environment.prod';
 
 @Component({
   selector: 'app-tab2',
@@ -16,7 +16,7 @@ export class Tab2Page implements OnInit {
   faqs: FAQs;
   viewFAQs = false;
   title: string;
-  listMaterias: Array<string> = ['Matematicas', 'Español', 'Ciencias', 'Ingles', 'Biologia','Matematicas', 'Español', 'Ciencias', 'Ingles', 'Biologia', ];
+  listMaterias: Array<string>;
   constructor(
     private sqlGenericService: SqlGenericService,
     private loadingService: LoadingService,
@@ -24,7 +24,7 @@ export class Tab2Page implements OnInit {
   ) { }
 
   ngOnInit() {
-    //this.getFAQ();
+this.getMaterias();
   }
   /**
    * function to obtain the questions depending on the selected subject
@@ -32,14 +32,23 @@ export class Tab2Page implements OnInit {
    * @param item momentary variable to obtain the selected matter.
    */
   getFAQ(item) {
-    this.title = item;
-    const sql = `SELECT * FROM preguntas_frecuentes WHERE id_empresa = ${idEmpresa}`;
+    this.title = item.label;
+    const sql = `SELECT * FROM preguntas_frecuentes WHERE id_empresa = ${idEmpresa} AND id_tema = ${item.value}`;
    this.loadingService.show('Espere...');
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       this.faqs = response.parameters;
       this.viewFAQs = true;
       this.loadingService.hide();
       console.log(this.faqs);
+    });
+  }
+  getMaterias(){
+    this.loadingService.show('Espere...');
+    const sql = `SELECT id AS value, descripcion as label, id_archivo FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any)=> {
+      console.log(response.parameters);
+      this.listMaterias = response.parameters;
+      this.loadingService.hide();
     });
   }
   /**
