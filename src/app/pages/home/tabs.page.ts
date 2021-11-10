@@ -18,7 +18,7 @@ import { Tab3Page } from './tab3/tab3.page';
 export class TabsPage implements OnInit, OnDestroy{
 
   public tabs: Tabs[] = [{
-    title: this.translateService.instant("menu.curriculum"),
+    title: 'Preguntas Frecuentes',
     icon: "clipboard",
     active: false,
     component: Tab2Page,
@@ -32,7 +32,7 @@ export class TabsPage implements OnInit, OnDestroy{
     url: "home/tab1",
     reload: true
   },{
-    title: this.translateService.instant("menu.news"),
+    title: 'Capsula Informativa',
     icon: "newspaper",
     active: false,
     component: Tab3Page,
