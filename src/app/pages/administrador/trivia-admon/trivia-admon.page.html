@@ -67,6 +67,49 @@
           Sin registros disponibles
         </div>
       </section>
+
+      <section *ngSwitchCase="4">
+        <table>
+          <caption>Cápsulas informativas</caption>
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Tema</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+
+            </tr>
+          </thead>
+
+          <tbody *ngIf="capsulas && capsulas.length > 0">
+
+            <tr *ngFor="let tema of capsulas">
+              <td data-label="Nombre">{{ tema.nombre }}</td>
+              <td data-label="Descripción" ><div [innerHTML]="tema.descripcion"></div></td>
+              <td data-label="Tema">{{ tema.tema }}</td>
+
+
+              <td data-label="Editar" style="cursor: pointer;" (click)="edit(tema)">
+                <span class="material-icons-outlined">
+                  build
+                </span>
+              </td>
+
+              <td data-label="Eliminar" style="cursor: pointer;" (click)="delete(tema)">
+                <span class="material-icons-outlined">
+                  delete
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="!capsulas || capsulas.length == 0" style="text-align: center;padding: 10px;">
+
+          Sin registros disponibles
+        </div>
+      </section>
+
       <section *ngSwitchCase="2">
         <table>
           <caption>Preguntas Frecuentes</caption>
@@ -158,6 +201,49 @@
         </div>
 
         <div *ngIf="!trivias || trivias.length == 0 && menuActivo == 3" style="text-align: center;padding: 10px;">
+
+          Sin registros disponibles
+        </div>
+      </section>
+
+      <section *ngSwitchCase="5">
+        <table>
+          <caption>Directorio</caption>
+          <thead>
+            <tr>
+              <th scope="col">Estado</th>
+              <th scope="col">Domicilio</th>
+              <th scope="col">Nombre del lugar</th>
+              <th scope="col">Contacto</th>
+              <th scope="col"></th>
+              <th scope="col"></th>
+
+            </tr>
+          </thead>
+
+          <tbody *ngIf="directorio && directorio.length > 0">
+
+            <tr *ngFor="let pregunta of directorio">
+              <td data-label="Estado">{{ pregunta.estado_combo }}</td>
+              <td data-label="Domicilio">{{ pregunta.domicilio }}</td>
+              <td data-label="Nombre del lugar">{{ pregunta.nombre_lugar }}</td>
+              <td data-label="Contacto">{{ pregunta.contacto }}</td>
+
+              <td data-label="Editar" style="cursor: pointer;" (click)="edit(pregunta)">
+                <span class="material-icons-outlined">
+                  build
+                </span>
+              </td>
+
+              <td data-label="Eliminar" style="cursor: pointer;" (click)="delete(pregunta)">
+                <span class="material-icons-outlined">
+                  delete
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="!directorio || directorio.length == 0 && menuActivo == 5" style="text-align: center;padding: 10px;">
 
           Sin registros disponibles
         </div>

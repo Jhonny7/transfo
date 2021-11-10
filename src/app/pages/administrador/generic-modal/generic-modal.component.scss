@@ -232,6 +232,11 @@
         border-radius: 4px;
         margin-top: 15px;
     }
+
+    video {
+        width: 98%;
+        height: 120px;
+    }
 }
 
 .aniadir {
@@ -271,5 +276,29 @@
     padding: 0;
     span {
         font-size: 15px;
+    }
+}
+
+.double {
+    width: 48% !important;
+    margin: 1%;
+    display: inline-block;
+    border: 1px solid #eeeeee;
+}
+
+.reds {
+    padding: 12px;
+    .red {
+        border-bottom: 1px solid #cacaca;
+        p {
+            margin: 0;
+        }
+        button {
+            outline: none;
+            background-color: #e20909;
+            color: #fff;
+            padding: 6px;
+            border-radius: 4px;
+        }
     }
 }
