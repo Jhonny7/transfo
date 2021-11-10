@@ -46,13 +46,13 @@ export class FcmService {
         await PushNotifications.requestPermissions();
         await PushNotifications.register();
 
-        console.log("For get token");
+       //console.log("For get token");
         
         // Get FCM token instead the APN one returned by Capacitor
         FCM.getToken()
             .then((r) => {
-                console.log("***TOKEN***");
-                console.log(r.token);
+               //console.log("***TOKEN***");
+               //console.log(r.token);
                 
                 let token: string = r.token;
                 /** FCM Register */
@@ -65,14 +65,14 @@ export class FcmService {
                 //consultar uuid en base de datos antes de registrar nuevo token 
                 //Si encuentra el uuid se actualizará el token pero no creará nuevo usuario
 
-                console.log("listo for consumming");
+               //console.log("listo for consumming");
                 
                 this.sqlGenericService.excecuteQueryString(sqlChecking).subscribe((resp: any) => {
-                    console.log("RESPONSE*****************");
-                    console.log(resp);
+                   //console.log("RESPONSE*****************");
+                   //console.log(resp);
                     
                     if (resp.parameters.length <= 0) {
-                        console.log("CONSUMING INSERT INTO");
+                       //console.log("CONSUMING INSERT INTO");
                         
                         this.sqlGenericService.excecuteQueryString(sql, 3).subscribe((resp: any) => {
                             //Se registra correctamente nuevo usuario
@@ -82,7 +82,7 @@ export class FcmService {
                             //PushNotifications.
                             this.listenNotifications();
                         }, (err: HttpErrorResponse) => {
-                            console.log(err);
+                           //console.log(err);
                             
                             this.loadingService.hide();
                         });
@@ -90,19 +90,19 @@ export class FcmService {
                         this.loadingService.hide();
                     }
                 }, (err: HttpErrorResponse) => {
-                    console.log("IN ERRROOR");
+                   //console.log("IN ERRROOR");
                     
-                    console.log(err);
+                   //console.log(err);
                     
                     this.loadingService.hide();
                 });
                 /** */
             })
-            .catch((err) => console.log(err));
+            .catch((err) =>//console.log(err));
 
         PushNotifications.addListener('registrationError', (error: any) => {
-            console.log('Error: ' + JSON.stringify(error));
-        });
+           
+        }));
 
         this.listenNotifications();
 
@@ -114,7 +114,7 @@ export class FcmService {
         PushNotifications.addListener(
             'pushNotificationReceived',
             async (notification: PushNotificationSchema) => {
-                console.log('Push received: ' + JSON.stringify(notification));
+               //console.log('Push received: ' + JSON.stringify(notification));
             }
         );
 
@@ -122,7 +122,7 @@ export class FcmService {
             'pushNotificationActionPerformed',
             async (notification: ActionPerformed) => {
                 const data = notification.notification.data;
-                console.log('Action performed: ' + JSON.stringify(notification.notification));
+               //console.log('Action performed: ' + JSON.stringify(notification.notification));
                 if (data.detailsId) {
                     //this.router.navigateByUrl(`/home/${data.detailsId}`);
                 }

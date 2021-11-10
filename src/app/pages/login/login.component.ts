@@ -55,9 +55,9 @@ export class LoginComponent implements OnInit {
   async getCurrentState() {
     const result = await Plugins.FacebookLogin.getCurrentAccessToken();
     try {
-      console.log("Facebook current");
+     //console.log("Facebook current");
 
-      console.log(result);
+     //console.log(result);
       if (result && result.accessToken) {
         let user = { token: result.accessToken.token, userId: result.accessToken.userId }
         let navigationExtras: NavigationExtras = {
@@ -69,12 +69,12 @@ export class LoginComponent implements OnInit {
         //this.router.navigate(["/home"], navigationExtras);
       }
     } catch (e) {
-      console.log(e)
+     //console.log(e)
     }
   }
 
   async signIn(): Promise<void> {
-    console.log("LOGGIN FACEBOOK_");
+   //console.log("LOGGIN FACEBOOK_");
 
     const FACEBOOK_PERMISSIONS = ['public_profile', 'email'];
 
@@ -92,8 +92,8 @@ export class LoginComponent implements OnInit {
       imagen: https://graph.facebook.com/${id}/picture?type=large&redirect=true&width=500&height=500
       fields: https://graph.facebook.com/${id}?fields=id,name,email&access_token=${token}
       */
-      console.log("USER FACEBOOK_");
-      console.log(JSON.stringify(user));
+     //console.log("USER FACEBOOK_");
+     //console.log(JSON.stringify(user));
 
       //this.router.navigate(["/home"], navigationExtras);
     }
@@ -101,7 +101,7 @@ export class LoginComponent implements OnInit {
 
   loginGoogle() {
     /* if (this.platform.is('android')) {
-      console.log("IN ANDROID");
+     //console.log("IN ANDROID");
 
       this.loginGoogleAndroid();
     } else {
@@ -116,8 +116,8 @@ export class LoginComponent implements OnInit {
     });
     const resConfirmed = await this.afAuth.signInWithCredential(firebase.default.auth.GoogleAuthProvider.credential(res.idToken));
     const user = resConfirmed.user;
-    console.log("google user____");
-    console.log(user);
+   //console.log("google user____");
+   //console.log(user);
 
 
   }
@@ -126,7 +126,7 @@ export class LoginComponent implements OnInit {
     let f: any = firebase;
     const res = await this.afAuth.signInWithPopup(new firebase.default.auth.GoogleAuthProvider());
     const user = res.user;
-    console.log(user);
+   //console.log(user);
   } */
 
   change() {

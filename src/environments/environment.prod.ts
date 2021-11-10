@@ -5,12 +5,14 @@ export const pathSettlementsCity = "https://olam-systems.com.mx/api_suite_home/s
 export const emulado = false;
 
 export const idEmpresa = 126;
+export const catalogoSabias = 149;
 
 export const environment = {
   production: true,
   //Services path
   genericQuerie: `${path}petition`,
   loadBlob:`${path}load-blob`,
+  load:`${path}load`,
   loadPDF:`${path}load-pdf`,
   getImagenIndividual: `${path}image/`,
   getPDF: `${path}pdf/`,

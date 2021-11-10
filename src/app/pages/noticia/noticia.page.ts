@@ -34,7 +34,7 @@ export class NoticiaPage implements OnInit {
         return array;
       })
     ).subscribe((response:any)=>{
-      console.log(response);
+     //console.log(response);
       
     },(error: HttpErrorResponse)=>{
 

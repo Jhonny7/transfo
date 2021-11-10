@@ -98,12 +98,12 @@ export class Tab1Page implements OnInit {
     private sqlGenericService: SqlGenericService,
     private themeService: ThemeService
   ) {
-    console.log("------------------------tab 1---------------------");
+   //console.log("------------------------tab 1---------------------");
     
    }
 
   ngOnInit() {
-    console.log(this.data);
+   //console.log(this.data);
     if (this.data.reload) {
       this.cargarCategorias();
     }
@@ -114,7 +114,7 @@ export class Tab1Page implements OnInit {
   cargarCategorias() {
     let sql: string = `SELECT * FROM catalogo WHERE id_empresa = ${idEmpresa} and id_tipo_catalogo = 26 ORDER BY RAND()`;
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => { 
-      console.log(response);
+     //console.log(response);
       this.categorias = response.parameters;
     }, (error: HttpErrorResponse) => {
 
@@ -122,10 +122,10 @@ export class Tab1Page implements OnInit {
   }
 
   onSwiper(swiper) {
-    console.log(swiper);
+   //console.log(swiper);
   }
 
   onSlideChange() {
-    console.log('slide change');
+   //console.log('slide change');
   }
 }

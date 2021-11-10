@@ -85,7 +85,7 @@ export class AppComponent implements OnInit{
         //Si encuentra el uuid se actualizará el token pero no creará nuevo usuario
 
         this.sqlGenericService.excecuteQueryString(sqlChecking).subscribe((resp: any) => {
-          console.log(resp);
+         //console.log(resp);
           
           if (resp.parameters.length <= 0) {
             this.sqlGenericService.excecuteQueryString(sql, 3).subscribe((resp: any) => {
@@ -110,11 +110,11 @@ export class AppComponent implements OnInit{
 
   listenNotifications(){
     /* this.fcm.onNotification().subscribe(data => {
-      console.log(data);
+     //console.log(data);
       if(data.wasTapped){
-        console.log("Received in background");
+       //console.log("Received in background");
       } else {
-        console.log("Received in foreground");
+       //console.log("Received in foreground");
       };
     }); */
   }

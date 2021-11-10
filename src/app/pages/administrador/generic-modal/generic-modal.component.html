@@ -207,6 +207,91 @@
                 </section>
             </div>
         </section>
+
+        <section *ngSwitchCase="6">
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Tema *</label>
+                <select [(ngModel)]="data.current.id_tema">
+                    <option [value]="tema.id" *ngFor="let tema of temas">{{ tema.label }}</option>
+                </select>
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Nombre *</label>
+                <input type="text" id="nombre" [(ngModel)]="data.current.nombre" placeholder="Nombre..">
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Descripción *</label>
+                <input type="text" id="nombre" [(ngModel)]="data.current.descripcion" placeholder="Descripción..">
+            </div>
+
+            <div class="input-container" style="width: 100%;position: relative;">
+                <label for="nomre">Links videos</label>
+                <div>
+                    <select [(ngModel)]="redTemporal.tipo" class="double">
+                        <option [value]="tema.id" *ngFor="let tema of redes">{{ tema.label }}</option>
+                    </select>
+                    <input type="text" id="nombre" [(ngModel)]="redTemporal.link" placeholder="Link" class="double">
+
+                </div>
+                <button class="aniadir" (click)="aniadirVideo()">Añadir</button>
+            </div>
+
+            <div class="reds">
+                <section *ngFor="let red of redTemporales; let i = index" class="red">
+                    <p>{{returnType(red.tipo)}} - {{red.link}}</p>
+                    <button (click)="removeVideo(i)">Borrar</button>
+                </section>
+            </div>
+
+            <section>
+
+
+                <section class="drop " *ngIf="s.countFiles > 1 || s.countFiles == -1" (drop)="s.onDrop($event)"
+                    (dragover)="onDragOver($event,s)" (dropover)="onDropOver($event,s)">
+
+                    <div class="droap"  id="drag-{{s.id}}">
+
+                        <label for="filer-{{ s.id }}" style="cursor: pointer;">
+                            <p>Arrastra tu archivo o click <a>aquí</a> para seleccionar</p>
+                        </label>
+                        <input type="file" name="file" id="filer-{{ s.id }}" class="inputfile"
+                            (change)="s.change($event)" />
+                    </div>
+
+
+                    <section class="archives scrolling-wrapper ">
+                        <div class="cont-img" *ngFor="let f of s.files; let j = index">
+                            <img [src]="f.b64Security" alt="">
+                            <div class="delete-img" (click)="s.reset(s.files, j)">
+                                x
+                            </div>
+
+                            <div class="subr sbr" (click)="s.upload(j,f)">
+                                <p>Subir</p>
+                            </div>
+                        </div>
+                        <div class="cont-img" *ngFor="let element of s.elements; let k = index">
+                            <img [src]="img + element.id_archivo" alt="" *ngIf="!element.b64"
+                                (click)="s.inputClc(element)">
+                            <img [src]="element.b64" alt="" *ngIf="element.b64">
+
+                            <input type="file" name="file" id="filer-{{ element.id }}" class="inputfile"
+                                (change)="s.otherImg($event,element)" />
+
+
+                            <div class="delete-img" (click)="s.reset(element.id_archivo, k, true)">
+                                x
+                            </div>
+                            
+                        </div>
+                    </section>
+
+                </section>
+            </section>
+        </section>
     </section>
 
 

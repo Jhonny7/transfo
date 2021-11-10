@@ -40,7 +40,7 @@ export class TabsComponent implements OnInit{
     public genericService: GenericService,
     
   ) {
-    console.log("tab 1");
+   //console.log("tab 1");
     
   }
 

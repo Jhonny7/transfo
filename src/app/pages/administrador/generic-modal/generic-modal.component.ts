@@ -1,3 +1,5 @@
+import { element } from 'protractor';
+import { catalogoSabias } from './../../../../environments/environment.prod';
 
 import { DomSanitizer } from '@angular/platform-browser';
 import { Component, Inject, Input, OnInit } from '@angular/core';
@@ -25,17 +27,24 @@ export class GenericModalComponent implements OnInit {
   public respuestaTemporal: string = "";
   public respuestasTemporales: any[] = [];
 
+  public fileInfo: any[] = [];
+  public files: any[] = [];
+  public filesText: any[] = [];
+
   public redTemporal: any = {
     tipo: null,
     link: ""
   };
   public redTemporales: any[] = [];
+  public elements: any[] = [];
 
   public Editor = DecoupledEditor;
   public model = {
     editorData: `<p>Ingresa descripción de la cápsula</p>`,
     Editor: DecoupledEditor
   };
+
+  public s: any = {};
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -71,17 +80,87 @@ export class GenericModalComponent implements OnInit {
         this.cargarTemas();
         break;
       case 5:
-        this.redTemporales = JSON.parse(this.data.current.links);
+        if (this.data.current.id) {
+          this.redTemporales = JSON.parse(this.data.current.links);
+        }
         this.getStates();
         this.getRedes();
+        break;
+      case 6:
+        if (this.data.current.id && this.data.current.json) {
+          this.redTemporales = JSON.parse(this.data.current.json);
+        }
+        this.cargarTemas();
+        this.cargarTipoCatalogos();
+        this.getVideos();
         break;
       default:
         break;
     }
   }
 
+  cargarTipoCatalogos() {
+    let sql: string = `SELECT * FROM tipo_catalogo WHERE id = 35`;
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
+      //console.log(response);
+      response.parameters.forEach((itm, index) => {
+        //console.log(index);
+        //console.log(this.sections);
+
+        this.s = {
+          id: index + 1,
+          name: itm.descripcion,
+          catalogType: itm.id,
+          files: [],
+          filesInfo: [],
+          filesText: [],
+          idArchivo: null,
+          elements: [],
+          countFiles: -1,
+          change: (event) => {
+            this.fileChangeEvent(event, this.s);
+          },
+          onDrop: (event) => {
+            this.onDrop(event, this.s);
+          },
+          description: "Carga las imágenes que necesitas en tu catálogo, no hay límite",
+          upload: (i, f) => {
+            this.consumoServicio(this.s, true, i, f);
+          },
+          reset: (array, position, DB: boolean = false) => {
+            this.s.filesText = [];
+            if (DB) {
+              this.deleteFile(this.s.idArchivo[position], this.s, position);
+            } else {
+              array.splice(position, 1);
+            }
+          },
+          update: (element: any) => {
+            this.upd(element);
+          },
+          inputClc: (element) => {
+            let id: any = document.getElementById(`filer-${element.id}`); id.click();
+          },
+          otherImg: (event: any, element: any) => {
+            this.otherImg(event, element);
+          },
+          preload: () => {
+            this.cargarLogo(this.s);
+          }
+        };
+
+
+      });
+
+      this.s.preload();
+
+    }, (error: HttpErrorResponse) => {
+
+    });
+  }
+
   changeImg(evt: any) {
-    console.log("------------------------------------");
+    //console.log("------------------------------------");
 
     let file: any = evt.target.files[0];
     if (file.size > 2000000) {
@@ -267,6 +346,13 @@ export class GenericModalComponent implements OnInit {
           this.createDirectorio();
         }
         break;
+      case 6:
+        if (this.data.status) {
+          this.editSabias();
+        } else {
+          this.createSabias();
+        }
+        break;
       default:
         break;
     }
@@ -303,7 +389,7 @@ export class GenericModalComponent implements OnInit {
             (response: any) => {
               let idArchivo = response.parameters;
               let sqlTema = `INSERT INTO catalogo (id_tipo_catalogo, id_empresa, descripcion, nombre, id_archivo) VALUES ('31', ${idEmpresa}, '${this.data.current.label}', '${this.data.current.label}', ${idArchivo})`;
-              console.log(sqlTema);
+              //console.log(sqlTema);
 
               this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
                 //Se registra correctamente nuevo usuario
@@ -333,6 +419,43 @@ export class GenericModalComponent implements OnInit {
         this.sqlGenericService.excecuteQueryString(sqlTema2).subscribe((resp: any) => {
           //Se registra correctamente nuevo usuario
           this.alertService.successAlert("Bien!", "Tema creado exitosamente");
+          this.parentDilogRef.close(false);
+          this.loadingService.hide();
+          //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+          //this.listenNotifications();
+        }, (err: HttpErrorResponse) => {
+          this.loadingService.hide();
+        });
+      }
+
+    }
+  }
+
+  async createSabias(fromFiles: boolean = false) {
+    if (this.data.current.descripcion.length == 0 ||
+      this.data.current.nombre.length == 0 ||
+      this.data.current.id_tema == "0" ||
+      this.data.current.id_tema == 0 ||
+      this.data.current.id_tema == null) {
+      this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
+    } else if (this.s.files.length + this.s.elements.length > 5) {
+      this.alertService.warnAlert("Espera!", "Máximo puedes almacenar 6 imágenes en esta sección");
+    } else {
+
+      if (fromFiles) {
+        let json = JSON.stringify(this.redTemporales);
+        let sqlTema2 = `INSERT INTO catalogo (id_tema, json, id_tipo_catalogo, id_empresa, descripcion, nombre, id_referencia) 
+        VALUES (${this.data.current.id_tema},'${json}',34, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}', '${catalogoSabias}')`;
+
+        return this.sqlGenericService.excecuteQueryString(sqlTema2);
+      } else {
+        let json = JSON.stringify(this.redTemporales);
+        let sqlTema2 = `INSERT INTO catalogo (id_tema, json, id_tipo_catalogo, id_empresa, descripcion, nombre, id_referencia) 
+        VALUES (${this.data.current.id_tema},'${json}',34, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}', '${catalogoSabias}')`;
+
+        this.sqlGenericService.excecuteQueryString(sqlTema2).subscribe((resp: any) => {
+          //Se registra correctamente nuevo usuario
+          this.alertService.successAlert("Bien!", "Registro creado exitosamente");
           this.parentDilogRef.close(false);
           this.loadingService.hide();
           //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
@@ -375,7 +498,7 @@ export class GenericModalComponent implements OnInit {
             (response: any) => {
               let idArchivo = response.parameters;
               let sqlTema = `INSERT INTO capsula (id_tema, id_empresa, descripcion, nombre, id_archivo) VALUES (${this.data.current.id_tema}, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}', ${idArchivo})`;
-              console.log(sqlTema);
+              //console.log(sqlTema);
 
               this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
                 //Se registra correctamente nuevo usuario
@@ -449,7 +572,7 @@ export class GenericModalComponent implements OnInit {
         error++;
       }
     });
-    console.log(this.data.current);
+    //console.log(this.data.current);
 
     if (this.data.current.pregunta.length == 0 ||
       this.data.current.id_tema == 0 ||
@@ -486,8 +609,8 @@ export class GenericModalComponent implements OnInit {
   }
 
   createDirectorio() {
-    console.log(this.data.current);
-    
+    //console.log(this.data.current);
+
     if (this.data.current.estado_combo.length == "0" ||
       this.data.current.domicilio.length == 0 ||
       this.data.current.nombre_lugar.length == 0 ||
@@ -544,7 +667,7 @@ export class GenericModalComponent implements OnInit {
             (response: any) => {
               let idArchivo = response.parameters;
               let sqlTema = `UPDATE catalogo SET descripcion = '${this.data.current.label}', nombre = '${this.data.current.label}', id_archivo = ${idArchivo} WHERE id = ${this.data.current.id}`;
-              console.log(sqlTema);
+              //console.log(sqlTema);
 
               this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
                 //Se registra correctamente nuevo usuario
@@ -573,7 +696,7 @@ export class GenericModalComponent implements OnInit {
 
       } else {
         let sqlTema = `UPDATE catalogo SET descripcion = '${this.data.current.label}', nombre = '${this.data.current.label}' WHERE id = ${this.data.current.id}`;
-        console.log(sqlTema);
+        //console.log(sqlTema);
 
         this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
           //Se registra correctamente nuevo usuario
@@ -586,6 +709,38 @@ export class GenericModalComponent implements OnInit {
           this.loadingService.hide();
         });
       }
+    }
+  }
+
+  editSabias() {
+    if (this.data.current.descripcion.length == 0 ||
+      this.data.current.nombre.length == 0 ||
+      this.data.current.id_tema == "0" ||
+      this.data.current.id_tema == 0 ||
+      this.data.current.id_tema == null) {
+      this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
+    } else {
+
+      let json = JSON.stringify(this.redTemporales);
+
+      let sqlTema = `UPDATE catalogo 
+      SET descripcion = '${this.data.current.descripcion}', 
+      nombre = '${this.data.current.nombre}',
+      json = '${json}',
+      id_tema = ${this.data.current.id_tema} 
+      WHERE id = ${this.data.current.id}`;
+      //console.log(sqlTema);
+
+      this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
+        //Se registra correctamente nuevo usuario
+        this.alertService.successAlert("Bien!", "Registro actualizado exitosamente");
+        this.parentDilogRef.close(false);
+        this.loadingService.hide();
+        //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+        //this.listenNotifications();
+      }, (err: HttpErrorResponse) => {
+        this.loadingService.hide();
+      });
     }
   }
 
@@ -618,7 +773,7 @@ export class GenericModalComponent implements OnInit {
             (response: any) => {
               let idArchivo = response.parameters;
               let sqlTema = `UPDATE capsula SET descripcion = '${this.data.current.descripcion}', nombre = '${this.data.current.nombre}', id_tema = ${this.data.current.id_tema}, id_archivo = ${idArchivo} WHERE id = ${this.data.current.id}`;
-              console.log(sqlTema);
+              //console.log(sqlTema);
 
               this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
                 //Se registra correctamente nuevo usuario
@@ -647,7 +802,7 @@ export class GenericModalComponent implements OnInit {
 
       } else {
         let sqlTema = `UPDATE capsula SET id_tema = ${this.data.current.id_tema}, descripcion = '${this.data.current.descripcion}', nombre = '${this.data.current.nombre}' WHERE id = ${this.data.current.id}`;
-        console.log(sqlTema);
+        //console.log(sqlTema);
 
         this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
           //Se registra correctamente nuevo usuario
@@ -672,7 +827,7 @@ export class GenericModalComponent implements OnInit {
     } else {
 
       let sqlTema = `UPDATE preguntas_frecuentes SET pregunta = '${this.data.current.pregunta}', respuesta = '${this.data.current.respuesta}', id_tema = ${this.data.current.id_tema} WHERE id = ${this.data.current.id}`;
-      console.log(sqlTema);
+      //console.log(sqlTema);
 
       this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
         //Se registra correctamente nuevo usuario
@@ -690,7 +845,7 @@ export class GenericModalComponent implements OnInit {
 
   editTrivia() {
     let error: number = 0;
-    console.log(this.data);
+    //console.log(this.data);
 
     this.data.current.respuestas.forEach(element => {
       if (!element.correcto) {
@@ -716,7 +871,7 @@ export class GenericModalComponent implements OnInit {
 
       let json = JSON.stringify(jsonObj);
       let sqlTema = `UPDATE trivia SET json_trivia = '${json}', id_tema = ${this.data.current.id_tema}, id_complejidad = ${this.data.current.id_complejidad} WHERE id = ${this.data.current.id}`;
-      console.log(sqlTema);
+      //console.log(sqlTema);
 
       this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
         //Se registra correctamente nuevo usuario
@@ -755,7 +910,7 @@ export class GenericModalComponent implements OnInit {
       email = '${this.data.current.email}',
       ubicacion_maps = '${this.data.current.ubicacion_maps}'
       WHERE id = ${this.data.current.id}`;
-      console.log(sqlTema);
+      //console.log(sqlTema);
 
       this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
         //Se registra correctamente nuevo usuario
@@ -785,6 +940,18 @@ export class GenericModalComponent implements OnInit {
 
   getRedes() {
     let sql: string = `SELECT id, descripcion as label FROM catalogo WHERE id_tipo_catalogo = 33 AND id_empresa = ${idEmpresa}`;
+
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
+      //Se registra correctamente nuevo usuario
+      this.redes = resp.parameters;
+      this.redes.unshift({ id: null, label: "[--Selecciona--]" });
+    }, (err: HttpErrorResponse) => {
+      this.loadingService.hide();
+    });
+  }
+
+  getVideos() {
+    let sql: string = `SELECT id, descripcion as label FROM catalogo WHERE id_tipo_catalogo = 36 AND id_empresa = ${idEmpresa}`;
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
@@ -833,13 +1000,26 @@ export class GenericModalComponent implements OnInit {
     }
   }
 
+  aniadirVideo() {
+    let epoch = Date.now();
+    if (this.redTemporal.link.length > 0 && this.redTemporal.tipo != "0") {
+      this.redTemporales.push({ ... this.redTemporal })
+      this.redTemporal.link = "";
+      this.redTemporal.tipo = "0";
+    }
+  }
+
   removeRed(position) {
     this.redTemporales.splice(position, 1);
   }
 
+  removeVideo(position) {
+    this.redTemporales.splice(position, 1);
+  }
+
   cambio(evt: any, position) {
-    /* console.log(evt);
-    console.log(this.data.current.respuesta);
+    /*//console.log(evt);
+   //console.log(this.data.current.respuesta);
      */
   }
 
@@ -857,4 +1037,498 @@ export class GenericModalComponent implements OnInit {
     );
   }
 
+  //SABIAS QUE FILES
+  cargarLogo(section: any) {
+    //console.log(section);
+
+    let sql: string = `SELECT * FROM catalogo WHERE id_tipo_catalogo = ${section.catalogType} AND id_empresa = ${idEmpresa} AND id_referencia = ${this.data.current.id}`;
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
+      //console.log(response);
+
+      switch (section.id) {
+        default:
+          section.idArchivo = [];
+          section.elements = [];
+          response.parameters.forEach(e => {
+            section.elements.push(e);
+          });
+          break;
+      }
+    }, (error: HttpErrorResponse) => {
+
+    });
+  }
+
+  deleteFile(idFile: number, obj: any, position: number = -1) {
+    //console.log(idFile,obj,position);
+
+    let sql: string = `DELETE catalogo, archivo
+     FROM catalogo
+     INNER JOIN archivo ON catalogo.id_archivo = archivo.id
+     WHERE catalogo.id_archivo = ${obj.elements[position].id_archivo}`;
+
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
+      //console.log(response);
+      if (obj.countFiles == -1 || obj.countFiles > 1) {
+        //obj.idArchivo[position] = null;
+        obj.elements.splice(position, 1);
+      } else {
+        obj.idArchivo = null;
+      }
+    }, (error: HttpErrorResponse) => {
+
+    });
+  }
+
+  onDrop(ev, variable) {
+
+    ev.preventDefault();
+
+    if (this.s.files.length + this.s.elements.length > 5) {
+      this.alertService.warnAlert("Espera!", "Máximo puedes almacenar 6 imágenes en esta sección");
+    } else {
+      if (ev.dataTransfer.items) {
+        // Usar la interfaz DataTransferItemList para acceder a el/los archivos)
+        for (var i = 0; i < ev.dataTransfer.items.length; i++) {
+          // Si los elementos arrastrados no son ficheros, rechazarlos
+          if (ev.dataTransfer.items[i].kind === 'file') {
+            var file = ev.dataTransfer.items[i].getAsFile();
+            //console.log(file);
+            variable.filesInfo.push({
+              lastModified: file.lastModified,
+              lastModifiedDate: file.lastModifiedDate,
+              name: file.name,
+              size: file.size,
+              type: file.type
+            });
+
+            variable.filesText.push({
+              name: "",
+              descripcion: ""
+            });
+            this.validateFile(file, variable, ev, true);
+          }
+        }
+      } else {
+        // Usar la interfaz DataTransfer para acceder a el/los archivos
+        for (var i = 0; i < ev.dataTransfer.files.length; i++) {
+          //console.log('... file[' + i + '].name = ' + ev.dataTransfer.files[i].name);
+        }
+      }
+    }
+
+
+  }
+
+  onDragOver(event, s) {
+    let id: any = document.getElementById(`drag-${s.id}`);
+    //id.style.opacity = "0.7";
+
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+  onDropOver(event, s) {
+    let id: any = document.getElementById(`drag-${s.id}`);
+    id.style.opacity = "1";
+
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+  otherImg(evt: any, elemtn: any) {
+    let file: any = evt.target.files[0];
+    elemtn.fileTmp = file;
+    if (file.size > 2000000) {
+      this.alertService.warnAlert(
+        "Ooops!",
+        "Tu archivo debe ser de máximo 2MB de tamaño, Intenta nuevamente con otro archivo",
+        () => {
+          ////console.log("hola");
+        }
+      );
+    } else if (
+      file.type != "image/png" &&
+      file.type != "image/jpg" &&
+      file.type != "image/jpeg" &&
+      file.type != "image/svg+xml"
+    ) {
+      this.alertService.warnAlert(
+        "Ooops!",
+        "Solo aceptamos archivos en formato png, jpg y svg",
+        () => {
+          ////console.log("hola");
+        }
+      );
+    } else {
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        if (file.type == "image/svg+xml") {
+          let img: any = new Image();
+          img.src = reader.result;
+
+          img.onload = function () {
+            let canvas: any = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            let context: any = canvas.getContext("2d");
+            context.drawImage(img, 0, 0);
+            let png: any = canvas.toDataURL("image/png");
+            //console.log(png);
+
+            elemtn.b64 = png;
+            elemtn.files = [];
+            elemtn.files.push(
+              {
+                b64: png,
+                b64Security: png
+              }
+            );
+          };
+
+        } else {
+          elemtn.b64 = reader.result;
+          elemtn.files = [];
+          elemtn.files.push(
+            {
+              b64: reader.result,
+              b64Security: reader.result
+            }
+          );
+        }
+
+      };
+      reader.onerror = error => {
+        ////console.log("Error: ", error);
+      };
+    }
+  }
+
+  fileChangeEvent(evt: any, variable: any) {
+    console.log(this.s);
+    
+    if (this.s.files.length + this.s.elements.length > 5) {
+      this.alertService.warnAlert("Espera!", "Máximo puedes almacenar 6 imágenes en esta sección");
+    } else {
+      if (variable.files.length < variable.countFiles || variable.countFiles == -1) {
+        let file: any = evt.target.files[0];
+        variable.filesInfo.push({
+          lastModified: file.lastModified,
+          lastModifiedDate: file.lastModifiedDate,
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          namer: "",
+          descripcion: ""
+        });
+        this.validateFile(file, variable, evt);
+      } else {
+        this.alertService.warnAlert(
+          "Ooops!",
+          "Cantidad de archivos excedidos",
+          () => {
+            ////console.log("hola");
+          }
+        );
+      }
+    }
+
+  }
+
+  validateFile(file, variable: any, evt: any, fromDrop: boolean = false) {
+    //console.log(file);
+
+    if (file.size > 2000000) {
+      this.alertService.warnAlert(
+        "Ooops!",
+        "Tu archivo debe ser de máximo 2MB de tamaño, Intenta nuevamente con otro archivo",
+        () => {
+          ////console.log("hola");
+        }
+      );
+    } else if (
+      file.type != "image/png" &&
+      file.type != "image/jpg" &&
+      file.type != "image/jpeg" &&
+      file.type != "image/svg+xml"
+    ) {
+      this.alertService.warnAlert(
+        "Ooops!",
+        "Solo aceptamos archivos en formato png, jpg y svg",
+        () => {
+          ////console.log("hola");
+        }
+      );
+    } else {
+      this.getBase64(!fromDrop ? evt.target.files[0] : file, variable);
+    }
+  }
+
+  getBase64(file, variable: any) {
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      if (file.type == "image/svg+xml") {
+        let img: any = new Image();
+        img.src = reader.result;
+
+        img.onload = function () {
+          let canvas: any = document.createElement('canvas');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          let context: any = canvas.getContext("2d");
+          context.drawImage(img, 0, 0);
+          let png: any = canvas.toDataURL("image/png");
+          //console.log(png);
+          variable.files.push(
+            {
+              b64: png,
+              b64Security: png
+            }
+          );
+        };
+
+      } else {
+        variable.files.push(
+          {
+            b64: reader.result,
+            b64Security: file.type == "image/svg+xml" ? this.domSanitizer.bypassSecurityTrustResourceUrl(String(reader.result)) : reader.result
+          }
+        );
+      }
+
+    };
+    reader.onerror = error => {
+      ////console.log("Error: ", error);
+    };
+  }
+
+  async consumoServicio(obj: any, ind: boolean = false, position: number = 0, fileR: any = null) {
+    let idReferencia = null;
+    if (!this.data.current.id) {
+      (await this.createSabias(true)).subscribe((res: any) => {
+        this.data.current.id = res.parameters;
+        this.data.status = true;
+        let request: any = {};
+        if (!ind) {
+          if (obj.files.length > 0) {
+
+            for (let index = 0; index < obj.filesInfo.length; index++) {
+              const f = obj.files[index];
+
+              obj.filesInfo[index].base64 = f.b64;
+            }
+
+            request = {
+              files: obj.filesInfo,
+              idEmpresa: idEmpresa,
+              tipo: obj.catalogType,
+              name: obj.name,
+              multi: false
+            };
+
+          }
+        } else {
+          const f = obj.files[position];
+          obj.filesInfo[position].base64 = f.b64;
+
+          let fls: any[] = [];
+          fls.push(obj.filesInfo[position]);
+
+          let textos: any[] = [];
+          textos.push(obj.filesText[position]);
+
+          request = {
+            files: fls,
+            idAdjunto: obj.idArchivo,
+            idEmpresa: idEmpresa,
+            tipo: obj.catalogType,
+            name: fileR.namer,
+            description: fileR.descripcion,
+            multi: true,
+            idReferencia: this.data.current.id
+          };
+        }
+
+        this.loadingService.show();
+        this.genericService
+          .sendPostRequest(environment.load, request)
+          .subscribe(
+            (response: any) => {
+              ////console.log(response);
+              //fileR.subido = true;
+              this.loadingService.hide();
+              if (!ind) {
+                obj.idArchivo = response.parameters;
+              } else {
+                obj.idArchivo.push(response.parameters);
+                obj.files.splice(position, 1);
+              }
+
+              obj.preload();
+              this.alertService.successAlert(
+                "Bien!",
+                `Hemos actualizado tu imagen`,
+                () => {
+                  ////console.log("hola");
+                }
+              );
+            },
+            (error: HttpErrorResponse) => {
+              this.loadingService.hide();
+              this.alertService.errorAlert(
+                "Ooops!",
+                "Ha sucedido un error, intenta recargar nuevamente, si el error persiste contacta a un administrador",
+                () => {
+                  ////console.log("hola");
+                }
+              );
+            }
+          );
+      }, (error: HttpErrorResponse) => {
+
+      });
+    } else {
+      let request: any = {};
+      if (!ind) {
+        if (obj.files.length > 0) {
+
+          for (let index = 0; index < obj.filesInfo.length; index++) {
+            const f = obj.files[index];
+
+            obj.filesInfo[index].base64 = f.b64;
+          }
+
+          request = {
+            files: obj.filesInfo,
+            idEmpresa: idEmpresa,
+            tipo: obj.catalogType,
+            name: obj.name,
+            multi: false
+          };
+
+        }
+      } else {
+        const f = obj.files[position];
+        obj.filesInfo[position].base64 = f.b64;
+
+        let fls: any[] = [];
+        fls.push(obj.filesInfo[position]);
+
+        let textos: any[] = [];
+        textos.push(obj.filesText[position]);
+
+        request = {
+          files: fls,
+          idAdjunto: obj.idArchivo,
+          idEmpresa: idEmpresa,
+          tipo: obj.catalogType,
+          name: fileR.namer,
+          description: fileR.descripcion,
+          multi: true,
+          idReferencia: this.data.current.id
+        };
+      }
+
+      this.loadingService.show();
+      this.genericService
+        .sendPostRequest(environment.load, request)
+        .subscribe(
+          (response: any) => {
+            ////console.log(response);
+            //fileR.subido = true;
+            this.loadingService.hide();
+            if (!ind) {
+              obj.idArchivo = response.parameters;
+            } else {
+              obj.idArchivo.push(response.parameters);
+              obj.files.splice(position, 1);
+            }
+
+            obj.preload();
+            this.alertService.successAlert(
+              "Bien!",
+              `Hemos actualizado tu imagen`,
+              () => {
+                ////console.log("hola");
+              }
+            );
+          },
+          (error: HttpErrorResponse) => {
+            this.loadingService.hide();
+            this.alertService.errorAlert(
+              "Ooops!",
+              "Ha sucedido un error, intenta recargar nuevamente, si el error persiste contacta a un administrador",
+              () => {
+                ////console.log("hola");
+              }
+            );
+          }
+        );
+    }
+
+    //catalogType
+    //filesInfo
+    //files
+
+  }
+
+  getImageSecurity(i) {
+    return this.domSanitizer.bypassSecurityTrustResourceUrl(`${environment.getImagenIndividual}${i}`);
+  }
+
+  upd(element: any) {
+    //console.log(element);
+    let fls: any = null;
+    if (element.fileTmp) {
+      fls = [];
+      element.fileTmp.base64 = element.b64;
+      fls.push(element.fileTmp);
+    }
+
+    let request = {
+      files: fls,
+      idEmpresa: idEmpresa,
+      id: element.id,
+      name: element.nombre,
+      description: element.descripcion,
+      multi: true,
+      update: true,
+      idAdjunto: element.id_archivo,
+      tipo: "Inactive"
+    };
+
+    this.loadingService.show();
+    this.genericService
+      .sendPostRequest(environment.loadBlob, request)
+      .subscribe(
+        (response: any) => {
+          ////console.log(response);
+          //fileR.subido = true;
+          this.loadingService.hide();
+          element.id_archivo = response.parameters;
+          delete element.fileTmp;
+          delete element.b64;
+
+          this.alertService.successAlert(
+            "Bien!",
+            `Hemos actualizado tu imagen`,
+            () => {
+              ////console.log("hola");
+            }
+          );
+        },
+        (error: HttpErrorResponse) => {
+          this.loadingService.hide();
+          this.alertService.errorAlert(
+            "Ooops!",
+            "Ha sucedido un error, intenta recargar nuevamente, si el error persiste contacta a un administrador",
+            () => {
+              ////console.log("hola");
+            }
+          );
+        }
+      );
+  }
 }

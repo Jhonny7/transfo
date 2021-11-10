@@ -16,7 +16,7 @@ export class LoaderService {
  //
     public show(message = '') {
         // Returns an OverlayRef (which is a PortalHost)
-      console.log("showing");
+     //console.log("showing");
       
         if(!this.activo){
           this.activo = !this.activo;
