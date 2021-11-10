@@ -280,12 +280,12 @@ L.GridLayer.GoogleMutant = L.GridLayer.extend({
 			imgNode.style.visibility = 'hidden';
 
 			var key = tileKey + '/' + sublayer;
-			// console.log('mutation for tile', key)
+			////console.log('mutation for tile', key)
 			//store img so it can also be used in subsequent tile requests
 			this._freshTiles[key] = imgNode;
 
 			if (key in this._tileCallbacks && this._tileCallbacks[key]) {
-// console.log('Fullfilling callback ', key);
+////console.log('Fullfilling callback ', key);
 				//fullfill most recent tileCallback because there maybe callbacks that will never get a 
 				//corresponding mutation (because map moved to quickly...)
 				this._tileCallbacks[key].pop()(imgNode); 

@@ -50,7 +50,7 @@ export class TabsPage implements OnInit, OnDestroy{
     private translateService: TranslateService,
     private eventService: EventService
   ) { 
-    console.log("---->");
+   //console.log("---->");
     
   }
 
@@ -78,7 +78,7 @@ export class TabsPage implements OnInit, OnDestroy{
     if (tab.url) {
       this.router.navigate([tab.url]);
     }
-    console.log(this.adHost);
+   //console.log(this.adHost);
     
     this.utilService.renderDynamicComponent(tab.component, this.adHost, tab.data);
   }

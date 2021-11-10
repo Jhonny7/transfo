@@ -45,8 +45,8 @@ export class AdministratorComponent implements OnInit {
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       //console.log(response);
       response.parameters.forEach((itm,index) => {
-        console.log(index);
-        console.log(this.sections);
+       //console.log(index);
+       //console.log(this.sections);
         
         this.sections.push({
           id: index+1,
@@ -55,7 +55,8 @@ export class AdministratorComponent implements OnInit {
           files: [],
           filesInfo: [],
           filesText: [],
-          idArchivo: null, elements: [],
+          idArchivo: null, 
+          elements: [],
           countFiles: -1,
           change: (event) => {
             this.fileChangeEvent(event, this.sections[index]);
@@ -102,7 +103,7 @@ export class AdministratorComponent implements OnInit {
   }
 
   cargarLogo(section: any) {
-    console.log(section);
+   //console.log(section);
     
     let sql: string = `SELECT * FROM catalogo WHERE id_tipo_catalogo = ${section.catalogType} AND id_empresa = ${idEmpresa}`;
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
@@ -440,7 +441,7 @@ export class AdministratorComponent implements OnInit {
   }
 
   upd(element: any) {
-    console.log(element);
+   //console.log(element);
     let fls: any = null;
     if (element.fileTmp) {
       fls = [];

@@ -91,7 +91,7 @@ export class GenericService {
     //For themes
     getColorPrimary() {
         let color: any = this.localStorageEncryptService.getFromLocalStorage("primary");
-        console.log(color);
+       //console.log(color);
         
         return color;
     }

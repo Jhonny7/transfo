@@ -22,7 +22,7 @@ import { AdministratorComponent } from './pages/administrador/administrator/admi
 import { AdDirective } from './directives/ad.directive';
 import { TriviaAdmonPage } from './pages/administrador/trivia-admon/trivia-admon.page';
 import { GenericModalComponent } from './pages/administrador/generic-modal/generic-modal.component';
-
+import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
@@ -69,6 +69,7 @@ export function createTranslateLoader(http: HttpClient) {
         FormsModule,
         IonicModule.forRoot(),
         MaterialModule,
+        CKEditorModule,
         TranslateModule.forChild(
             {
                 loader: {

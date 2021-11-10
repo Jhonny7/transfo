@@ -29,7 +29,7 @@ export class HeaderComponent implements OnDestroy, OnInit {
     private eventService: EventService,
     private genericService: GenericService
   ) {
-    console.log('Hello HeaderComponent Component');
+   //console.log('Hello HeaderComponent Component');
     this.text = 'Hello World';
   }
 
@@ -58,7 +58,7 @@ export class HeaderComponent implements OnDestroy, OnInit {
     await this.popoverRef.present();
 
     const { role } = await this.popoverRef.onDidDismiss();
-    console.log('onDidDismiss resolved with role', role);
+   //console.log('onDidDismiss resolved with role', role);
   }
 
   back() {

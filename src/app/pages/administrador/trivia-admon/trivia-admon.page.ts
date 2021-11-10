@@ -1,3 +1,4 @@
+import { catalogoSabias } from './../../../../environments/environment.prod';
 import { AlertService } from './../../../services/alert.service';
 import { environment, idEmpresa } from 'src/environments/environment.prod';
 import { LoaderService } from './../../../services/loading-service';
@@ -29,12 +30,27 @@ export class TriviaAdmonPage implements OnInit {
       title: "Trivias",
       icon: "question_answer",
       id: 3
+    }, {
+      title: "Cápsulas informativas",
+      icon: "play_circle_filled",
+      id: 4
+    }, {
+      title: "Directorio",
+      icon: "fmd_good",
+      id: 5
+    }, {
+      title: "Sabías qué...",
+      icon: "priority_high",
+      id: 6
     }
   ];
 
   public menuActivo = 1;
 
   public temas: any[] = [];
+  public capsulas: any[] = [];
+  public directorio: any[] = [];
+  public sabias: any[] = [];
   public preguntas: any[] = [];
   public trivias: any[] = [];
   public triviaObj: any = {
@@ -64,6 +80,9 @@ export class TriviaAdmonPage implements OnInit {
       case 1:
         this.cargarTemas();
         break;
+      case 4:
+        this.cargarCapsulas();
+        break;
       case 2:
         this.cargarPreguntas();
         break;
@@ -71,6 +90,12 @@ export class TriviaAdmonPage implements OnInit {
         this.cargarTrivias();
         this.cargarTemas();
         this.cargarComplejidad();
+        break;
+      case 5:
+        this.cargarDirectorio();
+        break;
+      case 6:
+        this.cargarSabias();
         break;
       default:
         break;
@@ -82,7 +107,7 @@ export class TriviaAdmonPage implements OnInit {
       this.loadingService.show("Cargando temas...");
     }
     let sql: string = `SELECT id, descripcion as label, id_archivo FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
-    console.log(sql);
+   //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
@@ -99,9 +124,61 @@ export class TriviaAdmonPage implements OnInit {
     });
   }
 
+  cargarCapsulas() {
+    this.loadingService.show("Cargando cápsulas...");
+
+    let sql: string = `SELECT c.id, c.descripcion, c.nombre, c.id_archivo, cat.nombre as tema, c.id_tema FROM capsula c 
+    INNER JOIN catalogo cat
+    ON (cat.id = c.id_tema)
+    WHERE c.id_empresa = ${idEmpresa} ORDER BY cat.nombre`;
+   //console.log(sql);
+
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
+      //Se registra correctamente nuevo usuario
+      this.loadingService.hide();
+      this.capsulas = resp.parameters;
+    }, (err: HttpErrorResponse) => {
+      this.loadingService.hide();
+    });
+  }
+
+  cargarDirectorio() {
+    this.loadingService.show("Cargando directorio...");
+
+    let sql: string = `SELECT * FROM directorio
+    WHERE id_empresa = ${idEmpresa} ORDER BY nombre_lugar`;
+   //console.log(sql);
+
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
+      //Se registra correctamente nuevo usuario
+      this.loadingService.hide();
+      this.directorio = resp.parameters;
+    }, (err: HttpErrorResponse) => {
+      this.loadingService.hide();
+    });
+  }
+
+  cargarSabias() {
+    this.loadingService.show("Cargando Sabías qué...");
+
+    let sql: string = `SELECT * FROM catalogo
+    WHERE id_empresa = ${idEmpresa} AND id_referencia = '${catalogoSabias}' ORDER BY nombre`;
+   //console.log(sql);
+
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
+      //Se registra correctamente nuevo usuario
+     //console.log(resp);
+      
+      this.loadingService.hide();
+      this.sabias = resp.parameters;
+    }, (err: HttpErrorResponse) => {
+      this.loadingService.hide();
+    });
+  }
+
   cargarComplejidad() {
     let sql: string = `SELECT id, descripcion as label, id_archivo FROM catalogo WHERE id_tipo_catalogo = 32 AND id_empresa = ${idEmpresa}`;
-    console.log(sql);
+   //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
@@ -126,7 +203,7 @@ export class TriviaAdmonPage implements OnInit {
     ON (t.id = pf.id_tema) 
     WHERE pf.id_empresa = ${idEmpresa}
     ORDER BY t.nombre ASC`;
-    console.log(sql);
+   //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
@@ -150,7 +227,7 @@ export class TriviaAdmonPage implements OnInit {
     ON (t2.id = pf.id_complejidad) 
     WHERE pf.id_empresa = ${idEmpresa}
     ORDER BY t.nombre ASC`;
-    console.log(sql);
+   //console.log(sql);
 
     this.trivias = [];
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
@@ -190,6 +267,17 @@ export class TriviaAdmonPage implements OnInit {
           id: null
         };
         break;
+      case 4:
+        data.status = false;
+        data.current = {
+          nombre: "",
+          descripcion: "",
+          b64: "",
+          id_archivo: null,
+          id_tema: null,
+          id: null
+        };
+        break;
       case 2:
         data.status = false;
         data.current = {
@@ -213,6 +301,30 @@ export class TriviaAdmonPage implements OnInit {
           respuesta: null
         };
         break;
+      case 5:
+        data.status = false;
+        data.current = {
+          estado_combo: "0",
+          domicilio: "",
+          id: null,
+          nombre_lugar: "",
+          nombre_contacto: "",
+          telefono: "",
+          email: "",
+          ubicacion_maps: "",
+          links: ""
+        };
+        break;
+      case 6:
+        data.status = false;
+        data.current = {
+          nombre: "",
+          descripcion: "",
+          id: null,
+          id_tema: null,
+          json: ""
+        };
+        break;
       default:
         break;
     }
@@ -224,11 +336,20 @@ export class TriviaAdmonPage implements OnInit {
         case 1:
           this.cargarTemas();
           break;
+        case 4:
+          this.cargarCapsulas();
+          break;
         case 2:
           this.cargarPreguntas();
           break;
         case 3:
           this.cargarTrivias();
+          break;
+        case 5:
+          this.cargarDirectorio();
+          break;
+        case 6:
+          this.cargarSabias();
           break;
         default:
           break;
@@ -250,6 +371,18 @@ export class TriviaAdmonPage implements OnInit {
           id: tema.id
         };
         break;
+      case 4:
+        let capsula = item;
+        data.status = true;
+        data.current = {
+          nombre: capsula.nombre,
+          descripcion: capsula.descripcion,
+          b64: "",
+          id_archivo: capsula.id_archivo,
+          id: capsula.id,
+          id_tema: capsula.id_tema
+        };
+        break;
       case 2:
         let preguntaFrecuente = item;
         data.status = true;
@@ -263,8 +396,8 @@ export class TriviaAdmonPage implements OnInit {
       case 3:
         let trivia = item;
         data.status = true;
-        console.log(trivia);
-        
+       //console.log(trivia);
+
         data.current = {
           pregunta: trivia.pregunta,
           complejidad: trivia.complejidad,
@@ -275,6 +408,36 @@ export class TriviaAdmonPage implements OnInit {
           id_complejidad: trivia.id_complejidad,
           respuestas: trivia.respuestas,
           respuesta: trivia.respuesta
+        }
+        break;
+      case 5:
+        let directorio = item;
+        data.status = true;
+
+        data.current = {
+          estado_combo: directorio.estado_combo,
+          domicilio: directorio.domicilio,
+          id: directorio.id,
+          nombre_lugar: directorio.nombre_lugar,
+          nombre_contacto: directorio.nombre_contacto,
+          telefono: directorio.telefono,
+          email: directorio.email,
+          ubicacion_maps: directorio.ubicacion_maps,
+          links: directorio.links
+        }
+        break;
+      case 6:
+        let sabias = item;
+        console.log(sabias);
+        
+        data.status = true;
+
+        data.current = {
+          nombre: sabias.nombre,
+          descripcion: sabias.descripcion,
+          id: sabias.id,
+          id_tema: sabias.id_tema,
+          json: sabias.json
         }
         break;
       default:
@@ -289,11 +452,20 @@ export class TriviaAdmonPage implements OnInit {
         case 1:
           this.cargarTemas();
           break;
+        case 4:
+          this.cargarCapsulas();
+          break;
         case 2:
           this.cargarPreguntas();
           break;
         case 3:
           this.cargarTrivias();
+          break;
+        case 5:
+          this.cargarDirectorio();
+          break;
+        case 6:
+          this.cargarSabias();
           break;
         default:
           break;
@@ -311,6 +483,12 @@ export class TriviaAdmonPage implements OnInit {
         data.sql = sqlDelete;
         data.msj = "Se eliminará el tema permanentemente"
         break;
+      case 4:
+        let capsula = item;
+        sqlDelete = `DELETE FROM capsula WHERE id = ${capsula.id}`;
+        data.sql = sqlDelete;
+        data.msj = "Se eliminará la cápsula informativa permanentemente"
+        break;
       case 2:
         let pregunta = item;
         sqlDelete = `DELETE FROM preguntas_frecuentes WHERE id = ${pregunta.id}`;
@@ -322,6 +500,18 @@ export class TriviaAdmonPage implements OnInit {
         sqlDelete = `DELETE FROM trivia WHERE id = ${trivia.id}`;
         data.sql = sqlDelete;
         data.msj = "Se eliminará la trivia permanentemente"
+        break;
+      case 5:
+        let directorio = item;
+        sqlDelete = `DELETE FROM directorio WHERE id = ${directorio.id}`;
+        data.sql = sqlDelete;
+        data.msj = "Se eliminará el directorio permanentemente"
+        break;
+      case 6:
+        let sabias = item;
+        sqlDelete = `DELETE FROM catalogo WHERE id = ${sabias.id}`;
+        data.sql = sqlDelete;
+        data.msj = "Se eliminará el registro permanentemente"
         break;
       default:
         break;
@@ -340,11 +530,20 @@ export class TriviaAdmonPage implements OnInit {
           case 1:
             this.cargarTemas();
             break;
+          case 4:
+            this.cargarCapsulas();
+            break;
           case 2:
             this.cargarPreguntas();
             break;
           case 3:
             this.cargarTrivias();
+            break;
+          case 5:
+            this.cargarDirectorio();
+            break;
+          case 6:
+            this.cargarSabias();
             break;
           default:
             break;

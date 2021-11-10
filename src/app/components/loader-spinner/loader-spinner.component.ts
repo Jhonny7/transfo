@@ -9,7 +9,7 @@ export class LoaderSpinnerComponent {
   text: string;
 
   constructor() {
-    console.log('Hello LoaderSpinnerComponent Component');
+   //console.log('Hello LoaderSpinnerComponent Component');
     this.text = 'Hello World';
   }
 

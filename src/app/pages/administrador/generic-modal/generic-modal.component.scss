@@ -149,7 +149,8 @@
 .archives {
     .cont-img {
         width: 200px;
-        //height: 200px;
+        height: 150px;
+        margin-right: 20px;
         display: inline-block;
         padding: 10px;
         border: 1px solid #e2e2e2;
@@ -232,6 +233,11 @@
         border-radius: 4px;
         margin-top: 15px;
     }
+
+    video {
+        width: 98%;
+        height: 120px;
+    }
 }
 
 .aniadir {
@@ -271,5 +277,273 @@
     padding: 0;
     span {
         font-size: 15px;
+    }
+}
+
+.double {
+    width: 48% !important;
+    margin: 1%;
+    display: inline-block;
+    border: 1px solid #eeeeee;
+}
+
+.reds {
+    padding: 12px;
+    .red {
+        border-bottom: 1px solid #cacaca;
+        p {
+            margin: 0;
+        }
+        button {
+            outline: none;
+            background-color: #e20909;
+            color: #fff;
+            padding: 6px;
+            border-radius: 4px;
+        }
+    }
+}
+
+.droap {
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #c8c8c8;
+    color: #4a4a4a;
+    border-style: dashed;
+    border-radius: 9px;
+    width: 100%;
+    margin: auto;
+    cursor: cell;
+    p {
+        margin: 0;
+    }
+}
+
+.inputfile {
+    /* visibility: hidden etc. wont work */
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.labels {
+    .boton-file {
+        margin: 0px;
+        padding: 10px;
+        background-color: #000;
+        color: #fff;
+        font-size: 16px;
+        border: none;
+        width: 100%;
+    }
+}
+.inputfile:focus + label {
+    /* keyboard navigation */
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+.inputfile + label * {
+    pointer-events: none;
+}
+
+.delete-img {
+    font-family: "Lato-Bold";
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #f44336;
+    color: #fff;
+    padding: 0px 8px 4px 7px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.subr {
+    position: absolute;
+    bottom: 33px;
+    cursor: pointer;
+    width: 60px;
+    padding: 5px;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #060606;
+    box-shadow: 0px 0px 6px 0px #fff;
+    left: 5px;
+    p {
+        margin: 0;
+    }
+}
+
+.more-images {
+    width: 99% !important;
+    margin: 0 !important;
+}
+
+.archives {
+    .cont-img {
+        width: 200px;
+        //height: 200px;
+        display: inline-block;
+        padding: 10px;
+        border: 1px solid #e2e2e2;
+        border-radius: 6px;
+        position: relative;
+        vertical-align: top;
+        img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+.scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+
+    .card {
+        display: inline-block;
+    }
+}
+
+.sbr {
+    text-align: center;
+    bottom: 8px;
+}
+
+.entradas {
+    width: 100%;
+    input {
+        width: 100%;
+        display: flex;
+        margin-bottom: 9px;
+    }
+
+    textarea {
+        width: 100%;
+        display: flex;
+    }
+}
+
+.producto {
+    table {
+        width: 750px;
+        border-collapse: collapse;
+        margin: 50px auto;
+    }
+
+    /* Zebra striping */
+    tr:nth-of-type(odd) {
+        background: #eee;
+    }
+
+    th {
+        background: #3498db;
+        color: white;
+        font-weight: bold;
+    }
+
+    td,
+    th {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: left;
+        font-size: 18px;
+
+        button {
+            width: 100%;
+            outline: none;
+
+            border: none;
+            cursor: pointer;
+            background-color: transparent;
+        }
+
+        .edit {
+            color: #3498db;
+        }
+
+        .delete {
+            color: #ec0000;
+        }
+    }
+
+    /* 
+    Max width before this PARTICULAR table gets nasty
+    This query will take effect for any screen smaller than 760px
+    and also iPads specifically.
+    */
+    @media only screen and (max-width: 760px), (min-device-width: 768px) and (max-device-width: 1024px) {
+        table {
+            width: 100%;
+        }
+
+        /* Force table to not be like tables anymore */
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+            display: block;
+        }
+
+        /* Hide table headers (but not display: none;, for accessibility) */
+        thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        tr {
+            border: 1px solid #ccc;
+        }
+
+        td {
+            /* Behave  like a "row" */
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 50%;
+        }
+
+        td:before {
+            /* Now like a table header */
+            position: absolute;
+            /* Top/left values mimic padding */
+            top: 6px;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            /* Label the data */
+            content: attr(data-column);
+
+            color: #000;
+            font-weight: bold;
+        }
+    }
+}
+
+.add {
+    border-radius: 50%;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 9px 10px 4px;
+    font-size: 20px;
+    background-color: #3498db;
+    color: #fff;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    i {
+        font-size: 30px;
     }
 }

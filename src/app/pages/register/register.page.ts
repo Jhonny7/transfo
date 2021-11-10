@@ -108,7 +108,7 @@ export class RegisterPage implements OnInit {
     this.genericService.sendGetParams(pathSettlementsCity, httpParams).subscribe((response: any) => {
       this.dataInvitado.municipio.value = "0";
       this.municipios = response.parameters;
-      console.log(this.dataInvitado);
+     //console.log(this.dataInvitado);
 
     }, (error: HttpErrorResponse) => {
 
@@ -174,7 +174,7 @@ export class RegisterPage implements OnInit {
         this.dataInvitado[key].error = false;
       }
     });
-    console.log(error);
+   //console.log(error);
     
     this.loadingService.show("Registrando...");
     if (error > 0) {

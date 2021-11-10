@@ -10,7 +10,7 @@ export class SpinnerOverlayComponent implements OnInit {
   constructor() {}
 
   public ngOnInit() {
-    console.log(this.message);
+   //console.log(this.message);
     
   }
 }

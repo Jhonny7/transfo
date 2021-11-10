@@ -10,7 +10,7 @@ export class ContainerAppComponent implements OnDestroy, OnInit{
  
   constructor(
   ) {
-    console.log("ejemplo");
+   //console.log("ejemplo");
     
   }
 
