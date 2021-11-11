@@ -1,3 +1,6 @@
+import { Subscription } from 'rxjs';
+import { EventService } from 'src/app/services/event.service';
+import { Router } from '@angular/router';
 import { ThemeService } from '../../../services/theme.service';
 import { idEmpresa } from '../../../../environments/environment.prod';
 import { SqlGenericService } from '../../../services/sqlGenericService';
@@ -21,6 +24,27 @@ import { Component, Input, OnInit } from '@angular/core';
 export class Tab1Page implements OnInit {
 
   @Input() data: any;
+
+  public secciones: any = [{
+    path: "/home/tab2",
+    icon: "assets/imgs/home/sabias.png",
+    isTab: true,
+    id: 0
+  }, {
+    path: "",
+    icon: "assets/imgs/home/trivia.png",
+  }, {
+    path: "/home/tab2",
+    icon: "assets/imgs/home/capsula.png",
+    isTab: true,
+    id: 2
+  }, {
+    path: "",
+    icon: "assets/imgs/home/directorio.png",
+  }, {
+    path: "",
+    icon: "assets/imgs/home/faqs.png",
+  },];
 
   public config: SwiperConfigInterface = {
     loop: true,
@@ -88,33 +112,37 @@ export class Tab1Page implements OnInit {
 
   public categorias: any[] = [];
 
-  public btns:any = [{
+  public btns: any = [{
     text: "home.contratar"
-  },{
+  }, {
     text: "home.buscar"
   }];
 
+  public suscription: Subscription;
   constructor(
     private sqlGenericService: SqlGenericService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private router: Router,
+    private eventService: EventService
   ) {
-   //console.log("------------------------tab 1---------------------");
-    
-   }
+    //console.log("------------------------tab 1---------------------");
+
+  }
 
   ngOnInit() {
-   //console.log(this.data);
+    //console.log(this.data);
     if (this.data.reload) {
       this.cargarCategorias();
     }
 
     
+
   }
 
   cargarCategorias() {
     let sql: string = `SELECT * FROM catalogo WHERE id_empresa = ${idEmpresa} and id_tipo_catalogo = 26 ORDER BY RAND()`;
-    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => { 
-     //console.log(response);
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
+      //console.log(response);
       this.categorias = response.parameters;
     }, (error: HttpErrorResponse) => {
 
@@ -122,10 +150,18 @@ export class Tab1Page implements OnInit {
   }
 
   onSwiper(swiper) {
-   //console.log(swiper);
+    //console.log(swiper);
   }
 
   onSlideChange() {
-   //console.log('slide change');
+    //console.log('slide change');
+  }
+
+  goPage(itm) {
+    if (itm.isTab) {
+      this.eventService.send("tabChange",itm.id);
+    } else {
+      this.router.navigateByUrl(itm.path);
+    }
   }
 }

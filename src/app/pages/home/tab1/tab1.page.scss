@@ -16,3 +16,16 @@
         outline: none;
     }
 }
+
+.central {
+    text-align: center;
+    .sec {
+        display: inline-block;
+        margin: 1%;
+        width: 48%;
+        vertical-align: middle;
+        img {
+            max-width: 140px;
+        }
+    }
+}
