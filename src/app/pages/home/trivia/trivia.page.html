@@ -1,0 +1,31 @@
+<app-header [title]="'Trivia'" [backActive]="true"></app-header>
+
+<ion-content>
+  <section *ngIf="data.step == 1" class="ready animated fadeInDown">
+    <div>
+      <p>Estas listo?</p>
+
+      <button (click)="empezar()">Empezar</button>
+    </div>
+  </section>
+
+  <section *ngIf="data.step == 2" class="ready animated fadeInUp">
+    <p class="tiempo">00:{{tiempo>9 ? tiempo : '0'+tiempo}}</p>
+    <div>
+      <section class="preguntosa">
+        <p>{{ triviaActual[data.preguntaActual].json.pregunta }}</p>
+
+        <p class="signo">{{ data.preguntaActual + 1 }}.-</p>
+      </section>
+
+      <section class="respuestas">
+        <div class="respuesta" *ngFor="let r of triviaActual[data.preguntaActual].json.respuestas" (click)="evalua(r)">
+          <p>
+            {{ r.respuesta }}
+          </p>
+        </div>
+
+      </section>
+    </div>
+  </section>
+</ion-content>

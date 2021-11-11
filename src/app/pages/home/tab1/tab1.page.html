@@ -1,4 +1,4 @@
-<app-header [title]="'Trivia'"></app-header>
+<app-header [title]="'Inicio'"></app-header>
 
 <ion-content>
   
@@ -6,7 +6,11 @@
 
     <container>
      
-      
+      <section class="central">
+        <div *ngFor="let seccion of secciones" class="sec" (click)="goPage(seccion)">
+          <img [src]="seccion.icon">
+        </div>
+      </section>
       
     </container>
 
