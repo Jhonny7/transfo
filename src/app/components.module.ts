@@ -1,3 +1,4 @@
+import { TriviaPage } from './pages/home/trivia/trivia.page';
 import { MaterialModule } from 'src/app/material.module';
 import { TabsPage } from './pages/home/tabs.page';
 import { Tab3Page } from './pages/home/tab3/tab3.page';
@@ -44,7 +45,8 @@ export function createTranslateLoader(http: HttpClient) {
         AdministratorComponent,
         AdDirective,
         TriviaAdmonPage,
-        GenericModalComponent
+        GenericModalComponent,
+        TriviaPage
     ],
     exports:[
         SpinnerOverlayComponent,
@@ -62,7 +64,8 @@ export function createTranslateLoader(http: HttpClient) {
         AdministratorComponent,
         AdDirective,
         TriviaAdmonPage,
-        GenericModalComponent
+        GenericModalComponent,
+        TriviaPage,
     ],
     imports: [
         CommonModule,

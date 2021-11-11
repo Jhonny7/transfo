@@ -31,7 +31,7 @@ export class Tab1Page implements OnInit {
     isTab: true,
     id: 0
   }, {
-    path: "",
+    path: "trivia",
     icon: "assets/imgs/home/trivia.png",
   }, {
     path: "/home/tab2",
@@ -135,7 +135,7 @@ export class Tab1Page implements OnInit {
       this.cargarCategorias();
     }
 
-    
+
 
   }
 
@@ -159,9 +159,9 @@ export class Tab1Page implements OnInit {
 
   goPage(itm) {
     if (itm.isTab) {
-      this.eventService.send("tabChange",itm.id);
+      this.eventService.send("tabChange", itm.id);
     } else {
-      this.router.navigateByUrl(itm.path);
+      this.router.navigate(["/", itm.path]);
     }
   }
 }

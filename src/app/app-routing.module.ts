@@ -1,3 +1,4 @@
+import { TriviaPage } from './pages/home/trivia/trivia.page';
 import { TabsPage } from './pages/home/tabs.page';
 import { Tab3Page } from './pages/home/tab3/tab3.page';
 import { Tab2Page } from './pages/home/tab2/tab2.page';
@@ -31,8 +32,11 @@ const routes: Routes = [
       {
         path: "tab3",
         component: Tab3Page
-      }
+      },
     ]
+  },{
+    path: "trivia",
+    component: TriviaPage
   },{
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)
@@ -55,7 +59,7 @@ const routes: Routes = [
         component: AdministratorComponent
       },
     ]
-  }
+  },
 ];
 @NgModule({
   imports: [
