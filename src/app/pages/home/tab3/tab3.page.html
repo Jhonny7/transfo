@@ -15,13 +15,19 @@
       <h3 [style.color]="genericService.getColorHex()">{{title}}</h3>
       <ion-list class="list_capsulas">
         <ion-item (click)="getCapsulas(item)" *ngFor="let item of capsulasInfo">
-          <ion-label [style.color]="genericService.getColorHex()" >{{item}}</ion-label>
+          <ion-label [style.color]="genericService.getColorHex()" >{{item.nombre}}</ion-label>
         </ion-item>
       </ion-list>
     </container>
 
     <container *ngIf="viewCapsulas">
       <h3 [style.color]="genericService.getColorHex()">{{titleCapsula}}</h3>
+      <div [innerHTML]="descripcion"></div>
+      <video autoplay controls>
+        <source [src]="url+video">
+        Your browser does not support the video tag.
+      </video>
+      <div></div>
     </container>
   </container-app>
 

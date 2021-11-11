@@ -25,3 +25,35 @@ h3{
                 opacity: 0.4;
             }
 }
+
+@media only screen and (min-width: 400px) {
+   video{
+       width: 100%;
+   }
+  }
+
+@media only screen and (min-width: 700px) {
+   video{
+    width: 95%;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+
+   }
+  }
+  @media only screen and (min-width:845px) {
+    video{
+        width: 80%;
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+   }
+   @media only screen and (min-width:1000px) {
+    video{
+        width: 67%;
+   margin-left: 16.5%;
+   margin-right: 16.5%;
+    }
+   }
+   
+
+ 

@@ -3,7 +3,7 @@ import { title } from 'process';
 import { GenericService } from 'src/app/services/generic.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SqlGenericService } from 'src/app/services/sqlGenericService';
-import { idEmpresa } from 'src/environments/environment.prod';
+import { environment, idEmpresa } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-tab3',
@@ -15,9 +15,12 @@ export class Tab3Page implements OnInit {
   viewMaterias: boolean = true;
   viewCapsulasList: boolean = false;
   listMaterias: Array<string>;
-  capsulasInfo = ['Mensaje importante a la comunidad universitaria', 'Tercer ola: vacunas anticovid protegen, no dan inmunidad', 'A conversation with Julio Frenk', 'Mensaje a la comunidad universitaria sobre nuevas medidas para la COVID-19']
+  capsulasInfo;
   title: any;
   titleCapsula: any;
+  descripcion:any;
+  video: any;
+  url = environment.getImagenIndividual;
   constructor(
     private loadingService: LoadingService,
     private sqlGenericService: SqlGenericService,
@@ -37,12 +40,21 @@ export class Tab3Page implements OnInit {
   }
   getCapsulasList(item){
     this.title = item.label;
+    this.loadingService.show('Espere...');
+    const sql = `SELECT * FROM capsula WHERE id_empresa = ${idEmpresa} AND id_tema = ${item.value}`;
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any)=> {
+      console.log(response.parameters);
+      this.capsulasInfo = response.parameters;
+      this.loadingService.hide();
+    });
     this.viewCapsulasList = true;
     this.viewMaterias = false;
     this.viewCapsulas = false;
   }
   getCapsulas(item){
-    this.titleCapsula = item;
+    this.titleCapsula = item.nombre;
+    this.video = item.id_archivo;
+    this.descripcion = item.descripcion;
     this.viewCapsulasList = false;
     this.viewMaterias = false;
     this.viewCapsulas = true;
