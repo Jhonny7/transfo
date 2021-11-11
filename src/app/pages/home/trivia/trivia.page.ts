@@ -18,7 +18,8 @@ export class TriviaPage implements OnInit {
   public data: any = {
     step: 1,
     preguntaActual: 0,
-    almacenRespuestas: []
+    almacenRespuestas: [],
+    aprobado: false
   };
 
   public tiempo: number = 5;
@@ -121,7 +122,15 @@ export class TriviaPage implements OnInit {
         this.intervalear();
       }else{
         console.log("Terminamos");
-        
+        let errores = 0;
+        this.data.almacenRespuestas.forEach(element => {
+          if(!element.isFine){
+            errores++;
+          }
+        });
+
+        this.data.aprobado = errores == 0;
+        this.data.steps = 3;
       }
     } else {
       console.log("termina trivia");
