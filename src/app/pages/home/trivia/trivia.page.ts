@@ -19,10 +19,11 @@ export class TriviaPage implements OnInit {
     step: 1,
     preguntaActual: 0,
     almacenRespuestas: [],
-    aprobado: false
+    aprobado: false,
+    nivelUser: ""
   };
 
-  public tiempo: number = 5;
+  public tiempo: number = 25;
   public intervalo: any;
 
   constructor(
@@ -32,6 +33,7 @@ export class TriviaPage implements OnInit {
     private localStorageEncryptService: LocalStorageEncryptService
   ) {
     this.user = this.localStorageEncryptService.getFromLocalStorage("userSessionEducacion");
+
   }
 
   ngOnInit() {
@@ -43,31 +45,117 @@ export class TriviaPage implements OnInit {
     }
   }
 
-  cargarTrivia() {
-    let sql: string = `SELECT 
-    t.* 
-    FROM trivia t 
-    LEFT JOIN usuario_pregunta up
-    ON (up.id_pregunta = t.id) 
-    WHERE 
-    up.id_pregunta IS NULL AND
-    t.id_complejidad = (SELECT id_referencia FROM catalogo WHERE id = ${this.user.id_nivel})
-    ORDER BY RAND()
-    LIMIT 5`;
-    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
-      response.parameters.forEach(element => {
-        let json: any = JSON.parse(element.json_trivia);
-        this.triviaActual.push({
-          ...element,
-          json
+  cargarTrivia(recarga: boolean = false) {
+    ////////////////////// CHECAR SI ESTA EN MAXIMO NIVEL PARA CAMBIAR CONSULTA ///////////////////////////
+    let sqlMaximo: string = `SELECT * FROM catalogo WHERE id_tipo_catalogo = 37 ORDER BY id_referencia DESC LIMIT 1`;
+
+    this.sqlGenericService.excecuteQueryString(sqlMaximo).subscribe((max: any) => {
+      if (recarga) {
+        this.loadingService.show("Espera");
+      }
+      let sql: string = `SELECT 
+        t.* 
+        FROM trivia t 
+        LEFT JOIN usuario_pregunta up
+        ON (up.id_pregunta = t.id) 
+        WHERE 
+        up.id_pregunta IS NULL AND
+        t.id_complejidad = (SELECT id_referencia FROM catalogo WHERE id = ${this.user.id_nivel})
+        ORDER BY RAND()
+        LIMIT 5`;
+
+      if (this.user.id_nivel == max.parameters[0].id) {
+        //SE BUSCAN TRIVIAS DE NIVELES ALEATORIOS
+        sql = `SELECT 
+        t.* 
+        FROM trivia t 
+        LEFT JOIN usuario_pregunta up
+        ON (up.id_pregunta = t.id) 
+        WHERE 
+        up.id_pregunta IS NULL
+        ORDER BY RAND()
+        LIMIT 5`;
+        /* this.data.step = 2;
+        this.alertService.successAlert("Waow!", "Has superado todos los niveles, espera próximamente más trivias", null, "trivia"); */
+      }
+
+      console.log(sql);
+
+      this.triviaActual = [];
+      this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
+        response.parameters.forEach(element => {
+          let json: any = JSON.parse(element.json_trivia);
+          this.triviaActual.push({
+            ...element,
+            json
+          });
         });
+        if (this.triviaActual.length <= 0) {
+          //NO HAY MAS PREGUNTAS AQUI AUMENTA DE NIVEL Y COMPLEJIDAD
+          this.loadingService.hide();
+
+          //////////////////REVISAR SI ESTA EN MÁXIMO NIVEL//////////////////
+          if (this.user.id_nivel == max.parameters[0].id) {
+            this.data.nivelUser = "Experto";
+            this.tiempo = 0;
+            this.data.step = 2;
+          } else {
+            this.alertService.confirmTrashAlert(() => {
+              ///ACTUALIZAR NIVEL DE USUARIO
+              this.loadingService.show("Espera...");
+              let sqlUser: string = `SELECT * FROM catalogo WHERE id_tipo_catalogo = 37 ORDER BY id_referencia ASC`;
+
+              this.sqlGenericService.excecuteQueryString(sqlUser).subscribe((nivel: any) => {
+                let position: any = nivel.parameters.findIndex((niv) => {
+                  return niv.id == this.user.id_nivel;
+                });
+                if (nivel.parameters[position + 1]) {
+                  this.loadingService.hide();
+                  let sql: string = `UPDATE usuario SET id_nivel = ${nivel.parameters[position + 1].id}`;
+                  this.sqlGenericService.excecuteQueryString(sql).subscribe((userUpd: any) => {
+                    this.user.id_nivel = nivel.parameters[position + 1].id;
+                    this.localStorageEncryptService.setToLocalStorage("userSessionEducacion", this.user);
+                  }, (error: HttpErrorResponse) => {
+                    this.alertService.errorAlert("Oops", `Ocurió un error, intenta nuevamente`);
+                  });
+                } else {
+                  this.loadingService.hide();
+                  //MAXIMO NIVEL SUPERADO
+                  this.data.step = 2;
+                  this.alertService.successAlert("Waow!", "Has superado todos los niveles, espera próximamente más trivias", null, "trivia")
+                }
+
+              }, (error: HttpErrorResponse) => {
+              });
+
+            },
+              "Waow! Felicidades!", this.user.id_nivel !== max.parameters[0].id ? "Has aumentado de nivel 💪" :
+              "Has superado todos los niveles", "Continuar", "trivia");
+          }
+        } else {
+          this.loadingService.hide();
+          this.checkLevel();
+        }
+
+        if (recarga) {
+          this.data.preguntaActual = 0;
+          this.data.almacenRespuestas = [];
+          this.data.aprobado = false;
+
+          this.empezar();
+          this.loadingService.hide();
+        }
+      }, (error: HttpErrorResponse) => {
+        if (recarga) {
+          this.loadingService.hide();
+        }
+        this.alertService.errorAlert("Oops", `Ocurió un error, intenta nuevamente`);
       });
-
-      console.log(this.triviaActual);
-
     }, (error: HttpErrorResponse) => {
-      this.alertService.errorAlert("Oops", `Ocurió un error, intenta nuevamente`);
+
     });
+
+
   }
 
   cargarNivel() {
@@ -88,6 +176,14 @@ export class TriviaPage implements OnInit {
     }, (error: HttpErrorResponse) => {
       this.loadingService.hide();
       this.alertService.errorAlert("Oops", `Ocurió un error, intenta nuevamente`);
+    });
+  }
+
+  checkLevel() {
+    let sqlUser: string = `SELECT * FROM catalogo WHERE id = ${this.user.id_nivel}`;
+    this.sqlGenericService.excecuteQueryString(sqlUser).subscribe((response: any) => {
+      this.data.nivelUser = response.parameters[0].nombre;
+    }, (error: HttpErrorResponse) => {
     });
   }
 
@@ -117,20 +213,45 @@ export class TriviaPage implements OnInit {
       });
       this.data.preguntaActual++;
       if (this.data.preguntaActual <= this.triviaActual.length - 1) {
-        this.tiempo = 5;
+        this.tiempo = 25;
         clearInterval(this.intervalo);
         this.intervalear();
-      }else{
+      } else {
         console.log("Terminamos");
+        clearInterval(this.intervalo);
         let errores = 0;
+        this.tiempo = 25;
         this.data.almacenRespuestas.forEach(element => {
-          if(!element.isFine){
+          if (!element.isFine) {
             errores++;
           }
         });
 
         this.data.aprobado = errores == 0;
-        this.data.steps = 3;
+        this.data.step = 3;
+        console.log(this.data);
+        ////////////////////// ACTUALIZAR E INSERTAR DATOS A LA BASE TRIVIA USUARIO////////////////////////
+        if (this.data.aprobado) {
+          let sqlInsert: string = "INSERT INTO usuario_pregunta (id_usuario, id_pregunta) VALUES ";
+          this.data.almacenRespuestas.forEach(element => {
+            sqlInsert += `(${this.user.id},${element.idTrivia}),`;
+          });
+          sqlInsert = sqlInsert.substring(0, sqlInsert.length - 1);
+          this.loadingService.show("Espera...");
+          this.sqlGenericService.excecuteQueryString(sqlInsert).subscribe((response: any) => {
+            this.loadingService.hide();
+            //this.user = response.parameters[0];
+            //this.cargarTrivia(true);
+          }, (error: HttpErrorResponse) => {
+            this.loadingService.hide();
+            this.alertService.errorAlert("Oops", `Ocurió un error, intenta nuevamente`);
+          });
+        } else {
+          this.data.almacenRespuestas.forEach(element => {
+            console.log(element);
+
+          });
+        }
       }
     } else {
       console.log("termina trivia");
@@ -138,4 +259,11 @@ export class TriviaPage implements OnInit {
     }
   }
 
+  intenta() {
+    this.cargarTrivia(true);
+  }
+
+  regresar() {
+    window.history.back();
+  }
 }

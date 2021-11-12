@@ -4,7 +4,7 @@ import swal, { SweetAlertOptions } from "sweetalert2";
 import { PlatformLocation } from '@angular/common';
 
 @Injectable({
-  providedIn:"root"
+  providedIn: "root"
 })
 export class AlertService {
 
@@ -97,7 +97,7 @@ export class AlertService {
     });
   }
 
-  successAlert(titulo: string, mensaje: string, accion: any = null) {
+  successAlert(titulo: string, mensaje: string, accion: any = null, cssClass: string = "alerta-vista") {
     let dataAlert: any = {
       type: null,
       title: null,
@@ -106,7 +106,7 @@ export class AlertService {
       showCancelButton: false,
       showCloseButton: true,
       allowOutsideClick: false,
-      customClass: "alerta-vista"
+      customClass: cssClass
     };
 
     dataAlert.html = `
@@ -133,7 +133,7 @@ export class AlertService {
     });
   }
 
-  confirmTrashAlert(accion: any = null, titulo: string = "", mensaje: string = "", buttonTitle:string = "") {
+  confirmTrashAlert(accion: any = null, titulo: string = "", mensaje: string = "", buttonTitle: string = "", cssClass: string = "alerta-vista") {
     let dataAlert: any = {
       type: null,
       title: null,
@@ -142,7 +142,7 @@ export class AlertService {
       showCancelButton: true,
       showCloseButton: true,
       allowOutsideClick: false,
-      customClass: "alerta-vista trash"
+      customClass: `${cssClass} trash`
     };
 
     dataAlert.html = `

@@ -105,9 +105,10 @@ body {
 
         .preguntosa {
             padding: 20px;
-            border: 4px solid #fff;
+
             border-radius: 8px;
             box-shadow: 1px 1px 15px #979797;
+            border: 4px solid #fff;
             position: relative;
             width: 318px;
             margin: auto;
@@ -120,11 +121,21 @@ body {
             .signo {
                 font-size: 91px;
                 position: absolute;
-                left: -16px;
+                left: -55px;
                 top: 28px;
                 color: #fff;
                 text-shadow: 1px 1px 30px #fff;
             }
+        }
+
+        .mala {
+            box-shadow: 1px 1px 15px #ec0000;
+            border: 4px solid #ec0000;
+        }
+
+        .biena {
+            box-shadow: 1px 1px 15px #0783bc;
+            border: 4px solid #0783bc;
         }
 
         .respuestas {
@@ -180,4 +191,36 @@ body {
     top: 60px;
     right: 20px;
     animation: pulse 1s infinite;
+}
+
+.mal {
+    color: red !important;
+    text-shadow: 1px 1px 40px #ec0000 !important;
+}
+
+.bien {
+    color: #0783bc !important;
+    text-shadow: 1px 1px 40px #0783bc !important;
+}
+
+.intenta {
+    background-color: red !important;
+    width: 100% !important;
+}
+
+.bienn {
+    background-color: #0783bc !important;
+    width: 100% !important;
+}
+
+.nivel {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    color: #fff;
+    p{
+        margin: 0;
+        font-size: 20px;
+        
+    }
 }
