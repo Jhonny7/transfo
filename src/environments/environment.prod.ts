@@ -6,6 +6,7 @@ export const emulado = false;
 
 export const idEmpresa = 126;
 export const catalogoSabias = 149;
+export const catalogoSocial = 33;
 
 export const environment = {
   production: true,

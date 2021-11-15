@@ -7,6 +7,7 @@ import { TriviaAdmonPage } from './pages/administrador/trivia-admon/trivia-admon
 import { AdministratorComponent } from './pages/administrador/administrator/administrator.component';
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { DirectorioComponent } from './pages/home/directorio/directorio.component';
 
 const routes: Routes = [
   {
@@ -37,7 +38,12 @@ const routes: Routes = [
   },{
     path: "trivia",
     component: TriviaPage
-  },{
+  },
+  {
+    path: "directorio",
+    component: DirectorioComponent
+  },
+  {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)
   },{

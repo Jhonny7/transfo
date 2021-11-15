@@ -56,7 +56,7 @@ export class HeaderComponent implements OnDestroy, OnInit {
       //translucent: true
     });
     await this.popoverRef.present();
-
+   
     const { role } = await this.popoverRef.onDidDismiss();
    //console.log('onDidDismiss resolved with role', role);
   }
