@@ -1,0 +1,15 @@
+<app-header [title]="'Sabías Qué...'" [backActive]="true"></app-header>
+
+<ion-content>
+  
+
+  <section *ngIf="!temaSelect" class="temas">
+
+    <tema [tema]="t" *ngFor="let t of temas" (click)="cargarSabias(t)"></tema>
+
+  </section>
+
+  <section *ngIf="temaSelect">
+    <gallery [galleryItems]="imgsBanner"></gallery>
+  </section>
+</ion-content>

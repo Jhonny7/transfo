@@ -1,3 +1,4 @@
+import { SabiasPage } from './pages/home/sabias/sabias.page';
 import { TriviaPage } from './pages/home/trivia/trivia.page';
 import { TabsPage } from './pages/home/tabs.page';
 import { Tab3Page } from './pages/home/tab3/tab3.page';
@@ -37,6 +38,9 @@ const routes: Routes = [
   },{
     path: "trivia",
     component: TriviaPage
+  },{
+    path: "sabias",
+    component: SabiasPage
   },{
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)

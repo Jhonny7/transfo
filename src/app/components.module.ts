@@ -1,3 +1,4 @@
+import { SabiasPage } from './pages/home/sabias/sabias.page';
 import { TriviaPage } from './pages/home/trivia/trivia.page';
 import { MaterialModule } from 'src/app/material.module';
 import { TabsPage } from './pages/home/tabs.page';
@@ -24,6 +25,8 @@ import { AdDirective } from './directives/ad.directive';
 import { TriviaAdmonPage } from './pages/administrador/trivia-admon/trivia-admon.page';
 import { GenericModalComponent } from './pages/administrador/generic-modal/generic-modal.component';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { GalleryComponent } from './components/gallery/gallery.component';
+import { TemaComponent } from './components/tema/tema';
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
@@ -46,7 +49,10 @@ export function createTranslateLoader(http: HttpClient) {
         AdDirective,
         TriviaAdmonPage,
         GenericModalComponent,
-        TriviaPage
+        TriviaPage,
+        SabiasPage,
+        TemaComponent,
+        GalleryComponent
     ],
     exports:[
         SpinnerOverlayComponent,
@@ -66,6 +72,9 @@ export function createTranslateLoader(http: HttpClient) {
         TriviaAdmonPage,
         GenericModalComponent,
         TriviaPage,
+        SabiasPage,
+        GalleryComponent,
+        TemaComponent
     ],
     imports: [
         CommonModule,
