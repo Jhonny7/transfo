@@ -12,7 +12,8 @@
     "news": "Noticias",
     "product": "Productos",
     "home": "Inicio",
-    "curriculum": "Perfil"
+    "curriculum": "Perfil",
+    "FAQs": "Preguntas Frecuentes"
   },
   "options": {
     "theme": "Tema",
@@ -23,5 +24,8 @@
     "search": "¿Qué necesitas hoy?",
     "contratar": "Contratar",
     "buscar": "Trabajar"
+  },
+  "FAQs":{
+    "return": "Regresar"
   }
 }

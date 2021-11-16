@@ -1,17 +1,36 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<app-header [title]="'Preguntas Frecuentes'"></app-header>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+<ion-content>
+  
+  <container-app>
+
+    <container *ngIf="viewFAQs">
+      <h3 [style.color]="genericService.getColorHex()">{{title}}</h3>
+      <section class="box_question" *ngFor="let item of faqs">
+        <div class="accordion">
+          <p class="title_accordion" >{{item.pregunta}}</p>
+          <ion-icon name="add"  (click)="accordion($event)"></ion-icon>
+        </div>
+        <div class="panel">
+          <p>{{item.respuesta}}</p>
+        </div>
+       </section>
+       <section class="box_btn">
+        <button (click)="return()" [style.background-color]="genericService.getColorHex()" class="boton-sham">
+       Regresar
+        </button>
+       </section>
+    </container>
+
+    <container *ngIf="!viewFAQs">
+      <ion-list>
+        <ion-item class="list_materias" *ngFor="let item of listMaterias">
+          <ion-label (click)="getFAQ(item)" [style.color]="genericService.getColorHex()" >{{item.label}}</ion-label>
+        </ion-item>
+      </ion-list>
+    </container>
+
+  </container-app>
+
 </ion-content>

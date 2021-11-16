@@ -40,6 +40,7 @@ export function createTranslateLoader(http: HttpClient) {
     IonicModule.forRoot(),
     AppRoutingModule,
     ProvidersModule,
+    CommonModule,
     ComponentsModule,
     HttpClientModule,
     TranslateModule.forRoot(

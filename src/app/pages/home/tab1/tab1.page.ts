@@ -26,24 +26,24 @@ export class Tab1Page implements OnInit {
   @Input() data: any;
 
   public secciones: any = [{
-    path: "/home/tab2",
+    path: "",
     icon: "assets/imgs/home/sabias.png",
-    isTab: true,
-    id: 0
   }, {
     path: "trivia",
     icon: "assets/imgs/home/trivia.png",
   }, {
-    path: "/home/tab2",
+    path: "/home/tab3",
     icon: "assets/imgs/home/capsula.png",
     isTab: true,
     id: 2
   }, {
-    path: "",
+    path: "directorio",
     icon: "assets/imgs/home/directorio.png",
   }, {
-    path: "",
+    path: "/home/tab2",
     icon: "assets/imgs/home/faqs.png",
+    isTab: true,
+    id: 0
   },];
 
   public config: SwiperConfigInterface = {
@@ -158,6 +158,8 @@ export class Tab1Page implements OnInit {
   }
 
   goPage(itm) {
+    console.log(itm);
+    
     if (itm.isTab) {
       this.eventService.send("tabChange", itm.id);
     } else {
