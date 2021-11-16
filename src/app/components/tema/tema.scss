@@ -38,6 +38,14 @@
   }
 }
 
+.render{
+  display: inline-block;
+}
+
+.tema-no-render{
+  display: none;
+}
+
 @media (max-width: 3000px) {
   //@media (max-width:450px){
   .tema {
@@ -64,6 +72,35 @@
   //@media (max-width:450px){
   .tema {
     width: 46%;
+  }
+}
+
+@media (max-width: 500px) {
+  //@media (max-width:450px){
+  .render {
+    display: none !important;
+  }
+
+  .tema-no-render{
+    display: block;
+    div{
+      border-bottom: 1px solid #e0e0e0;
+      padding: 10px;
+      cursor: pointer;
+      transition: 500ms;
+      p{
+        margin: 0;
+        font-size: 16px;
+        text-align: center;
+      }
+    }
+
+    div:hover{
+      transition: 500ms;
+      p{
+        font-weight: 900;
+      }
+    }
   }
 }
 

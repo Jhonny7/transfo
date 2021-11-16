@@ -26,9 +26,8 @@ export class Tab1Page implements OnInit {
   @Input() data: any;
 
   public secciones: any = [{
-    path: "/home/tab2",
+    path: "sabias",
     icon: "assets/imgs/home/sabias.png",
-    isTab: true,
     id: 0
   }, {
     path: "trivia",
