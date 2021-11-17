@@ -236,7 +236,7 @@ export class SqlGenericService {
         if (sqlplit[0].toUpperCase() == "insert".toUpperCase()) {
             whitReturn = 3;
         }else if (sqlplit[0].toUpperCase() == "update".toUpperCase()) {
-            whitReturn = 4;
+            whitReturn = 3;
         }
         
         let request:any = {

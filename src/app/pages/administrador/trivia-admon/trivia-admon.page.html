@@ -46,7 +46,7 @@
               <td data-label="Descripción">{{ tema.label }}</td>
 
               <td data-label="Imagen">
-                <img [src]="img + tema.id_archivo" alt="" *ngIf="tema.id_archivo">
+                <img [src]=" tema.url" alt="" *ngIf="tema.url">
               </td>
 
               <td data-label="Editar" style="cursor: pointer;" (click)="edit(tema)">
@@ -257,7 +257,6 @@
           <thead>
             <tr>
               <th scope="col">Nombre</th>
-              <th scope="col">Descripción</th>
               <th scope="col"></th>
               <th scope="col"></th>
 
@@ -268,7 +267,6 @@
 
             <tr *ngFor="let pregunta of sabias">
               <td data-label="Nombre">{{ pregunta.nombre }}</td>
-              <td data-label="Descripción">{{ pregunta.descripcion }}</td>
 
               <td data-label="Editar" style="cursor: pointer;" (click)="edit(pregunta)">
                 <span class="material-icons-outlined">

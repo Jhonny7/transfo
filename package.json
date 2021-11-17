@@ -32,6 +32,8 @@
     "@ckeditor/ckeditor5-angular": "1.0.1",
     "@ckeditor/ckeditor5-build-classic": "11.2.0",
     "@ckeditor/ckeditor5-build-decoupled-document": "^16.0.0",
+    "@ckeditor/ckeditor5-html-embed": "^31.0.0",
+    "@ckeditor/ckeditor5-media-embed": "^31.0.0",
     "@ionic-native/core": "^5.36.0",
     "@ionic-native/device": "^5.36.0",
     "@ionic-native/google-plus": "^5.36.0",

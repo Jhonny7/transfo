@@ -7,7 +7,7 @@ import { Observable } from "rxjs";
         providedIn: "root"
     }
 )
-export class AuthGuard implements CanActivate, CanActivateChild {
+export class RootGuard implements CanActivate, CanActivateChild {
 
     constructor(
         private router: Router,
@@ -26,11 +26,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
     check() {
         let userSessionEducacion: any = JSON.parse(localStorage.getItem("userSessionEducacion"));
-        let expiredSession: any = JSON.parse(localStorage.getItem("expiredSession"));
-        if (userSessionEducacion) {
+        if (userSessionEducacion && (userSessionEducacion.id_tipo_usuario == 169 || userSessionEducacion.id_tipo_usuario == "169")) {
             return true;
-        } else if (expiredSession) {
-            return new Date(expiredSession) > new Date();//Solo aplica a invitados
         } else {
             return this.router.navigate(["/"]);
         }

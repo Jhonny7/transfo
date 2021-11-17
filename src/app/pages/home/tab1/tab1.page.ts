@@ -32,6 +32,7 @@ export class Tab1Page implements OnInit {
   }, {
     path: "trivia",
     icon: "assets/imgs/home/trivia.png",
+    id: 1
   }, {
     path: "/home/tab2",
     icon: "assets/imgs/home/capsula.png",
@@ -40,10 +41,12 @@ export class Tab1Page implements OnInit {
   }, {
     path: "",
     icon: "assets/imgs/home/directorio.png",
+    id: 3
   }, {
     path: "",
     icon: "assets/imgs/home/faqs.png",
-  },];
+    id: 4
+  },];  
 
   public config: SwiperConfigInterface = {
     loop: true,
@@ -160,6 +163,8 @@ export class Tab1Page implements OnInit {
     if (itm.isTab) {
       this.eventService.send("tabChange", itm.id);
     } else {
+      console.log("no tab");
+      
       this.router.navigate(["/", itm.path]);
     }
   }

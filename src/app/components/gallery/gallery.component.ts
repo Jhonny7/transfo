@@ -55,17 +55,22 @@ export class GalleryComponent implements OnInit {
 
       setTimeout(() => {
 
-        let id: any = document.getElementById("in");
+        /* let id: any = document.getElementById("in");
         let id2: any = document.getElementById("swp");
-        id2.style.height = `${id.offsetHeight}px`;
+        console.log(id2);
+        
+        id2.style.height = `${id.offsetHeight}px`; */
+        this.onResize({});
       }, 500);
 
-    }, 500);
+    }, 1000);
   }
 
   onResize(evt: any) {
     let id: any = document.getElementById("in");
     let id2: any = document.getElementById("swp");
+    id.style.height = "auto";
+    
     id2.style.height = `${id.offsetHeight}px`;
   }
 }

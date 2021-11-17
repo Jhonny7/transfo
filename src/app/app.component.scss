@@ -38,6 +38,8 @@ ion-menu {
 
     .item-list {
         height: 100%;
+        background-color: #fff;
+
         .itm {
             border-bottom: 1px solid #e2e2e2;
             padding: 7px 14px;
@@ -65,17 +67,16 @@ ion-menu {
             }
         }
 
-        .active-menu{
+        .active-menu {
             transition: 300ms;
-            .father{
-                .father-li{
-
-                    img{
+            .father {
+                .father-li {
+                    img {
                         transition: 300ms;
                         width: 11%;
                     }
 
-                    p{
+                    p {
                         transition: 300ms;
                         font-weight: 600;
                         font-size: 18px;

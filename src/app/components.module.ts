@@ -1,3 +1,5 @@
+import { LoginComponent } from './pages/login/login.component';
+import { RegisterPage } from './pages/register/register.page';
 import { SabiasPage } from './pages/home/sabias/sabias.page';
 import { TriviaPage } from './pages/home/trivia/trivia.page';
 import { MaterialModule } from 'src/app/material.module';
@@ -52,7 +54,9 @@ export function createTranslateLoader(http: HttpClient) {
         TriviaPage,
         SabiasPage,
         TemaComponent,
-        GalleryComponent
+        GalleryComponent,
+        RegisterPage,
+        LoginComponent
     ],
     exports:[
         SpinnerOverlayComponent,
@@ -74,7 +78,9 @@ export function createTranslateLoader(http: HttpClient) {
         TriviaPage,
         SabiasPage,
         GalleryComponent,
-        TemaComponent
+        TemaComponent,
+        RegisterPage,
+        LoginComponent
     ],
     imports: [
         CommonModule,
