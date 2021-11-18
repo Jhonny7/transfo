@@ -1,3 +1,4 @@
+import { RecuperarPage } from './pages/home/recuperar/recuperar.page';
 import { RegisterPage } from './pages/register/register.page';
 import { LoginComponent } from './pages/login/login.component';
 import { SabiasPage } from './pages/home/sabias/sabias.page';
@@ -12,6 +13,7 @@ import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { RootGuard } from './guards/root.guard';
+import { ThemeGuard } from './guards/theme.guard';
 
 const routes: Routes = [
   {
@@ -43,14 +45,17 @@ const routes: Routes = [
   }, {
     path: "trivia",
     component: TriviaPage,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, ThemeGuard],
   }, {
     path: "sabias",
     component: SabiasPage,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, ThemeGuard],
   }, {
     path: 'login',
     component: LoginComponent
+  },{
+    path: 'recuperar',
+    component: RecuperarPage
   }, {
     path: 'register',
     children: [{
@@ -71,6 +76,10 @@ const routes: Routes = [
         component: AdministratorComponent
       },
     ]
+  },
+  {
+    path: 'recuperar',
+    loadChildren: () => import('./pages/home/recuperar/recuperar.module').then( m => m.RecuperarPageModule)
   },
 ];
 @NgModule({

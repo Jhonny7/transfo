@@ -35,7 +35,6 @@ export class HeaderComponent implements OnDestroy, OnInit {
 
   public ngOnInit(): void {
     this.suscriptionPopover = this.eventService.get("closePopover").subscribe((data) => {
-      
       this.popoverRef.dismiss();
     });
   }
@@ -47,8 +46,6 @@ export class HeaderComponent implements OnDestroy, OnInit {
   }
 
   async verOpciones(ev: any) {
-
-
     this.popoverRef = await this.popoverController.create({
       component: OpcionesComponent,
       cssClass: 'popover-class',

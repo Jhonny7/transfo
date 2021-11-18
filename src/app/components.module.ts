@@ -1,3 +1,4 @@
+import { RecuperarPage } from './pages/home/recuperar/recuperar.page';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterPage } from './pages/register/register.page';
 import { SabiasPage } from './pages/home/sabias/sabias.page';
@@ -56,7 +57,8 @@ export function createTranslateLoader(http: HttpClient) {
         TemaComponent,
         GalleryComponent,
         RegisterPage,
-        LoginComponent
+        LoginComponent,
+        RecuperarPage
     ],
     exports:[
         SpinnerOverlayComponent,
@@ -80,7 +82,8 @@ export function createTranslateLoader(http: HttpClient) {
         GalleryComponent,
         TemaComponent,
         RegisterPage,
-        LoginComponent
+        LoginComponent,
+        RecuperarPage
     ],
     imports: [
         CommonModule,

@@ -5,7 +5,23 @@
   <container-app>
 
     <container>
-     
+      <section class="secr">
+        <mat-select [(value)]="temaGlobal">
+
+          <mat-option *ngFor="let category of temas" [value]="category.id">
+      
+            <div class="enimg">
+              <img with="20" height="20" [src]="imgUrl + category.id_archivo " *ngIf="category.id_archivo">
+              <img with="20" height="20" src="assets/imgs/noAvail.jpeg" *ngIf="!category.id_archivo">
+            </div>
+      
+            {{category.label}}
+      
+          </mat-option>
+      
+        </mat-select>
+      </section>
+      
       <section class="central">
         <div *ngFor="let seccion of secciones" class="sec" (click)="goPage(seccion)">
           <img [src]="seccion.icon">

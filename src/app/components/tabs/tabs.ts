@@ -1,3 +1,5 @@
+import { AlertService } from 'src/app/services/alert.service';
+import { LocalStorageEncryptService } from './../../services/local-storage-encrypt.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AdDirective } from './../../directives/ad.directive';
 import { Tab1Page } from '../../pages/home/tab1/tab1.page';
@@ -38,13 +40,16 @@ export class TabsComponent implements OnInit{
 
   constructor(
     public genericService: GenericService,
-    
+    private localStorageEncryptService: LocalStorageEncryptService,
+    private alertService: AlertService
   ) {
    //console.log("tab 1");
     
   }
 
   ngOnInit(){
+    console.log(this.tabs);
+    
     if(this.tabs){
 
       this.percent = this.percent / this.tabs.length;
@@ -59,6 +64,11 @@ export class TabsComponent implements OnInit{
   }
 
   renderComponent(tab:Tabs){
-    return this.tabSelect.emit(tab);
+    let tt:any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
+    if(tab.url == "home/tab1" || tt){
+      return this.tabSelect.emit(tab);
+    }else{
+      this.alertService.warnAlert("Espera!", "Antes de continuar debes seleccionar un tema");
+    }
   }
 }

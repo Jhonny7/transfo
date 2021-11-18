@@ -1,3 +1,6 @@
+import { LocalStorageEncryptService } from './../../../services/local-storage-encrypt.service';
+import { AlertService } from 'src/app/services/alert.service';
+import { environment } from 'src/environments/environment.prod';
 import { Subscription } from 'rxjs';
 import { EventService } from 'src/app/services/event.service';
 import { Router } from '@angular/router';
@@ -112,6 +115,8 @@ export class Tab1Page implements OnInit {
     { text: "hola3" }
   ];
 
+  public temas: any []= [];
+
   public categorias: any[] = [];
 
   public btns: any = [{
@@ -121,11 +126,18 @@ export class Tab1Page implements OnInit {
   }];
 
   public suscription: Subscription;
+
+  public imgUrl:any = environment.getImagenIndividual;
+
+  public temaGlobal:any = 0;
+
   constructor(
     private sqlGenericService: SqlGenericService,
     private themeService: ThemeService,
     private router: Router,
-    private eventService: EventService
+    private eventService: EventService,
+    private alertService: AlertService,
+    private localStorageEncryptService: LocalStorageEncryptService
   ) {
     //console.log("------------------------tab 1---------------------");
 
@@ -136,7 +148,7 @@ export class Tab1Page implements OnInit {
     if (this.data.reload) {
       this.cargarCategorias();
     }
-
+    this.cargarTemas();
 
 
   }
@@ -160,12 +172,36 @@ export class Tab1Page implements OnInit {
   }
 
   goPage(itm) {
-    if (itm.isTab) {
-      this.eventService.send("tabChange", itm.id);
-    } else {
-      console.log("no tab");
-      
-      this.router.navigate(["/", itm.path]);
+    let temaID: any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
+    if(this.temaGlobal){
+      this.localStorageEncryptService.setToLocalStorage("temaGlobal", this.temaGlobal);
+      if (itm.isTab) {
+        this.eventService.send("tabChange", itm.id);
+      } else {
+        console.log("no tab");
+        console.log(itm);
+        
+        this.router.navigate(["/", itm.path]);
+        //this.router.navigateByUrl(itm.path);
+        //window.open(`/${itm.path}`, "_self");
+      }
+    }else{
+      this.alertService.warnAlert("Espera!", "Antes de continuar debes seleccionar un tema");
     }
+  }
+
+  cargarTemas() {
+    let sql: string = `SELECT id, descripcion as label, id_archivo FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
+
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
+      //Se registra correctamente nuevo usuario
+      this.temas = resp.parameters;
+      this.temas.unshift({
+        id:0,
+        label: "[--Elige un tema--]",
+        ur: "assets/imgs/noAvail.jpeg"
+      });
+    }, (err: HttpErrorResponse) => {
+    });
   }
 }

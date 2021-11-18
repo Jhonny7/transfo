@@ -46,7 +46,7 @@ export class AppComponent implements OnInit{
     private sqlGenericService: SqlGenericService,
     private fcmService: FcmService
   ) {
-    
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   ngOnInit(){
