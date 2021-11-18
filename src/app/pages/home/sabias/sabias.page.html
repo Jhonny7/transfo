@@ -1,15 +1,26 @@
 <app-header [title]="'Sabías Qué...'" [backActive]="true"></app-header>
 
 <ion-content>
-  
 
-  <section *ngIf="!temaSelect" class="temas">
+  <section *ngIf="step == 1" class="temas">
 
     <tema [tema]="t" *ngFor="let t of temas" (click)="cargarSabias(t)"></tema>
 
   </section>
 
-  <section *ngIf="temaSelect">
-    <gallery [galleryItems]="imgsBanner"></gallery>
+  <section *ngIf="step == 2" class="sbs">
+      <p>{{ temaSelect.label }}</p>
+
+      <div *ngFor="let s of sabias" (click)="cargarSabiaUnico(s)">
+        {{ s.nombre }}
+      </div>
   </section>
+
+  <section *ngIf="step == 3" class="galria">
+    <gallery [galleryItems]="imgsBanner"></gallery>
+    <p class="t-sbs">{{ sabiasSelect.nombre }}</p>
+
+    <div [innerHTML]="sabiasSelect.d2"></div>
+  </section>
+
 </ion-content>

@@ -55,9 +55,9 @@ export class LoginComponent implements OnInit {
   async getCurrentState() {
     const result = await Plugins.FacebookLogin.getCurrentAccessToken();
     try {
-     //console.log("Facebook current");
+      //console.log("Facebook current");
 
-     //console.log(result);
+      //console.log(result);
       if (result && result.accessToken) {
         let user = { token: result.accessToken.token, userId: result.accessToken.userId }
         let navigationExtras: NavigationExtras = {
@@ -69,12 +69,12 @@ export class LoginComponent implements OnInit {
         //this.router.navigate(["/home"], navigationExtras);
       }
     } catch (e) {
-     //console.log(e)
+      //console.log(e)
     }
   }
 
   async signIn(): Promise<void> {
-   //console.log("LOGGIN FACEBOOK_");
+    //console.log("LOGGIN FACEBOOK_");
 
     const FACEBOOK_PERMISSIONS = ['public_profile', 'email'];
 
@@ -92,8 +92,8 @@ export class LoginComponent implements OnInit {
       imagen: https://graph.facebook.com/${id}/picture?type=large&redirect=true&width=500&height=500
       fields: https://graph.facebook.com/${id}?fields=id,name,email&access_token=${token}
       */
-     //console.log("USER FACEBOOK_");
-     //console.log(JSON.stringify(user));
+      //console.log("USER FACEBOOK_");
+      //console.log(JSON.stringify(user));
 
       //this.router.navigate(["/home"], navigationExtras);
     }
@@ -141,13 +141,17 @@ export class LoginComponent implements OnInit {
   login() {
     this.loadingService.show("Espere...");
     let sql: string = `SELECT * FROM usuario WHERE password = SHA2(MD5(UNHEX(SHA2('${this.data.pass.value}',512))),224) AND username = '${this.data.email.value}'`;
-      this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
-        this.loadingService.hide();
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
+      this.loadingService.hide();
+      if (response.parameters.length > 0) {
         localStorage.setItem("userSessionEducacion", JSON.stringify(response.parameters[0]));
-        this.router.navigate(["/","home"]);
-      },(error: HttpErrorResponse)=>{
-        this.loadingService.hide();
+        this.router.navigate(["/", "home"]);
+      }else{
         this.alertService.errorAlert("Oops", `Verifica usuario y/o contraseña`);
-      });
+      }
+    }, (error: HttpErrorResponse) => {
+      this.loadingService.hide();
+      this.alertService.errorAlert("Oops", `Verifica usuario y/o contraseña`);
+    });
   }
 }

@@ -17,6 +17,7 @@ export const environment = {
   getImagenIndividual: `${path}image/`,
   getPDF: `${path}pdf/`,
   loadBlobOnly:`${path}load-blob-only`,
+  loadFile:`${path}load-file`,
 };
 
 export const firebaseConfig = {

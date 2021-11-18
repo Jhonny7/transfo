@@ -90,7 +90,7 @@ export class RegisterPage implements OnInit {
     id as value, 
     nombre as label 
     FROM catalogo 
-    WHERE id_tipo_catalogo = 29 AND id_empresa = ${idEmpresa}`;
+    WHERE id_tipo_catalogo = 29 AND id_empresa = ${idEmpresa} AND id != 169`;
     this.loadingService.show("Espere...");
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       this.roles = response.parameters;

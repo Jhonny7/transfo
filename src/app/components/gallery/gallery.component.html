@@ -6,11 +6,7 @@
     <div class="swiper-slide" *ngFor="let g of galleryItems">
       <section class="contenedor-img">
         <img [src]="env.getImagenIndividual + g.image" alt="" id="in">
-        <div class="textos">
-          <p class="titulo">{{ g.name }}</p>
-          <p class="descripcion">{{ g.description }}</p>
-          <button [style.background-color]="colorHeader">{{ g.buttonText }}</button>
-        </div>
+        
       </section>
     </div>
   </div>

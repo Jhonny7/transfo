@@ -106,7 +106,7 @@ export class TriviaAdmonPage implements OnInit {
     if (this.menuActivo != 3) {
       this.loadingService.show("Cargando temas...");
     }
-    let sql: string = `SELECT id, descripcion as label, id_archivo FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
+    let sql: string = `SELECT id, descripcion as label, id_archivo, url FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
    //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
@@ -127,7 +127,7 @@ export class TriviaAdmonPage implements OnInit {
   cargarCapsulas() {
     this.loadingService.show("Cargando cápsulas...");
 
-    let sql: string = `SELECT c.id, c.descripcion, c.nombre, c.id_archivo, cat.nombre as tema, c.id_tema FROM capsula c 
+    let sql: string = `SELECT c.id, c.descripcion, c.nombre, c.id_archivo, c.url, cat.nombre as tema, c.id_tema FROM capsula c 
     INNER JOIN catalogo cat
     ON (cat.id = c.id_tema)
     WHERE c.id_empresa = ${idEmpresa} ORDER BY cat.nombre`;
@@ -177,7 +177,7 @@ export class TriviaAdmonPage implements OnInit {
   }
 
   cargarComplejidad() {
-    let sql: string = `SELECT id, descripcion as label, id_archivo FROM catalogo WHERE id_tipo_catalogo = 32 AND id_empresa = ${idEmpresa}`;
+    let sql: string = `SELECT id, descripcion as label, id_archivo, url FROM catalogo WHERE id_tipo_catalogo = 32 AND id_empresa = ${idEmpresa}`;
    //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
@@ -263,7 +263,7 @@ export class TriviaAdmonPage implements OnInit {
         data.current = {
           label: "",
           b64: "",
-          id_archivo: null,
+          url: null,
           id: null
         };
         break;
@@ -273,7 +273,7 @@ export class TriviaAdmonPage implements OnInit {
           nombre: "",
           descripcion: "",
           b64: "",
-          id_archivo: null,
+          url: null,
           id_tema: null,
           id: null
         };
@@ -367,7 +367,7 @@ export class TriviaAdmonPage implements OnInit {
         data.current = {
           label: tema.label,
           b64: "",
-          id_archivo: tema.id_archivo,
+          url: tema.url,
           id: tema.id
         };
         break;
@@ -378,7 +378,7 @@ export class TriviaAdmonPage implements OnInit {
           nombre: capsula.nombre,
           descripcion: capsula.descripcion,
           b64: "",
-          id_archivo: capsula.id_archivo,
+          url: capsula.url,
           id: capsula.id,
           id_tema: capsula.id_tema
         };

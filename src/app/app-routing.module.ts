@@ -1,3 +1,5 @@
+import { RegisterPage } from './pages/register/register.page';
+import { LoginComponent } from './pages/login/login.component';
 import { SabiasPage } from './pages/home/sabias/sabias.page';
 import { TriviaPage } from './pages/home/trivia/trivia.page';
 import { TabsPage } from './pages/home/tabs.page';
@@ -9,20 +11,23 @@ import { AdministratorComponent } from './pages/administrador/administrator/admi
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { DirectorioComponent } from './pages/home/directorio/directorio.component';
+import { AuthGuard } from './guards/auth.guard';
+import { RootGuard } from './guards/root.guard';
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: "login",
     pathMatch: "full"
-  },{
+  }, {
     path: 'home',
     redirectTo: "home/tab1",
     pathMatch: "full"
-  },{
+  }, {
     path: 'home',
     component: TabsPage,
-    children:[
+    canActivateChild: [AuthGuard],
+    children: [
       {
         path: "tab1",
         component: Tab1Page
@@ -36,10 +41,11 @@ const routes: Routes = [
         component: Tab3Page
       },
     ]
-  },{
+  }, {
     path: "trivia",
-    component: TriviaPage
-  },{
+    component: TriviaPage,
+    canActivate: [AuthGuard],
+  }, {
     path: "sabias",
     component: SabiasPage
   },
@@ -48,23 +54,27 @@ const routes: Routes = [
     component: DirectorioComponent
   },
   {
+    component: SabiasPage,
+    canActivate: [AuthGuard],
+  }, {
     path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)
-  },{
+    component: LoginComponent
+  }, {
     path: 'register',
-    children:[{
-      path:":invitado",
-      loadChildren: () => import('./pages/register/register.module').then(m => m.RegisterPageModule),
+    children: [{
+      path: ":invitado",
+      component: RegisterPage,
     }]
   },
   {
     path: "root",
-    children:[
+    canActivateChild: [RootGuard],
+    children: [
       {
         path: 'administrador',
         component: TriviaAdmonPage
         //loadChildren: () => import('./pages/administrador/trivia-admon/trivia-admon.module').then( m => m.TriviaAdmonPageModule)
-      },{
+      }, {
         path: 'admon',
         component: AdministratorComponent
       },
@@ -77,4 +87,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

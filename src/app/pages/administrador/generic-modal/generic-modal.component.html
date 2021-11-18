@@ -16,11 +16,11 @@
                 <label for="nomre">Imagen</label>
                 <label for="filere" class="ctn-img">
                     <img src="assets/imgs/noAvail.jpeg" alt=""
-                        *ngIf="!data.current.id_archivo && data.current.b64.length == 0">
-                    <img [src]="img + data.current.id_archivo" alt=""
-                        *ngIf="data.current.id_archivo && data.current.b64.length == 0">
+                        *ngIf="!data.current.url && data.current.b64.length == 0">
+                    <img [src]="img + data.current.url" alt=""
+                        *ngIf="data.current.url && data.current.b64.length == 0">
                     <img [src]="data.current.b64" alt=""
-                        *ngIf="!data.current.id_archivo && data.current.b64.length > 0">
+                        *ngIf="!data.current.url && data.current.b64.length > 0">
                 </label>
                 <input type="file" id="filere" style="visibility: hidden;padding: 0;height: 0px;"
                     (change)="changeImg($event)">
@@ -43,7 +43,7 @@
 
             <div class="input-container" style="width: 100%;">
                 <label for="nomre">Descripción *</label>
-                <ckeditor [(ngModel)]="data.current.descripcion" [editor]="Editor" (ready)="onReady($event)"></ckeditor>
+                <ckeditor [(ngModel)]="data.current.descripcion" [config]="editorConfig" [editor]="Editor" (ready)="onReady($event)"></ckeditor>
 
             </div>
 
@@ -51,21 +51,21 @@
                 <label for="nomre">Video</label>
                 <label for="filsss" class="ctn-img">
                     <img src="assets/imgs/noAvail.jpeg" alt=""
-                        *ngIf="!data.current.id_archivo && data.current.b64.length == 0">
+                        *ngIf="!data.current.url && data.current.b64.length == 0">
 
-                    <video controls *ngIf="data.current.id_archivo && data.current.b64.length == 0">
-                        <source [src]="img + data.current.id_archivo">
+                    <video controls *ngIf="data.current.url && data.current.b64.length == 0">
+                        <source [src]="img + data.current.url">
                         Your browser does not support HTML video.
                     </video>
 
-                    <video controls *ngIf="!data.current.id_archivo && data.current.b64.length > 0">
+                    <video controls *ngIf="!data.current.url && data.current.b64.length > 0">
                         <source [src]="data.current.b64">
                         Your browser does not support HTML video.
                     </video>
 
                 </label>
-                <label for="filsss" *ngIf="(data.current.id_archivo && data.current.b64.length == 0) || 
-                (!data.current.id_archivo && data.current.b64.length > 0)" style="cursor: pointer;
+                <label for="filsss" *ngIf="(data.current.url && data.current.b64.length == 0) || 
+                (!data.current.url && data.current.b64.length > 0)" style="cursor: pointer;
                 background-color: #3498db;
                 color: #fff;
                 border-radius: 4px;margin-left: 6px;padding: 7px;margin-top: 0;">Cargar video</label>
@@ -224,7 +224,8 @@
 
             <div class="input-container" style="width: 100%;">
                 <label for="nomre">Descripción *</label>
-                <input type="text" id="nombre" [(ngModel)]="data.current.descripcion" placeholder="Descripción..">
+                <ckeditor [(ngModel)]="data.current.descripcion" [config]="editorConfig" [editor]="Editor" (ready)="onReady($event)"></ckeditor>
+                
             </div>
 
             <div class="input-container" style="width: 100%;position: relative;">

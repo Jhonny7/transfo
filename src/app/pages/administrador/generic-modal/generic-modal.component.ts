@@ -7,6 +7,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { HttpErrorResponse, HttpEventType, HttpParams } from '@angular/common/http';
 import { idEmpresa, environment, pathSettlementsCity } from 'src/environments/environment.prod';
 import * as DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import * as classic from '@ckeditor/ckeditor5-build-classic';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+
 import { AlertService } from 'src/app/services/alert.service';
 import { GenericService } from 'src/app/services/generic.service';
 import { LoaderService } from 'src/app/services/loading-service';
@@ -39,9 +42,17 @@ export class GenericModalComponent implements OnInit {
   public elements: any[] = [];
 
   public Editor = DecoupledEditor;
+
+  editorConfig = {
+    mediaEmbed: {
+      previewsInData: true
+    }
+  }
+
   public model = {
     editorData: `<p>Ingresa descripción de la cápsula</p>`,
-    Editor: DecoupledEditor
+    Editor: DecoupledEditor,
+
   };
 
   public s: any = {};
@@ -54,6 +65,7 @@ export class GenericModalComponent implements OnInit {
     private sqlGenericService: SqlGenericService,
     private loadingService: LoaderService,
     private genericService: GenericService) {
+
   }
 
   ngOnInit(): void {
@@ -66,7 +78,7 @@ export class GenericModalComponent implements OnInit {
     */
     switch (this.data.id) {
       case 1:
-        this.data.idArchivo = this.data.current.id_archivo;
+        //this.data.idArchivo = this.data.current.url;
         break;
       case 2:
         this.cargarTemas();
@@ -76,7 +88,7 @@ export class GenericModalComponent implements OnInit {
         this.cargarComplejidades();
         break;
       case 4:
-        this.data.idArchivo = this.data.current.id_archivo;
+        //this.data.idArchivo = this.data.current.id_archivo;
         this.cargarTemas();
         break;
       case 5:
@@ -214,7 +226,7 @@ export class GenericModalComponent implements OnInit {
             switch (this.data.id) {
               case 1:
                 this.data.current.b64 = png;
-                this.data.current.id_archivo = null;
+                this.data.current.url = null;
                 break;
 
               default:
@@ -227,7 +239,7 @@ export class GenericModalComponent implements OnInit {
           switch (this.data.id) {
             case 1:
               this.data.current.b64 = reader.result;
-              this.data.current.id_archivo = null;
+              this.data.current.url = null;
               break;
 
             default:
@@ -294,7 +306,7 @@ export class GenericModalComponent implements OnInit {
         switch (this.data.id) {
           case 4:
             this.data.current.b64 = reader.result;
-            this.data.current.id_archivo = null;
+            this.data.current.url = null;
             break;
 
           default:
@@ -383,36 +395,37 @@ export class GenericModalComponent implements OnInit {
         };
 
         this.loadingService.show("Agregando...");
-        this.genericService
-          .sendPostRequest(environment.loadBlobOnly, request)
-          .subscribe(
-            (response: any) => {
-              let idArchivo = response.parameters;
-              let sqlTema = `INSERT INTO catalogo (id_tipo_catalogo, id_empresa, descripcion, nombre, id_archivo) VALUES ('31', ${idEmpresa}, '${this.data.current.label}', '${this.data.current.label}', ${idArchivo})`;
-              //console.log(sqlTema);
+        let sqlTema = `INSERT INTO catalogo (id_tipo_catalogo, id_empresa, descripcion, nombre) VALUES ('31', ${idEmpresa}, '${this.data.current.label}', '${this.data.current.label}')`;
+        //console.log(sqlTema);
 
-              this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
-                //Se registra correctamente nuevo usuario
-                this.alertService.successAlert("Bien!", "Tema creado exitosamente");
-                this.parentDilogRef.close(false);
-                this.loadingService.hide();
-                //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
-                //this.listenNotifications();
-              }, (err: HttpErrorResponse) => {
-                this.loadingService.hide();
-              });
-            },
-            (error: HttpErrorResponse) => {
+        this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
+          let returnId: any = resp.parameters;
+          if (this.data.current.b64 && this.data.current.b64.length > 0) {
+            let requestFile: any = {
+              b64: this.data.current.b64,
+              id: returnId,
+              extension: "png",
+              table: "catalogo"
+            };
+            this.genericService.sendPostRequest(environment.loadFile, requestFile).subscribe((resp2: any) => {
+              //Se registra correctamente nuevo usuario
+              this.alertService.successAlert("Bien!", "Tema creado exitosamente");
+              this.parentDilogRef.close(false);
               this.loadingService.hide();
-              this.alertService.errorAlert(
-                "Ooops!",
-                "Ha sucedido un error, intenta recargar nuevamente, si el error persiste contacta a un administrador",
-                () => {
-                  ////console.log("hola");
-                }
-              );
-            }
-          );
+              //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+              //this.listenNotifications();
+            }, (err: HttpErrorResponse) => {
+              this.loadingService.hide();
+            });
+          } else {
+            this.alertService.successAlert("Bien!", "Tema creado exitosamente");
+            this.parentDilogRef.close(false);
+            this.loadingService.hide();
+          }
+
+        }, (err: HttpErrorResponse) => {
+          this.loadingService.hide();
+        });
       } else {
         let sqlTema2 = `INSERT INTO catalogo (id_tipo_catalogo, id_empresa, descripcion, nombre) VALUES ('31', ${idEmpresa}, '${this.data.current.label}', '${this.data.current.label}')`;
 
@@ -472,8 +485,7 @@ export class GenericModalComponent implements OnInit {
     if (this.data.current.descripcion.length == 0 ||
       this.data.current.nombre.length == 0 ||
       this.data.current.id_tema == 0 ||
-      this.data.current.id_tema == null ||
-      (this.data.current.id_archivo == 0)) {
+      this.data.current.id_tema == null) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else {
 
@@ -492,36 +504,37 @@ export class GenericModalComponent implements OnInit {
         };
 
         this.loadingService.show("Agregando...");
-        this.genericService
-          .sendPostRequest(environment.loadBlobOnly, request)
-          .subscribe(
-            (response: any) => {
-              let idArchivo = response.parameters;
-              let sqlTema = `INSERT INTO capsula (id_tema, id_empresa, descripcion, nombre, id_archivo) VALUES (${this.data.current.id_tema}, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}', ${idArchivo})`;
-              //console.log(sqlTema);
 
-              this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
-                //Se registra correctamente nuevo usuario
-                this.alertService.successAlert("Bien!", "Cápsula informativa creada exitosamente");
-                this.parentDilogRef.close(false);
-                this.loadingService.hide();
-                //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
-                //this.listenNotifications();
-              }, (err: HttpErrorResponse) => {
-                this.loadingService.hide();
-              });
-            },
-            (error: HttpErrorResponse) => {
+        let sqlTema = `INSERT INTO capsula (id_tema, id_empresa, descripcion, nombre) VALUES (${this.data.current.id_tema}, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}')`;
+        //console.log(sqlTema);
+
+        this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
+          let returnId: any = resp.parameters;
+          if (this.data.current.b64 && this.data.current.b64.length > 0) {
+            let requestFile: any = {
+              b64: this.data.current.b64,
+              id: returnId,
+              extension: "mp4",
+              table: "capsula"
+            };
+            this.genericService.sendPostRequest(environment.loadFile, requestFile).subscribe((resp2: any) => {
+              //Se registra correctamente nuevo usuario
+              this.alertService.successAlert("Bien!", "Cápsula informativa creada exitosamente");
+              this.parentDilogRef.close(false);
               this.loadingService.hide();
-              this.alertService.errorAlert(
-                "Ooops!",
-                "Ha sucedido un error, intenta recargar nuevamente, si el error persiste contacta a un administrador",
-                () => {
-                  ////console.log("hola");
-                }
-              );
-            }
-          );
+              //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+              //this.listenNotifications();
+            }, (err: HttpErrorResponse) => {
+              this.loadingService.hide();
+            });
+          } else {
+            this.alertService.successAlert("Bien!", "Cápsula informativa creada exitosamente");
+            this.parentDilogRef.close(false);
+            this.loadingService.hide();
+          }
+        }, (err: HttpErrorResponse) => {
+          this.loadingService.hide();
+        });
       } else {
         let sqlTema2 = `INSERT INTO capsula (id_tema, id_empresa, descripcion, nombre) VALUES (${this.data.current.id_tema}, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}')`;
 
@@ -661,36 +674,37 @@ export class GenericModalComponent implements OnInit {
         };
 
         this.loadingService.show("Actualizando...");
-        this.genericService
-          .sendPostRequest(environment.loadBlobOnly, request)
-          .subscribe(
-            (response: any) => {
-              let idArchivo = response.parameters;
-              let sqlTema = `UPDATE catalogo SET descripcion = '${this.data.current.label}', nombre = '${this.data.current.label}', id_archivo = ${idArchivo} WHERE id = ${this.data.current.id}`;
-              //console.log(sqlTema);
 
-              this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
-                //Se registra correctamente nuevo usuario
-                this.alertService.successAlert("Bien!", "Tema actualizado exitosamente");
-                this.parentDilogRef.close(false);
-                this.loadingService.hide();
-                //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
-                //this.listenNotifications();
-              }, (err: HttpErrorResponse) => {
-                this.loadingService.hide();
-              });
-            },
-            (error: HttpErrorResponse) => {
+        let sqlTema = `UPDATE catalogo SET descripcion = '${this.data.current.label}', nombre = '${this.data.current.label}' WHERE id = ${this.data.current.id}`;
+        //console.log(sqlTema);
+
+        this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
+          let returnId: any = resp.parameters;
+          if (this.data.current.b64 && this.data.current.b64.length > 0) {
+            let requestFile: any = {
+              b64: this.data.current.b64,
+              id: this.data.current.id,
+              extension: "png",
+              table: "catalogo"
+            };
+            this.genericService.sendPostRequest(environment.loadFile, requestFile).subscribe((resp2: any) => {
+
+              this.alertService.successAlert("Bien!", "Tema actualizado exitosamente");
+              this.parentDilogRef.close(false);
               this.loadingService.hide();
-              this.alertService.errorAlert(
-                "Ooops!",
-                "Ha sucedido un error, intenta recargar nuevamente, si el error persiste contacta a un administrador",
-                () => {
-                  ////console.log("hola");
-                }
-              );
-            }
-          );
+
+            }, (err: HttpErrorResponse) => {
+              this.loadingService.hide();
+            });
+          } else {
+            this.alertService.successAlert("Bien!", "Tema actualizado exitosamente");
+            this.parentDilogRef.close(false);
+            this.loadingService.hide();
+          }
+        }, (err: HttpErrorResponse) => {
+          this.loadingService.hide();
+        });
+
 
 
 
@@ -748,8 +762,7 @@ export class GenericModalComponent implements OnInit {
     if (this.data.current.descripcion.length == 0 ||
       this.data.current.nombre.length == 0 ||
       this.data.current.id_tema == 0 ||
-      this.data.current.id_tema == null ||
-      (this.data.current.id_archivo == 0)) {
+      this.data.current.id_tema == null) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else {
       if (this.data.current.b64.length > 0) {
@@ -767,36 +780,38 @@ export class GenericModalComponent implements OnInit {
         };
 
         this.loadingService.show("Actualizando...");
-        this.genericService
-          .sendPostRequest(environment.loadBlobOnly, request)
-          .subscribe(
-            (response: any) => {
-              let idArchivo = response.parameters;
-              let sqlTema = `UPDATE capsula SET descripcion = '${this.data.current.descripcion}', nombre = '${this.data.current.nombre}', id_tema = ${this.data.current.id_tema}, id_archivo = ${idArchivo} WHERE id = ${this.data.current.id}`;
-              //console.log(sqlTema);
 
-              this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
-                //Se registra correctamente nuevo usuario
-                this.alertService.successAlert("Bien!", "Cápsula informativa actualizada exitosamente");
-                this.parentDilogRef.close(false);
-                this.loadingService.hide();
-                //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
-                //this.listenNotifications();
-              }, (err: HttpErrorResponse) => {
-                this.loadingService.hide();
-              });
-            },
-            (error: HttpErrorResponse) => {
+        let sqlTema = `UPDATE capsula SET descripcion = '${this.data.current.descripcion}', nombre = '${this.data.current.nombre}', id_tema = ${this.data.current.id_tema} WHERE id = ${this.data.current.id}`;
+        //console.log(sqlTema);
+
+        this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
+
+          let returnId: any = resp.parameters;
+          if (this.data.current.b64 && this.data.current.b64.length > 0) {
+            let requestFile: any = {
+              b64: this.data.current.b64,
+              id: this.data.current.id,
+              extension: "mp4",
+              table: "capsula"
+            };
+            this.genericService.sendPostRequest(environment.loadFile, requestFile).subscribe((resp2: any) => {
+
+              this.alertService.successAlert("Bien!", "Cápsula informativa actualizada exitosamente");
+              this.parentDilogRef.close(false);
               this.loadingService.hide();
-              this.alertService.errorAlert(
-                "Ooops!",
-                "Ha sucedido un error, intenta recargar nuevamente, si el error persiste contacta a un administrador",
-                () => {
-                  ////console.log("hola");
-                }
-              );
-            }
-          );
+
+            }, (err: HttpErrorResponse) => {
+              this.loadingService.hide();
+            });
+          } else {
+            this.alertService.successAlert("Bien!", "Cápsula informativa actualizada exitosamente");
+            this.parentDilogRef.close(false);
+            this.loadingService.hide();
+          }
+        }, (err: HttpErrorResponse) => {
+          this.loadingService.hide();
+        });
+
 
 
 
@@ -1207,7 +1222,7 @@ export class GenericModalComponent implements OnInit {
 
   fileChangeEvent(evt: any, variable: any) {
     console.log(this.s);
-    
+
     if (this.s.files.length + this.s.elements.length > 5) {
       this.alertService.warnAlert("Espera!", "Máximo puedes almacenar 6 imágenes en esta sección");
     } else {
