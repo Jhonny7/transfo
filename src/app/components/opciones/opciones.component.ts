@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { LocalStorageEncryptService } from './../../services/local-storage-encrypt.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
+import { DirectorioComponent } from 'src/app/pages/home/directorio/directorio.component';
 
 @Component({
   selector: 'app-opciones',
@@ -76,7 +77,8 @@ export class OpcionesComponent implements OnInit {
     private translateService: TranslateService,
     private localStorageEncryptService: LocalStorageEncryptService,
     private router: Router,
-    private eventService: EventService
+    private eventService: EventService,
+    private test: DirectorioComponent,
   ) { }
 
   ngOnInit() { }
@@ -84,6 +86,7 @@ export class OpcionesComponent implements OnInit {
   changeTheme(theme: any) {
     this.localStorageEncryptService.setToLocalStorage("theme", theme.color);
     this.localStorageEncryptService.setToLocalStorage("themeClass", theme.theme);
+    this.test.cargarColores();
   }
 
   changeLanguage(language: any) {

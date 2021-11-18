@@ -27,6 +27,7 @@ import { GenericModalComponent } from './pages/administrador/generic-modal/gener
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { GalleryComponent } from './components/gallery/gallery.component';
 import { TemaComponent } from './components/tema/tema';
+import { DirectorioComponent } from './pages/home/directorio/directorio.component';
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
@@ -52,7 +53,8 @@ export function createTranslateLoader(http: HttpClient) {
         TriviaPage,
         SabiasPage,
         TemaComponent,
-        GalleryComponent
+        GalleryComponent,
+        DirectorioComponent
     ],
     exports:[
         SpinnerOverlayComponent,

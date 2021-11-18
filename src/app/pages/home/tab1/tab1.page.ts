@@ -33,16 +33,18 @@ export class Tab1Page implements OnInit {
     path: "trivia",
     icon: "assets/imgs/home/trivia.png",
   }, {
-    path: "/home/tab2",
+    path: "/home/tab3",
     icon: "assets/imgs/home/capsula.png",
     isTab: true,
     id: 2
   }, {
-    path: "",
+    path: "directorio",
     icon: "assets/imgs/home/directorio.png",
   }, {
-    path: "",
+    path: "/home/tab2",
     icon: "assets/imgs/home/faqs.png",
+    isTab: true,
+    id: 0
   },];
 
   public config: SwiperConfigInterface = {
