@@ -14,6 +14,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { RootGuard } from './guards/root.guard';
 import { ThemeGuard } from './guards/theme.guard';
+import { DirectorioComponent } from './pages/home/directorio/directorio.component';
 
 const routes: Routes = [
   {
@@ -46,7 +47,13 @@ const routes: Routes = [
     path: "trivia",
     component: TriviaPage,
     canActivate: [AuthGuard, ThemeGuard],
-  }, {
+  }, 
+  {
+    path: "directorio",
+    component: DirectorioComponent,
+    canActivate: [AuthGuard, ThemeGuard]
+  },
+  {
     path: "sabias",
     component: SabiasPage,
     canActivate: [AuthGuard, ThemeGuard],

@@ -29,9 +29,7 @@
   <script src="https://unpkg.com/swiper/swiper-bundle.js"></script>
   <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
-  <script src="https://cdn.ckeditor.com/ckeditor5/10.0.1/decoupled-document/ckeditor.js"></script>
   <!-- add to homescreen for ios -->
-  <script src="./node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
   
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -56,16 +54,6 @@
     }(document, 'script', 'facebook-jssdk'));
   </script>
 
-  <script>
-    ClassicEditor
-      .create(document.querySelector('#editor'))
-      .then(editor => {
-        window.editor = editor;
-      })
-      .catch(error => {
-        console.error('There was a problem initializing the editor.', error);
-      });
-  </script>
 </head>
 
 <body style="height: inherit !important;">
