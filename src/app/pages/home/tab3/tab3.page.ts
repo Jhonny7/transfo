@@ -1,3 +1,5 @@
+import { LocalStorageEncryptService } from './../../../services/local-storage-encrypt.service';
+import { LoaderService } from 'src/app/services/loading-service';
 import { Component, OnInit } from '@angular/core';
 import { title } from 'process';
 import { GenericService } from 'src/app/services/generic.service';
@@ -11,38 +13,49 @@ import { environment, idEmpresa } from 'src/environments/environment.prod';
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page implements OnInit {
-  viewCapsulas : boolean = false;
-  viewMaterias: boolean = true;
+  viewCapsulas: boolean = false;
+  viewMaterias: boolean = false;
   viewCapsulasList: boolean = false;
   listMaterias: Array<string>;
   capsulasInfo;
   title: any;
   titleCapsula: any;
-  descripcion:any;
+  descripcion: any;
   video: any;
   url = environment.getImagenIndividual;
   constructor(
-    private loadingService: LoadingService,
+    private loadingService: LoaderService,
     private sqlGenericService: SqlGenericService,
-    private genericService: GenericService
-  ) {}
+    private genericService: GenericService,
+    private localStorageEncryptService: LocalStorageEncryptService
+  ) { }
   ngOnInit() {
     this.getMaterias();
-      }
-  getMaterias(){
+  }
+
+  getMaterias() {
     this.loadingService.show('Espere...');
+    
     const sql = `SELECT id AS value, descripcion as label, id_archivo FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
-    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any)=> {
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       console.log(response.parameters);
       this.listMaterias = response.parameters;
       this.loadingService.hide();
+      let temaID: any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
+      let position = this.listMaterias.findIndex((o:any) => {
+        return o.id == temaID;
+      });
+
+      let t = this.listMaterias[position];
+      this.getCapsulasList(t);
     });
   }
-  getCapsulasList(item){
+
+  getCapsulasList(item) {
     this.title = item.label;
     this.loadingService.show('Espere...');
     const sql = `SELECT * FROM capsula WHERE id_empresa = ${idEmpresa} AND id_tema = ${item.value}`;
-    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any)=> {
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       console.log(response.parameters);
       this.capsulasInfo = response.parameters;
       this.loadingService.hide();
@@ -51,7 +64,8 @@ export class Tab3Page implements OnInit {
     this.viewMaterias = false;
     this.viewCapsulas = false;
   }
-  getCapsulas(item){
+
+  getCapsulas(item) {
     this.titleCapsula = item.nombre;
     this.video = item.id_archivo;
     this.descripcion = item.descripcion;
