@@ -6,6 +6,7 @@ import { GenericService } from 'src/app/services/generic.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SqlGenericService } from 'src/app/services/sqlGenericService';
 import { environment, idEmpresa } from 'src/environments/environment.prod';
+import { Route } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'app-tab3',
@@ -14,7 +15,6 @@ import { environment, idEmpresa } from 'src/environments/environment.prod';
 })
 export class Tab3Page implements OnInit {
   viewCapsulas: boolean = false;
-  viewMaterias: boolean = false;
   viewCapsulasList: boolean = false;
   listMaterias: Array<string>;
   capsulasInfo;
@@ -27,7 +27,8 @@ export class Tab3Page implements OnInit {
     private loadingService: LoaderService,
     private sqlGenericService: SqlGenericService,
     private genericService: GenericService,
-    private localStorageEncryptService: LocalStorageEncryptService
+    private localStorageEncryptService: LocalStorageEncryptService,
+    private router: Route,
   ) { }
   ngOnInit() {
     this.getMaterias();
@@ -42,11 +43,17 @@ export class Tab3Page implements OnInit {
       this.listMaterias = response.parameters;
       this.loadingService.hide();
       let temaID: any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
+      console.log(temaID);
+      
       let position = this.listMaterias.findIndex((o:any) => {
-        return o.id == temaID;
+        return o.value == temaID;
       });
+      console.log(position);
+      
 
       let t = this.listMaterias[position];
+      console.log(t);
+      
       this.getCapsulasList(t);
     });
   }
@@ -61,7 +68,6 @@ export class Tab3Page implements OnInit {
       this.loadingService.hide();
     });
     this.viewCapsulasList = true;
-    this.viewMaterias = false;
     this.viewCapsulas = false;
   }
 
@@ -70,7 +76,9 @@ export class Tab3Page implements OnInit {
     this.video = item.id_archivo;
     this.descripcion = item.descripcion;
     this.viewCapsulasList = false;
-    this.viewMaterias = false;
     this.viewCapsulas = true;
   }
+  return(){
+    window.history.back();
+  } 
 }

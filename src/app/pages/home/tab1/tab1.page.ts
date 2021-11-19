@@ -42,13 +42,15 @@ export class Tab1Page implements OnInit {
     isTab: true,
     id: 2
   }, {
-    path: "",
+    path: "directorio",
     icon: "assets/imgs/home/directorio.png",
-    id: 3
+    id: 3,
+    notNeedSubject: true,
   }, {
-    path: "",
+    path: "/home/tab3",
     icon: "assets/imgs/home/faqs.png",
-    id: 4
+    isTab: true,
+    id: 0
   },];  
 
   public config: SwiperConfigInterface = {
@@ -173,20 +175,24 @@ export class Tab1Page implements OnInit {
 
   goPage(itm) {
     let temaID: any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
-    if(this.temaGlobal){
-      this.localStorageEncryptService.setToLocalStorage("temaGlobal", this.temaGlobal);
-      if (itm.isTab) {
-        this.eventService.send("tabChange", itm.id);
-      } else {
-        console.log("no tab");
-        console.log(itm);
-        
-        this.router.navigate(["/", itm.path]);
-        //this.router.navigateByUrl(itm.path);
-        //window.open(`/${itm.path}`, "_self");
+    if(itm.notNeedSubject){
+      this.router.navigate(["/", itm.path])
+    } else {
+      if(this.temaGlobal){
+        this.localStorageEncryptService.setToLocalStorage("temaGlobal", this.temaGlobal);
+        if (itm.isTab) {
+          this.eventService.send("tabChange", itm.id);
+        } else {
+          console.log("no tab");
+          console.log(itm);
+          
+          this.router.navigate(["/", itm.path]);
+          //this.router.navigateByUrl(itm.path);
+          //window.open(`/${itm.path}`, "_self");
+        }
+      }else{
+        this.alertService.warnAlert("Espera!", "Antes de continuar debes seleccionar un tema");
       }
-    }else{
-      this.alertService.warnAlert("Espera!", "Antes de continuar debes seleccionar un tema");
     }
   }
 

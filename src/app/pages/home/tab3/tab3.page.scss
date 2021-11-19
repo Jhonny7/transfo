@@ -54,6 +54,43 @@ h3{
    margin-right: 16.5%;
     }
    }
+   .box_btn{
+    text-align-last: center;
+    width: 70%;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    .boton-desk{
+        display: none;
+        padding: 10px;
+        font-size: 15px;
+        font-weight: 400;
+        outline: none;
+        cursor: pointer;
+        border: none;
+        color: #fff;
+        width: 48%;
+          margin-left: 1%;
+          margin-right: 1%;
+          border-radius: 4px;
+      }
+}
+@media only screen and (max-width: 3550px) and (min-width: 850px) {
+    .box_btn .boton-desk{
+        padding: 10px;
+        font-size: 15px;
+        font-weight: 400;
+        outline: none;
+        cursor: pointer;
+        border: none;
+        color: #fff;
+        width: 30%;
+          margin-left: 1%;
+          margin-right: 1%;
+          border-radius: 4px;
+        display: inline-block;
+    }
+}
    
 
  

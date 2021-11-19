@@ -1,16 +1,8 @@
-<app-header [title]="'Capsula Informativa'"></app-header>
+<app-header [title]="'Capsula Informativa'" [backActive]="true"></app-header>
 
 <ion-content>
   <container-app>
   
-    <container *ngIf="viewMaterias">
-      <ion-list>
-        <ion-item class="list_materias" *ngFor="let item of listMaterias">
-          <ion-label (click)="getCapsulasList(item)" [style.color]="genericService.getColorHex()" >{{item.label}}</ion-label>
-        </ion-item>
-      </ion-list>
-    </container>
-
     <container *ngIf="viewCapsulasList">
       <h3 [style.color]="genericService.getColorHex()">{{title}}</h3>
       <ion-list class="list_capsulas">
@@ -18,6 +10,11 @@
           <ion-label [style.color]="genericService.getColorHex()" >{{item.nombre}}</ion-label>
         </ion-item>
       </ion-list>
+      <section class="box_btn">
+        <button (click)="return()" [style.background-color]="genericService.getColorHex()" class="boton-desk">
+       Regresar
+        </button>
+       </section>
     </container>
 
     <container *ngIf="viewCapsulas">
@@ -28,8 +25,15 @@
         Your browser does not support the video tag.
       </video>
       <div></div>
+      <section class="box_btn">
+        <button (click)="return()" [style.background-color]="genericService.getColorHex()" class="boton-desk">
+       Regresar
+        </button>
+       </section>
     </container>
   </container-app>
+
+
 
 </ion-content>
   
