@@ -3,7 +3,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { FAQs } from 'src/app/interfaces/FAQs';
 
 import { GenericService } from 'src/app/services/generic.service';
+import { LoaderService } from 'src/app/services/loading-service';
 import { LoadingService } from 'src/app/services/loading.service';
+import { LocalStorageEncryptService } from 'src/app/services/local-storage-encrypt.service';
 import { SqlGenericService } from 'src/app/services/sqlGenericService';
 import { idEmpresa } from '../../../../environments/environment.prod';
 
@@ -20,8 +22,9 @@ export class Tab2Page implements OnInit {
   listMaterias: Array<string>;
   constructor(
     private sqlGenericService: SqlGenericService,
-    private loadingService: LoadingService,
-    private genericService: GenericService
+    private loadingService: LoaderService,
+    private genericService: GenericService,
+    private localStorageEncryptService: LocalStorageEncryptService,
   ) { }
 
   ngOnInit() {
@@ -50,6 +53,14 @@ this.getMaterias();
       console.log(response.parameters);
       this.listMaterias = response.parameters;
       this.loadingService.hide();
+      let temaID: any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
+
+      let position = this.listMaterias.findIndex((o: any) => {
+        return o.value == temaID;
+      });
+      let t = this.listMaterias[position];
+
+      this.getFAQ(t);
     });
   }
   /**
@@ -71,6 +82,6 @@ this.getMaterias();
    * function to return to the subject list.
    */
   return(){
-    this.viewFAQs = false;
+    window.history.back();
   }
 };

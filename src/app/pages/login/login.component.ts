@@ -1,3 +1,5 @@
+import { LocalStorageEncryptService } from './../../services/local-storage-encrypt.service';
+import { GenericService } from './../../services/generic.service';
 import { SqlGenericService } from './../../services/sqlGenericService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
@@ -9,6 +11,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import * as firebase from 'firebase/app'; */
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { Platform } from '@ionic/angular';
+import { environment } from 'src/environments/environment.prod';
 //import firebase from 'firebase'
 @Component({
   selector: 'app-login',
@@ -38,8 +41,12 @@ export class LoginComponent implements OnInit {
     //private afAuth: AngularFireAuth,
     private platform: Platform,
     private googlePlus: GooglePlus,
-    private sqlGenericService: SqlGenericService
+    private sqlGenericService: SqlGenericService,
+    private genericService: GenericService,
+    private localStorageEncryptService: LocalStorageEncryptService
   ) {
+    //Se limpia siempre sesión al ingresar a login
+    this.localStorageEncryptService.clearProperty("userSessionEducacion");
   }
 
 
@@ -146,12 +153,100 @@ export class LoginComponent implements OnInit {
       if (response.parameters.length > 0) {
         localStorage.setItem("userSessionEducacion", JSON.stringify(response.parameters[0]));
         this.router.navigate(["/", "home"]);
-      }else{
+      } else {
         this.alertService.errorAlert("Oops", `Verifica usuario y/o contraseña`);
       }
     }, (error: HttpErrorResponse) => {
       this.loadingService.hide();
       this.alertService.errorAlert("Oops", `Verifica usuario y/o contraseña`);
     });
+  }
+
+  recuperar() {
+    this.alertService.alertWithInputs((valor: any) => {
+      console.log(valor);
+      this.confirmRecuperar(valor);
+    }, "¿Olvidaste tu contraseña?", "Ingresa un correo electrónico válido para enviarte las instrucciones para recuperarla", "Recuperar");
+  }
+
+  confirmRecuperar(email: string) {
+    let epoch = Date.now();
+
+    //insertar en usuario contrasegnia
+
+    let sqlSearch: string = `SELECT * FROM usuario WHERE username = '${email}'`;
+
+    this.loadingService.show("Recuperando...");
+
+    this.sqlGenericService.excecuteQueryString(sqlSearch).subscribe((find: any) => {
+      if (find.parameters.length > 0) {
+        let sqlDeleteBefore = `DELETE FROM contrasegna_temporal WHERE id_usuario = ${find.parameters[0].id}`;
+
+        this.sqlGenericService.excecuteQueryString(sqlDeleteBefore).subscribe((deleted: any) => {
+          let sql: string = `INSERT INTO contrasegna_temporal (pass_temporal, id_usuario) VALUES ('${String(epoch)}', ${find.parameters[0].id})`;
+          this.sqlGenericService.excecuteQueryString(sql).subscribe((insert: any) => {
+            console.log(insert);
+
+            let request: any = {
+              asunto: "Recuperar Contrasenia",
+              from: "sarrejuan@gmail.com",
+              name: "sarrejuan@gmail.com",
+              to: email,
+              cuerpo: `<section>
+            <div style="background-color: #006b89;
+            text-align: center;padding: 8px;">
+              <p style="color: #fff;margin: 0;font-size: 20px;">Este correo es enviado por TRANSFO</p>
+            </div>
+            <div style="padding: 10px;border: 1px solid #c8c8c8;">
+              <p style="color: #000;">Hola jhonny, olvidaste tu contraseña?</p>
+              <p style="color: #000;">Nosotros te enviamos este correo para que puedas reestablecerla, solo da clic en el
+                botón
+                y sigue las instrucciones
+              </p>
+
+              <p> <strong>Código para reestablecer:</strong> ${epoch}</p>
+      
+              <a href="https://${window.location.hostname}/recuperar/${insert.parameters}"><button style="color: #fff;
+                background-color: #006b89;
+                font-size: 16px;
+                padding: 8px;
+                border-radius: 8px;
+                box-shadow: 1px 1px 1px #123;
+                margin-bottom: 20px;
+                min-width: 200px;
+                cursor: pointer;" >Recuperar</button></a>
+      
+              <p style="color: #000;">O si lo prefieres puedes hacer click en el siguiente enlace</p>
+              <a href="https://${window.location.hostname}/recuperar/${insert.parameters}">https://${window.location.hostname}/recuperar/${insert.parameters}</a>
+            </div>
+          </section>`
+            };
+            this.genericService.sendPostRequest(environment.mail, request).subscribe((response: any) => {
+              this.loadingService.hide();
+              this.alertService.successAlert("Bien!", "Te hemos enviado un correo electrónico, revisa tu bandeja de spam en caso de no verlo en tus correos recientes");
+            }, (error: HttpErrorResponse) => {
+              this.loadingService.hide();
+              this.alertService.errorAlert("Oops!", "Ocurrió un error, contacta al administrador");
+            });
+          }, (error: HttpErrorResponse) => {
+            this.loadingService.hide();
+            this.alertService.errorAlert("Oops!", "Ocurrió un error, contacta al administrador");
+          });
+
+        }, (error: HttpErrorResponse) => {
+          this.loadingService.hide();
+          this.alertService.errorAlert("Oops!", "Ocurrió un error, contacta al administrador");
+        });
+
+
+      } else {
+        this.alertService.warnAlert("Espera!", "El usuario ingresado no existe en nuestros registros, contacta al administrador o intentalo nuevamente");
+      }
+    }, (error: HttpErrorResponse) => {
+      this.loadingService.hide();
+      this.alertService.errorAlert("Oops!", "Ocurrió un error, contacta al administrador");
+    });
+
+
   }
 }

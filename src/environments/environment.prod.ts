@@ -1,3 +1,4 @@
+//export const path:string = "http://localhost/transfo-backend/educacion/";
 export const path:string = "http://localhost/api_educacion/educacion/";
 
 export const pathSettlementsCity = "https://olam-systems.com.mx/api_suite_home/settlements/getMunicipios";

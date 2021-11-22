@@ -7,6 +7,7 @@ import { GenericService } from 'src/app/services/generic.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SqlGenericService } from 'src/app/services/sqlGenericService';
 import { environment, idEmpresa } from 'src/environments/environment.prod';
+import { Route } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'app-tab3',
@@ -15,7 +16,6 @@ import { environment, idEmpresa } from 'src/environments/environment.prod';
 })
 export class Tab3Page implements OnInit {
   viewCapsulas: boolean = false;
-  viewMaterias: boolean = false;
   viewCapsulasList: boolean = false;
   listMaterias: Array<string>;
   capsulasInfo;
@@ -28,7 +28,8 @@ export class Tab3Page implements OnInit {
     private loadingService: LoaderService,
     private sqlGenericService: SqlGenericService,
     private genericService: GenericService,
-    private localStorageEncryptService: LocalStorageEncryptService
+    private localStorageEncryptService: LocalStorageEncryptService,
+    private router: Route,
   ) { }
   ngOnInit() {
     this.getMaterias();
@@ -42,47 +43,7 @@ export class Tab3Page implements OnInit {
     $name = $data['name'];
     */
 
-    let epoch = Date.now();
-
-    //insertar en usuario contrasegnia
-    let sql:string = `INSERT INTO `;
-
-    let request: any = {
-      asunto: "Recuperar Contrasenia",
-      from: "sarrejuan@gmail.com",
-      name: "sarrejuan@gmail.com",
-      to: "sarrejuan@gmail.com",
-      cuerpo: `<section>
-      <div style="background-color: #006b89;
-      text-align: center;padding: 8px;">
-        <p style="color: #fff;margin: 0;font-size: 20px;">Este correo es enviado por TRANSFO</p>
-      </div>
-      <div style="padding: 10px;border: 1px solid #c8c8c8;">
-        <p style="color: #000;">Hola jhonny, olvidaste tu contraseña?</p>
-        <p style="color: #000;">Nosotros te enviamos este correo para que puedas reestablecerla, solo da clic en el
-          botón
-          y sigue las instrucciones
-        </p>
-
-        <a href=""><button style="color: #fff;
-          background-color: #006b89;
-          font-size: 16px;
-          padding: 8px;
-          border-radius: 8px;
-          box-shadow: 1px 1px 1px #123;
-          margin-bottom: 20px;
-          min-width: 200px;
-          cursor: pointer;">Recuperar</button></a>
-
-        <p style="color: #000;">O si lo prefieres puedes hacer click en el siguiente enlace</p>
-      </div>
-    </section>`
-    };
-    this.genericService.sendPostRequest(environment.mail, request).subscribe((response: any) => {
-
-    }, (error: HttpErrorResponse) => {
-
-    });
+    
   }
 
   getMaterias() {
@@ -94,11 +55,17 @@ export class Tab3Page implements OnInit {
       this.listMaterias = response.parameters;
       this.loadingService.hide();
       let temaID: any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
-      let position = this.listMaterias.findIndex((o: any) => {
-        return o.id == temaID;
+      console.log(temaID);
+      
+      let position = this.listMaterias.findIndex((o:any) => {
+        return o.value == temaID;
       });
+      console.log(position);
+      
 
       let t = this.listMaterias[position];
+      console.log(t);
+      
       this.getCapsulasList(t);
     });
   }
@@ -113,7 +80,6 @@ export class Tab3Page implements OnInit {
       this.loadingService.hide();
     });
     this.viewCapsulasList = true;
-    this.viewMaterias = false;
     this.viewCapsulas = false;
   }
 
@@ -122,7 +88,9 @@ export class Tab3Page implements OnInit {
     this.video = item.id_archivo;
     this.descripcion = item.descripcion;
     this.viewCapsulasList = false;
-    this.viewMaterias = false;
     this.viewCapsulas = true;
   }
+  return(){
+    window.history.back();
+  } 
 }

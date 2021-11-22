@@ -17,19 +17,12 @@
         </div>
        </section>
        <section class="box_btn">
-        <button (click)="return()" [style.background-color]="genericService.getColorHex()" class="boton-sham">
+        <button (click)="return()" [style.background-color]="genericService.getColorHex()" class="boton-desk">
        Regresar
         </button>
        </section>
     </container>
 
-    <container *ngIf="!viewFAQs">
-      <ion-list>
-        <ion-item class="list_materias" *ngFor="let item of listMaterias">
-          <ion-label (click)="getFAQ(item)" [style.color]="genericService.getColorHex()" >{{item.label}}</ion-label>
-        </ion-item>
-      </ion-list>
-    </container>
 
   </container-app>
 

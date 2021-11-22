@@ -62,7 +62,10 @@ const routes: Routes = [
     component: LoginComponent
   },{
     path: 'recuperar',
-    component: RecuperarPage
+    children: [{
+      path: ":id",
+      component: RecuperarPage,
+    }]
   }, {
     path: 'register',
     children: [{
@@ -83,10 +86,6 @@ const routes: Routes = [
         component: AdministratorComponent
       },
     ]
-  },
-  {
-    path: 'recuperar',
-    loadChildren: () => import('./pages/home/recuperar/recuperar.module').then( m => m.RecuperarPageModule)
   },
 ];
 @NgModule({

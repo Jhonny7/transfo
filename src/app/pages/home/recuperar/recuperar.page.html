@@ -1,10 +1,11 @@
 <ion-content>
   <section class="nueva">
     <div>
-      <p>Recientemente te enviamos un correo, porfavor ingresa tu nueva contraseña</p>
-      <input type="password" placeholder="Nueva Contraseña">
-      <input type="password" placeholder="Confirmar contraseña">
-      <button>Confirmar</button>
+      <p>Recientemente te enviamos un correo, porfavor ingresa el código que te hemos enviado y tu nueva contraseña</p>
+      <input type="text" placeholder="Código recibido" [(ngModel)]="dataRecuperar.clave">
+      <input type="password" placeholder="Nueva Contraseña" [(ngModel)]="dataRecuperar.pass">
+      <input type="password" placeholder="Confirmar contraseña" [(ngModel)]="dataRecuperar.confirmPass">
+      <button (click)="recuperar()">Confirmar</button>
     </div>
   </section>
 </ion-content>
