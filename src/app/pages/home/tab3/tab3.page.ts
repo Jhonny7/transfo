@@ -2,12 +2,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { LocalStorageEncryptService } from './../../../services/local-storage-encrypt.service';
 import { LoaderService } from 'src/app/services/loading-service';
 import { Component, OnInit } from '@angular/core';
-import { title } from 'process';
 import { GenericService } from 'src/app/services/generic.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SqlGenericService } from 'src/app/services/sqlGenericService';
 import { environment, idEmpresa } from 'src/environments/environment.prod';
-import { Route } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'app-tab3',
@@ -29,7 +27,6 @@ export class Tab3Page implements OnInit {
     private sqlGenericService: SqlGenericService,
     private genericService: GenericService,
     private localStorageEncryptService: LocalStorageEncryptService,
-    private router: Route,
   ) { }
   ngOnInit() {
     this.getMaterias();
