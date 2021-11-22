@@ -11,6 +11,7 @@ export const environment = {
   production: true,
   //Services path
   genericQuerie: `${path}petition`,
+  mail: `${path}email`,
   loadBlob:`${path}load-blob`,
   load:`${path}load`,
   loadPDF:`${path}load-pdf`,
