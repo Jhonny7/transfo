@@ -35,7 +35,8 @@ export class Tab1Page implements OnInit {
   }, {
     path: "trivia",
     icon: "assets/imgs/home/trivia.png",
-    id: 1
+    id: 1,
+    notNeedSubject: true
   }, {
     path: "/home/tab2",
     icon: "assets/imgs/home/capsula.png",

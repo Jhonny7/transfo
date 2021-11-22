@@ -20,8 +20,8 @@
     <container *ngIf="viewCapsulas">
       <h3 [style.color]="genericService.getColorHex()">{{titleCapsula}}</h3>
       <div [innerHTML]="descripcion"></div>
-      <video autoplay controls>
-        <source [src]="url+video">
+      <video autoplay controls style="width: 100%;">
+        <source [src]="video">
         Your browser does not support the video tag.
       </video>
       <div></div>

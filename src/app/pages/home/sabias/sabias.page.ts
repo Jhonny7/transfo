@@ -34,7 +34,7 @@ export class SabiasPage implements OnInit {
     this.cargarTemas();
   }
 
-  cargarSabias(item: any) {
+  cargarSabias() {
     let temaID: any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
 
     let sql: string = `SELECT * FROM catalogo WHERE id_tema = ${Number(temaID)} AND id_empresa = ${idEmpresa}`;
@@ -88,6 +88,7 @@ export class SabiasPage implements OnInit {
       });
 
       this.temaSelect = this.temas[position];
+      this.cargarSabias();
       this.loadingService.hide();
     }, (err: HttpErrorResponse) => {
       this.loadingService.hide();

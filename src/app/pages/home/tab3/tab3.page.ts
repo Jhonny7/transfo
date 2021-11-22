@@ -1,16 +1,18 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { LocalStorageEncryptService } from './../../../services/local-storage-encrypt.service';
 import { LoaderService } from 'src/app/services/loading-service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { GenericService } from 'src/app/services/generic.service';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SqlGenericService } from 'src/app/services/sqlGenericService';
 import { environment, idEmpresa } from 'src/environments/environment.prod';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
-  styleUrls: ['tab3.page.scss']
+  styleUrls: ['tab3.page.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class Tab3Page implements OnInit {
   viewCapsulas: boolean = false;
@@ -27,6 +29,7 @@ export class Tab3Page implements OnInit {
     private sqlGenericService: SqlGenericService,
     private genericService: GenericService,
     private localStorageEncryptService: LocalStorageEncryptService,
+    private domSanitizer: DomSanitizer,
   ) { }
   ngOnInit() {
     this.getMaterias();
@@ -74,6 +77,7 @@ export class Tab3Page implements OnInit {
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       console.log(response.parameters);
       this.capsulasInfo = response.parameters;
+      //this.capsulasInfo.d2 = this.domSanitizer.bypassSecurityTrustHtml(this.capsulasInfo.descripcion);
       this.loadingService.hide();
     });
     this.viewCapsulasList = true;
@@ -82,8 +86,8 @@ export class Tab3Page implements OnInit {
 
   getCapsulas(item) {
     this.titleCapsula = item.nombre;
-    this.video = item.id_archivo;
-    this.descripcion = item.descripcion;
+    this.video = item.url;
+    this.descripcion = this.domSanitizer.bypassSecurityTrustHtml(item.descripcion);
     this.viewCapsulasList = false;
     this.viewCapsulas = true;
   }

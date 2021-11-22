@@ -95,12 +95,16 @@ export class TriviaPage implements OnInit {
           this.loadingService.hide();
 
           //////////////////REVISAR SI ESTA EN MÁXIMO NIVEL//////////////////
+          console.log(max);
+          console.log(this.user);
+          
           if (this.user.id_nivel == max.parameters[0].id) {
             this.data.nivelUser = "Experto";
             this.tiempo = 0;
             this.data.step = 2;
           } else {
-            this.alertService.confirmTrashAlert(() => {
+            this.alertService.confirmTrashAlert(
+              () => {
               ///ACTUALIZAR NIVEL DE USUARIO
               this.loadingService.show("Espera...");
               let sqlUser: string = `SELECT * FROM catalogo WHERE id_tipo_catalogo = 37 ORDER BY id_referencia ASC`;
