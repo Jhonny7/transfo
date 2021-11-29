@@ -152,7 +152,7 @@ export class LoginComponent implements OnInit {
       this.loadingService.hide();
       if (response.parameters.length > 0) {
         localStorage.setItem("userSessionEducacion", JSON.stringify(response.parameters[0]));
-        this.router.navigate(["/", "home"]);
+        this.router.navigate(["/", "inicio"]);
       } else {
         this.alertService.errorAlert("Oops", `Verifica usuario y/o contraseña`);
       }

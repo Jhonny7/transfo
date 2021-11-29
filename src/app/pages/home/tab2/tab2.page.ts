@@ -20,15 +20,19 @@ export class Tab2Page implements OnInit {
   viewFAQs = false;
   title: string;
   listMaterias: Array<string>;
+
+  public user:any = null;
   constructor(
     private sqlGenericService: SqlGenericService,
     private loadingService: LoaderService,
     private genericService: GenericService,
     private localStorageEncryptService: LocalStorageEncryptService,
-  ) { }
+  ) {
+    this.user = this.localStorageEncryptService.getFromLocalStorage("userSessionEducacion");
+   }
 
   ngOnInit() {
-this.getMaterias();
+    this.getMaterias();
   }
   /**
    * function to obtain the questions depending on the selected subject
@@ -37,8 +41,10 @@ this.getMaterias();
    */
   getFAQ(item) {
     this.title = item.label;
-    const sql = `SELECT * FROM preguntas_frecuentes WHERE id_empresa = ${idEmpresa} AND id_tema = ${item.value}`;
-   this.loadingService.show('Espere...');
+    const sql = `SELECT * FROM preguntas_frecuentes WHERE id_empresa = ${idEmpresa} AND id_tema = ${item.value} AND (id_tipo_usuario = 170 OR id_tipo_usuario = ${this.user.id_tipo_usuario})`;
+    console.log(sql);
+    
+    this.loadingService.show('Espere...');
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       this.faqs = response.parameters;
       this.viewFAQs = true;
@@ -46,10 +52,10 @@ this.getMaterias();
       console.log(this.faqs);
     });
   }
-  getMaterias(){
+  getMaterias() {
     this.loadingService.show('Espere...');
     const sql = `SELECT id AS value, descripcion as label, id_archivo FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
-    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any)=> {
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       console.log(response.parameters);
       this.listMaterias = response.parameters;
       this.loadingService.hide();
@@ -69,19 +75,19 @@ this.getMaterias();
    * @param evt Variable that is equivalent to the selected item
    */
   accordion(evt): void {
-      const panel = evt.srcElement.parentNode.nextSibling;
-      if (panel.style.maxHeight) {
-        panel.style.maxHeight = null;
-        evt.target.name = 'add';
-      } else {
-        panel.style.maxHeight = panel.scrollHeight + 'px';
-        evt.target.name = 'close';
-      };
+    const panel = evt.srcElement.parentNode.nextSibling;
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+      evt.target.name = 'add';
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+      evt.target.name = 'close';
+    };
   }
   /**
    * function to return to the subject list.
    */
-  return(){
+  return() {
     window.history.back();
   }
 };

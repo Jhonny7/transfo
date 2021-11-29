@@ -38,9 +38,9 @@ export class Tab1Page implements OnInit {
     id: 1,
     notNeedSubject: true
   }, {
-    path: "/home/tab2",
+    path: "capsula",
     icon: "assets/imgs/home/capsula.png",
-    isTab: true,
+    //isTab: true,
     id: 2
   }, {
     path: "directorio",
@@ -48,11 +48,11 @@ export class Tab1Page implements OnInit {
     id: 3,
     notNeedSubject: true,
   }, {
-    path: "/home/tab3",
+    path: "preguntas",
     icon: "assets/imgs/home/faqs.png",
-    isTab: true,
-    id: 0
-  },];  
+    //isTab: true,
+    id: 4
+  },];
 
   public config: SwiperConfigInterface = {
     loop: true,
@@ -118,7 +118,7 @@ export class Tab1Page implements OnInit {
     { text: "hola3" }
   ];
 
-  public temas: any []= [];
+  public temas: any[] = [];
 
   public categorias: any[] = [];
 
@@ -130,9 +130,9 @@ export class Tab1Page implements OnInit {
 
   public suscription: Subscription;
 
-  public imgUrl:any = environment.getImagenIndividual;
+  public imgUrl: any = environment.getImagenIndividual;
 
-  public temaGlobal:any = 0;
+  public temaGlobal: any = 0;
 
   constructor(
     private sqlGenericService: SqlGenericService,
@@ -176,35 +176,35 @@ export class Tab1Page implements OnInit {
 
   goPage(itm) {
     let temaID: any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
-    if(itm.notNeedSubject){
+    if (itm.notNeedSubject) {
       this.router.navigate(["/", itm.path])
     } else {
-      if(this.temaGlobal){
+      if (this.temaGlobal) {
         this.localStorageEncryptService.setToLocalStorage("temaGlobal", this.temaGlobal);
         if (itm.isTab) {
           this.eventService.send("tabChange", itm.id);
         } else {
           console.log("no tab");
           console.log(itm);
-          
+
           this.router.navigate(["/", itm.path]);
           //this.router.navigateByUrl(itm.path);
           //window.open(`/${itm.path}`, "_self");
         }
-      }else{
+      } else {
         this.alertService.warnAlert("Espera!", "Antes de continuar debes seleccionar un tema");
       }
     }
   }
 
   cargarTemas() {
-    let sql: string = `SELECT id, descripcion as label, id_archivo FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
+    let sql: string = `SELECT id, descripcion as label, id_archivo, url FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
       this.temas = resp.parameters;
       this.temas.unshift({
-        id:0,
+        id: 0,
         label: "[--Elige un tema--]",
         ur: "assets/imgs/noAvail.jpeg"
       });

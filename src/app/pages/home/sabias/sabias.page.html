@@ -21,6 +21,14 @@
     <p class="t-sbs">{{ sabiasSelect.nombre }}</p>
 
     <div [innerHTML]="sabiasSelect.d2"></div>
+
+    <div class="lnks">
+      <p>Links de referencia</p>
+
+      <div *ngFor="let l of sabiasSelect.jsonArray" class="ar">
+        <a [href]="l.link" target="_blank">{{ l.link }}</a>
+      </div>
+    </div>
   </section>
 
 </ion-content>

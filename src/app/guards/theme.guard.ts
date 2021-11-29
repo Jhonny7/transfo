@@ -33,7 +33,7 @@ export class ThemeGuard implements CanActivate, CanActivateChild {
             return true;
         } else {
             this.alertService.warnAlert("Espera!", "Antes de continuar debes seleccionar un tema");
-            return this.router.navigate(["/home"]);
+            return this.router.navigate(["/inicio"]);
         }
     }
 

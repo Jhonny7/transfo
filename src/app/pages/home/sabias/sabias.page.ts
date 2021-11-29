@@ -53,6 +53,9 @@ export class SabiasPage implements OnInit {
 
   cargarSabiaUnico(item: any) {
     this.sabiasSelect = item;
+    this.sabiasSelect.jsonArray = JSON.parse(this.sabiasSelect.json);
+    console.log(this.sabiasSelect);
+    
     this.sabiasSelect.d2 = this.domSanitizer.bypassSecurityTrustHtml(this.sabiasSelect.descripcion);
     let sql: string = `SELECT * FROM catalogo WHERE id_referencia = ${item.id}`;
     this.loadingService.show("Espere...");
@@ -67,7 +70,6 @@ export class SabiasPage implements OnInit {
           image: element.id_archivo
         });
       });
-
       this.step = 3;
       this.loadingService.hide();
     }, (err: HttpErrorResponse) => {

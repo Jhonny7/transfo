@@ -47,9 +47,27 @@
     font-weight: bolder;
 }
 
-p{
+p {
     color: #000;
 }
-li{
+li {
     color: #000;
+}
+
+.lnks {
+    p {
+        margin: 0;
+        text-align: center;
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .ar {
+        padding: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        color: #0783bc;
+        border-bottom: 1px solid #cacaca;
+        margin-bottom: 10px;
+    }
 }
