@@ -20,7 +20,7 @@ export class AppComponent implements OnInit{
 
   public menus: Menu[] = [{
     name: "menu.home",
-    url: "/home",
+    url: "/inicio",
     icon: "assets/imgs/logo-sup.png",
     active: true
   }, {

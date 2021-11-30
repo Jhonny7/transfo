@@ -13,8 +13,8 @@
           <mat-option *ngFor="let category of temas" [value]="category.id">
 
             <div class="enimg">
-              <img with="20" height="20" [src]="imgUrl + category.id_archivo " *ngIf="category.id_archivo">
-              <img with="20" height="20" src="assets/imgs/noAvail.jpeg" *ngIf="!category.id_archivo">
+              <img with="20" height="20" [src]="category.url " *ngIf="category.url">
+              <img with="20" height="20" src="assets/imgs/noAvail.jpeg" *ngIf="!category.url">
             </div>
 
             {{category.label}}

@@ -19,35 +19,21 @@ import { DirectorioComponent } from './pages/home/directorio/directorio.componen
 const routes: Routes = [
   {
     path: '',
-    redirectTo: "login",
+    redirectTo: "inicio",
     pathMatch: "full"
   }, {
-    path: 'home',
-    redirectTo: "home/tab1",
-    pathMatch: "full"
-  }, {
-    path: 'home',
+    path: 'inicio',
     component: TabsPage,
     canActivateChild: [AuthGuard],
-    children: [
-      {
-        path: "tab1",
-        component: Tab1Page
-      },
-      {
-        path: "tab2",
-        component: Tab2Page
-      },
-      {
-        path: "tab3",
-        component: Tab3Page
-      },
-    ]
   }, {
     path: "trivia",
     component: TriviaPage,
     canActivate: [AuthGuard, ThemeGuard],
-  }, 
+  }, {
+    path: "preguntas",
+    component: Tab2Page,
+    canActivate: [AuthGuard, ThemeGuard],
+  },
   {
     path: "directorio",
     component: DirectorioComponent,
@@ -58,9 +44,13 @@ const routes: Routes = [
     component: SabiasPage,
     canActivate: [AuthGuard, ThemeGuard],
   }, {
+    path: "capsula",
+    component: Tab3Page,
+    canActivate: [AuthGuard, ThemeGuard],
+  }, {
     path: 'login',
     component: LoginComponent
-  },{
+  }, {
     path: 'recuperar',
     children: [{
       path: ":id",

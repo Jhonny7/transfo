@@ -65,7 +65,7 @@ export class TabsComponent implements OnInit{
 
   renderComponent(tab:Tabs){
     let tt:any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
-    if(tab.url == "home/tab1" || tt){
+    if(tab.url == "inicio" || tt){
       return this.tabSelect.emit(tab);
     }else{
       this.alertService.warnAlert("Espera!", "Antes de continuar debes seleccionar un tema");

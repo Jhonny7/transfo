@@ -24,6 +24,7 @@ export class GenericModalComponent implements OnInit {
   public img: any = environment.getImagenIndividual;
   public filesInfo: any = {};
   public temas: any[] = [];
+  public perfiles: any[] = [];
   public redes: any[] = [];
   public municipios: any[] = [];
   public complejidades: any[] = [];
@@ -81,14 +82,17 @@ export class GenericModalComponent implements OnInit {
         //this.data.idArchivo = this.data.current.url;
         break;
       case 2:
+        this.cargarPerfiles();
         this.cargarTemas();
         break;
       case 3:
+        this.cargarPerfiles();
         this.cargarTemas();
         this.cargarComplejidades();
         break;
       case 4:
         //this.data.idArchivo = this.data.current.id_archivo;
+        this.cargarPerfiles();
         this.cargarTemas();
         break;
       case 5:
@@ -102,6 +106,7 @@ export class GenericModalComponent implements OnInit {
         if (this.data.current.id && this.data.current.json) {
           this.redTemporales = JSON.parse(this.data.current.json);
         }
+        this.cargarPerfiles();
         this.cargarTemas();
         this.cargarTipoCatalogos();
         this.getVideos();
@@ -449,7 +454,9 @@ export class GenericModalComponent implements OnInit {
       this.data.current.nombre.length == 0 ||
       this.data.current.id_tema == "0" ||
       this.data.current.id_tema == 0 ||
-      this.data.current.id_tema == null) {
+      this.data.current.id_tema == null ||
+      this.data.current.id_tipo_usuario == 0 ||
+      this.data.current.id_tipo_usuario == null) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else if (this.s.files.length + this.s.elements.length > 5) {
       this.alertService.warnAlert("Espera!", "Máximo puedes almacenar 6 imágenes en esta sección");
@@ -457,14 +464,14 @@ export class GenericModalComponent implements OnInit {
 
       if (fromFiles) {
         let json = JSON.stringify(this.redTemporales);
-        let sqlTema2 = `INSERT INTO catalogo (id_tema, json, id_tipo_catalogo, id_empresa, descripcion, nombre, id_referencia) 
-        VALUES (${this.data.current.id_tema},'${json}',34, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}', '${catalogoSabias}')`;
+        let sqlTema2 = `INSERT INTO catalogo (id_tipo_usuario,id_tema, json, id_tipo_catalogo, id_empresa, descripcion, nombre, id_referencia) 
+        VALUES (${this.data.current.id_tipo_usuario},${this.data.current.id_tema},'${json}',34, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}', '${catalogoSabias}')`;
 
         return this.sqlGenericService.excecuteQueryString(sqlTema2);
       } else {
         let json = JSON.stringify(this.redTemporales);
-        let sqlTema2 = `INSERT INTO catalogo (id_tema, json, id_tipo_catalogo, id_empresa, descripcion, nombre, id_referencia) 
-        VALUES (${this.data.current.id_tema},'${json}',34, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}', '${catalogoSabias}')`;
+        let sqlTema2 = `INSERT INTO catalogo (id_tipo_usuario, id_tema, json, id_tipo_catalogo, id_empresa, descripcion, nombre, id_referencia) 
+        VALUES (${this.data.current.id_tipo_usuario},${this.data.current.id_tema},'${json}',34, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}', '${catalogoSabias}')`;
 
         this.sqlGenericService.excecuteQueryString(sqlTema2).subscribe((resp: any) => {
           //Se registra correctamente nuevo usuario
@@ -485,7 +492,9 @@ export class GenericModalComponent implements OnInit {
     if (this.data.current.descripcion.length == 0 ||
       this.data.current.nombre.length == 0 ||
       this.data.current.id_tema == 0 ||
-      this.data.current.id_tema == null) {
+      this.data.current.id_tema == null ||
+      this.data.current.id_tipo_usuario == 0 ||
+      this.data.current.id_tipo_usuario == null) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else {
 
@@ -505,7 +514,7 @@ export class GenericModalComponent implements OnInit {
 
         this.loadingService.show("Agregando...");
 
-        let sqlTema = `INSERT INTO capsula (id_tema, id_empresa, descripcion, nombre) VALUES (${this.data.current.id_tema}, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}')`;
+        let sqlTema = `INSERT INTO capsula (id_tipo_usuario, id_tema, id_empresa, descripcion, nombre) VALUES (${this.data.current.id_tipo_usuario},${this.data.current.id_tema}, ${idEmpresa}, '${this.data.current.descripcion}', '${this.data.current.nombre}')`;
         //console.log(sqlTema);
 
         this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
@@ -557,11 +566,13 @@ export class GenericModalComponent implements OnInit {
     if (this.data.current.pregunta.length == 0 ||
       this.data.current.respuesta.length == 0 ||
       this.data.current.id_tema == 0 ||
-      this.data.current.id_tema == null) {
+      this.data.current.id_tema == null ||
+      this.data.current.id_tipo_usuario == 0 ||
+      this.data.current.id_tipo_usuario == null) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else {
 
-      let sqlTema2 = `INSERT INTO preguntas_frecuentes (id_tema, id_empresa, pregunta, respuesta) VALUES (${this.data.current.id_tema}, ${idEmpresa}, '${this.data.current.pregunta}', '${this.data.current.respuesta}')`;
+      let sqlTema2 = `INSERT INTO preguntas_frecuentes (id_tipo_usuario, id_tema, id_empresa, pregunta, respuesta) VALUES (${this.data.current.id_tipo_usuario},${this.data.current.id_tema}, ${idEmpresa}, '${this.data.current.pregunta}', '${this.data.current.respuesta}')`;
 
       this.sqlGenericService.excecuteQueryString(sqlTema2).subscribe((resp: any) => {
         //Se registra correctamente nuevo usuario
@@ -591,7 +602,9 @@ export class GenericModalComponent implements OnInit {
       this.data.current.id_tema == 0 ||
       this.data.current.id_tema == null ||
       this.data.current.id_complejidad == 0 ||
-      this.data.current.id_complejidad == null) {
+      this.data.current.id_complejidad == null ||
+      this.data.current.id_tipo_usuario == 0 ||
+      this.data.current.id_tipo_usuario == null) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else if (this.data.current.respuestas.length < 4) {
       this.alertService.warnAlert("Espera!", "Agrega por lo menos 4 respuestas");
@@ -605,7 +618,7 @@ export class GenericModalComponent implements OnInit {
       };
 
       let json = JSON.stringify(jsonObj);
-      let sqlTema2 = `INSERT INTO trivia (id_tema, id_complejidad, id_empresa, json_trivia) VALUES (${this.data.current.id_tema}, ${this.data.current.id_complejidad}, ${idEmpresa}, '${json}')`;
+      let sqlTema2 = `INSERT INTO trivia (id_tipo_usuario, id_tema, id_complejidad, id_empresa, json_trivia) VALUES (${this.data.current.id_tipo_usuario},${this.data.current.id_tema}, ${this.data.current.id_complejidad}, ${idEmpresa}, '${json}')`;
 
       this.sqlGenericService.excecuteQueryString(sqlTema2).subscribe((resp: any) => {
         //Se registra correctamente nuevo usuario
@@ -731,14 +744,18 @@ export class GenericModalComponent implements OnInit {
       this.data.current.nombre.length == 0 ||
       this.data.current.id_tema == "0" ||
       this.data.current.id_tema == 0 ||
-      this.data.current.id_tema == null) {
+      this.data.current.id_tema == null ||
+      this.data.current.id_tipo_usuario == 0 ||
+      this.data.current.id_tipo_usuario == null) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else {
 
       let json = JSON.stringify(this.redTemporales);
 
       let sqlTema = `UPDATE catalogo 
-      SET descripcion = '${this.data.current.descripcion}', 
+      SET 
+      id_tipo_usuario = ${this.data.current.id_tipo_usuario},
+      descripcion = '${this.data.current.descripcion}', 
       nombre = '${this.data.current.nombre}',
       json = '${json}',
       id_tema = ${this.data.current.id_tema} 
@@ -762,7 +779,9 @@ export class GenericModalComponent implements OnInit {
     if (this.data.current.descripcion.length == 0 ||
       this.data.current.nombre.length == 0 ||
       this.data.current.id_tema == 0 ||
-      this.data.current.id_tema == null) {
+      this.data.current.id_tema == null ||
+      this.data.current.id_tipo_usuario == 0 ||
+      this.data.current.id_tipo_usuario == null) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else {
       if (this.data.current.b64.length > 0) {
@@ -781,7 +800,7 @@ export class GenericModalComponent implements OnInit {
 
         this.loadingService.show("Actualizando...");
 
-        let sqlTema = `UPDATE capsula SET descripcion = '${this.data.current.descripcion}', nombre = '${this.data.current.nombre}', id_tema = ${this.data.current.id_tema} WHERE id = ${this.data.current.id}`;
+        let sqlTema = `UPDATE capsula SET id_tipo_usuario = ${this.data.current.id_tipo_usuario}, descripcion = '${this.data.current.descripcion}', nombre = '${this.data.current.nombre}', id_tema = ${this.data.current.id_tema} WHERE id = ${this.data.current.id}`;
         //console.log(sqlTema);
 
         this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
@@ -816,7 +835,7 @@ export class GenericModalComponent implements OnInit {
 
 
       } else {
-        let sqlTema = `UPDATE capsula SET id_tema = ${this.data.current.id_tema}, descripcion = '${this.data.current.descripcion}', nombre = '${this.data.current.nombre}' WHERE id = ${this.data.current.id}`;
+        let sqlTema = `UPDATE capsula SET id_tipo_usuario = ${this.data.current.id_tipo_usuario}, id_tema = ${this.data.current.id_tema}, descripcion = '${this.data.current.descripcion}', nombre = '${this.data.current.nombre}' WHERE id = ${this.data.current.id}`;
         //console.log(sqlTema);
 
         this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
@@ -837,11 +856,13 @@ export class GenericModalComponent implements OnInit {
     if (this.data.current.pregunta.length == 0 ||
       this.data.current.respuesta.length == 0 ||
       this.data.current.id_tema == 0 ||
-      this.data.current.id_tema == null) {
+      this.data.current.id_tema == null ||
+      this.data.current.id_tipo_usuario == 0 ||
+      this.data.current.id_tipo_usuario == null) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else {
 
-      let sqlTema = `UPDATE preguntas_frecuentes SET pregunta = '${this.data.current.pregunta}', respuesta = '${this.data.current.respuesta}', id_tema = ${this.data.current.id_tema} WHERE id = ${this.data.current.id}`;
+      let sqlTema = `UPDATE preguntas_frecuentes SET id_tipo_usuario = ${this.data.current.id_tipo_usuario}, pregunta = '${this.data.current.pregunta}', respuesta = '${this.data.current.respuesta}', id_tema = ${this.data.current.id_tema} WHERE id = ${this.data.current.id}`;
       //console.log(sqlTema);
 
       this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
@@ -871,7 +892,9 @@ export class GenericModalComponent implements OnInit {
       this.data.current.id_tema == 0 ||
       this.data.current.id_tema == null ||
       this.data.current.id_complejidad == 0 ||
-      this.data.current.id_complejidad == null) {
+      this.data.current.id_complejidad == null ||
+      this.data.current.id_tipo_usuario == 0 ||
+      this.data.current.id_tipo_usuario == null) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else if (this.data.current.respuestas.length < 4) {
       this.alertService.warnAlert("Espera!", "Agrega por lo menos 4 respuestas");
@@ -885,7 +908,7 @@ export class GenericModalComponent implements OnInit {
       };
 
       let json = JSON.stringify(jsonObj);
-      let sqlTema = `UPDATE trivia SET json_trivia = '${json}', id_tema = ${this.data.current.id_tema}, id_complejidad = ${this.data.current.id_complejidad} WHERE id = ${this.data.current.id}`;
+      let sqlTema = `UPDATE trivia SET id_tipo_usuario = ${this.data.current.id_tipo_usuario}, json_trivia = '${json}', id_tema = ${this.data.current.id_tema}, id_complejidad = ${this.data.current.id_complejidad} WHERE id = ${this.data.current.id}`;
       //console.log(sqlTema);
 
       this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
@@ -940,6 +963,7 @@ export class GenericModalComponent implements OnInit {
 
     }
   }
+
   /**Combos */
   cargarTemas() {
     let sql: string = `SELECT id, descripcion as label FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
@@ -948,6 +972,23 @@ export class GenericModalComponent implements OnInit {
       //Se registra correctamente nuevo usuario
       this.temas = resp.parameters;
       this.temas.unshift({ id: null, label: "[--Selecciona--]" });
+    }, (err: HttpErrorResponse) => {
+      this.loadingService.hide();
+    });
+  }
+
+  /**Combos */
+  cargarPerfiles() {
+    let sql: string = `SELECT 
+    id as value, 
+    nombre as label 
+    FROM catalogo 
+    WHERE id_tipo_catalogo = 29 AND id_empresa = ${idEmpresa} AND id != 169`;
+
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
+      //Se registra correctamente nuevo usuario
+      this.perfiles = resp.parameters;
+      this.perfiles.unshift({ value: null, label: "[--Selecciona--]" });
     }, (err: HttpErrorResponse) => {
       this.loadingService.hide();
     });

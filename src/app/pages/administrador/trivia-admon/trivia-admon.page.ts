@@ -107,7 +107,7 @@ export class TriviaAdmonPage implements OnInit {
       this.loadingService.show("Cargando temas...");
     }
     let sql: string = `SELECT id, descripcion as label, id_archivo, url FROM catalogo WHERE id_tipo_catalogo = 31 AND id_empresa = ${idEmpresa}`;
-   //console.log(sql);
+    //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
@@ -127,11 +127,11 @@ export class TriviaAdmonPage implements OnInit {
   cargarCapsulas() {
     this.loadingService.show("Cargando cápsulas...");
 
-    let sql: string = `SELECT c.id, c.descripcion, c.nombre, c.id_archivo, c.url, cat.nombre as tema, c.id_tema FROM capsula c 
+    let sql: string = `SELECT c.id, c.descripcion, c.nombre, c.id_archivo, c.url, cat.nombre as tema, c.id_tema, c.id_tipo_usuario FROM capsula c 
     INNER JOIN catalogo cat
     ON (cat.id = c.id_tema)
     WHERE c.id_empresa = ${idEmpresa} ORDER BY cat.nombre`;
-   //console.log(sql);
+    //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
@@ -147,7 +147,7 @@ export class TriviaAdmonPage implements OnInit {
 
     let sql: string = `SELECT * FROM directorio
     WHERE id_empresa = ${idEmpresa} ORDER BY nombre_lugar`;
-   //console.log(sql);
+    //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
@@ -163,12 +163,12 @@ export class TriviaAdmonPage implements OnInit {
 
     let sql: string = `SELECT * FROM catalogo
     WHERE id_empresa = ${idEmpresa} AND id_referencia = '${catalogoSabias}' ORDER BY nombre`;
-   //console.log(sql);
+    //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
-     //console.log(resp);
-      
+      //console.log(resp);
+
       this.loadingService.hide();
       this.sabias = resp.parameters;
     }, (err: HttpErrorResponse) => {
@@ -178,7 +178,7 @@ export class TriviaAdmonPage implements OnInit {
 
   cargarComplejidad() {
     let sql: string = `SELECT id, descripcion as label, id_archivo, url FROM catalogo WHERE id_tipo_catalogo = 32 AND id_empresa = ${idEmpresa}`;
-   //console.log(sql);
+    //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
@@ -203,7 +203,7 @@ export class TriviaAdmonPage implements OnInit {
     ON (t.id = pf.id_tema) 
     WHERE pf.id_empresa = ${idEmpresa}
     ORDER BY t.nombre ASC`;
-   //console.log(sql);
+    //console.log(sql);
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
@@ -227,7 +227,7 @@ export class TriviaAdmonPage implements OnInit {
     ON (t2.id = pf.id_complejidad) 
     WHERE pf.id_empresa = ${idEmpresa}
     ORDER BY t.nombre ASC`;
-   //console.log(sql);
+    //console.log(sql);
 
     this.trivias = [];
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
@@ -244,7 +244,8 @@ export class TriviaAdmonPage implements OnInit {
           id_tema: element.id_tema,
           id_complejidad: element.id_complejidad,
           respuestas: json.respuestas,
-          respuesta: json.respuesta
+          respuesta: json.respuesta,
+          id_tipo_usuario: element.id_tipo_usuario
         });
       });
 
@@ -275,7 +276,8 @@ export class TriviaAdmonPage implements OnInit {
           b64: "",
           url: null,
           id_tema: null,
-          id: null
+          id: null,
+          id_tipo_usuario: null
         };
         break;
       case 2:
@@ -284,7 +286,8 @@ export class TriviaAdmonPage implements OnInit {
           pregunta: "",
           respuesta: "",
           id_tema: null,
-          id: null
+          id: null,
+          id_tipo_usuario: null
         };
         break;
       case 3:
@@ -298,9 +301,8 @@ export class TriviaAdmonPage implements OnInit {
           id_tema: null,
           id_complejidad: null,
           respuestas: [],
-          respuesta: null
         };
-        break;
+
       case 5:
         data.status = false;
         data.current = {
@@ -322,13 +324,14 @@ export class TriviaAdmonPage implements OnInit {
           descripcion: "",
           id: null,
           id_tema: null,
-          json: ""
+          json: "",
+          id_tipo_usuario: null
         };
         break;
       default:
         break;
     }
-    let matDialogConfig: MatDialogConfig = { data: data, disableClose: true, panelClass: "modal-general" };
+    let matDialogConfig = { data: data, disableClose: true, panelClass: "modal-general" };
     let dialogRef = this.matDialog.open(GenericModalComponent, matDialogConfig);
     //dialogRef.
     dialogRef.beforeClosed().subscribe((r) => {
@@ -373,6 +376,8 @@ export class TriviaAdmonPage implements OnInit {
         break;
       case 4:
         let capsula = item;
+        //console.log(capsula);
+
         data.status = true;
         data.current = {
           nombre: capsula.nombre,
@@ -380,7 +385,8 @@ export class TriviaAdmonPage implements OnInit {
           b64: "",
           url: capsula.url,
           id: capsula.id,
-          id_tema: capsula.id_tema
+          id_tema: capsula.id_tema,
+          id_tipo_usuario: capsula.id_tipo_usuario
         };
         break;
       case 2:
@@ -390,13 +396,14 @@ export class TriviaAdmonPage implements OnInit {
           pregunta: preguntaFrecuente.pregunta,
           respuesta: preguntaFrecuente.respuesta,
           id_tema: preguntaFrecuente.id_tema,
-          id: preguntaFrecuente.id
+          id: preguntaFrecuente.id,
+          id_tipo_usuario: preguntaFrecuente.id_tipo_usuario
         };
         break;
       case 3:
         let trivia = item;
         data.status = true;
-       //console.log(trivia);
+        //console.log(trivia);
 
         data.current = {
           pregunta: trivia.pregunta,
@@ -407,7 +414,8 @@ export class TriviaAdmonPage implements OnInit {
           id_tema: trivia.id_tema,
           id_complejidad: trivia.id_complejidad,
           respuestas: trivia.respuestas,
-          respuesta: trivia.respuesta
+          respuesta: trivia.respuesta,
+          id_tipo_usuario: trivia.id_tipo_usuario
         }
         break;
       case 5:
@@ -429,7 +437,7 @@ export class TriviaAdmonPage implements OnInit {
       case 6:
         let sabias = item;
         console.log(sabias);
-        
+
         data.status = true;
 
         data.current = {
@@ -437,7 +445,8 @@ export class TriviaAdmonPage implements OnInit {
           descripcion: sabias.descripcion,
           id: sabias.id,
           id_tema: sabias.id_tema,
-          json: sabias.json
+          json: sabias.json,
+          id_tipo_usuario: sabias.id_tipo_usuario
         }
         break;
       default:
@@ -473,7 +482,7 @@ export class TriviaAdmonPage implements OnInit {
     });
   }
 
-  delete(item: any) {
+  delete(item: any, other: any = null) {
     let sqlDelete: string = "";
     let data: any = {};
     switch (this.menuActivo) {
@@ -517,15 +526,17 @@ export class TriviaAdmonPage implements OnInit {
         break;
     }
 
-    this.confirm(data);
+    this.confirm(data, other);
 
   }
 
-  confirm(data) {
+  confirm(data, other: any = null) {
     this.alertService.confirmTrashAlert(() => {
       this.loadingService.show("Eliminando...");
+      let msj: string = "";
       this.sqlGenericService.excecuteQueryString(data.sql).subscribe((response: any) => {
         this.loadingService.hide();
+
         switch (this.menuActivo) {
           case 1:
             this.cargarTemas();
@@ -551,7 +562,11 @@ export class TriviaAdmonPage implements OnInit {
 
       }, (error: HttpErrorResponse) => {
         this.loadingService.hide();
-        this.alertService.errorAlert("Oops!", "Ocurrió un error, contacta al administrador");
+        if (other) {
+          this.alertService.warnAlert("Oops!", `${other} no puede ser eliminado, ya que está asignado`);
+        } else {
+          this.alertService.errorAlert("Oops!", "Ocurrió un error, contacta al administrador");
+        }
       });
     }, "Confirmar", data.msj, "Aceptar");
   }

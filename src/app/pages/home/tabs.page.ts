@@ -1,14 +1,12 @@
-import { Subscription } from 'rxjs';
-import { EventService } from '../../services/event.service';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { Tabs } from 'src/app/components/tabs/tabs';
 import { AdDirective } from 'src/app/directives/ad.directive';
 import { UtilService } from 'src/app/services/util.service';
+import { EventService } from '../../services/event.service';
 import { Tab1Page } from './tab1/tab1.page';
-import { TranslateService } from '@ngx-translate/core';
-import { Tab2Page } from './tab2/tab2.page';
-import { Tab3Page } from './tab3/tab3.page';
 
 @Component({
   selector: 'app-tabs',
@@ -18,25 +16,18 @@ import { Tab3Page } from './tab3/tab3.page';
 export class TabsPage implements OnInit, OnDestroy{
 
   public tabs: Tabs[] = [{
-    title: "Faqs",
-    icon: "help",
-    active: false,
-    component: Tab2Page,
-    url: "home/tab2",
-    reload: true
-  },{
     title: "Inicio",
     icon: "rocket",
     active: true,
     component: Tab1Page,
-    url: "home/tab1",
+    url: "inicio",
     reload: true
   },{
-    title: "Cápsulas",
-    icon: "information-circle",
+    title: "Acerca de",
+    icon: "apps",
     active: false,
-    component: Tab3Page,
-    url: "home/tab3",
+    component: Tab1Page,
+    url: "inicio",
     reload: true
   }];
 

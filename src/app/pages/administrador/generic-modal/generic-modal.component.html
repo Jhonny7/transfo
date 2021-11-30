@@ -17,7 +17,7 @@
                 <label for="filere" class="ctn-img">
                     <img src="assets/imgs/noAvail.jpeg" alt=""
                         *ngIf="!data.current.url && data.current.b64.length == 0">
-                    <img [src]="img + data.current.url" alt=""
+                    <img [src]="data.current.url" alt=""
                         *ngIf="data.current.url && data.current.b64.length == 0">
                     <img [src]="data.current.b64" alt=""
                         *ngIf="!data.current.url && data.current.b64.length > 0">
@@ -29,6 +29,13 @@
 
         <section *ngSwitchCase="4">
 
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Perfil *</label>
+                <select [(ngModel)]="data.current.id_tipo_usuario">
+                    <option [value]="tema.value" *ngFor="let tema of perfiles">{{ tema.label }}</option>
+                </select>
+            </div>
+            
             <div class="input-container" style="width: 100%;">
                 <label for="nomre">Tema *</label>
                 <select [(ngModel)]="data.current.id_tema">
@@ -77,6 +84,13 @@
         <section *ngSwitchCase="2">
 
             <div class="input-container" style="width: 100%;">
+                <label for="nomre">Perfil *</label>
+                <select [(ngModel)]="data.current.id_tipo_usuario">
+                    <option [value]="tema.value" *ngFor="let tema of perfiles">{{ tema.label }}</option>
+                </select>
+            </div>
+
+            <div class="input-container" style="width: 100%;">
                 <label for="nomre">Tema *</label>
                 <select [(ngModel)]="data.current.id_tema">
                     <option [value]="tema.id" *ngFor="let tema of temas">{{ tema.label }}</option>
@@ -96,6 +110,13 @@
         </section>
 
         <section *ngSwitchCase="3">
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Perfil *</label>
+                <select [(ngModel)]="data.current.id_tipo_usuario">
+                    <option [value]="tema.value" *ngFor="let tema of perfiles">{{ tema.label }}</option>
+                </select>
+            </div>
 
             <div class="input-container" style="width: 100%;">
                 <label for="nomre">Tema *</label>
@@ -210,6 +231,13 @@
 
         <section *ngSwitchCase="6">
 
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Perfil *</label>
+                <select [(ngModel)]="data.current.id_tipo_usuario">
+                    <option [value]="tema.value" *ngFor="let tema of perfiles">{{ tema.label }}</option>
+                </select>
+            </div>
+            
             <div class="input-container" style="width: 100%;">
                 <label for="nomre">Tema *</label>
                 <select [(ngModel)]="data.current.id_tema">
