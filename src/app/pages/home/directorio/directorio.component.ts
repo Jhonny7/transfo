@@ -15,6 +15,7 @@ export class DirectorioComponent implements OnInit {
   directorio: any;
   infoCard: any;
   socialMedia: boolean;
+  flag: boolean = false;
   social = [{
     id: 145,
     name: 'facebook'
@@ -37,7 +38,7 @@ export class DirectorioComponent implements OnInit {
 
   ngOnInit() {
     this.getDirectorios();
-
+    this.flag = true;
   }
   ionViewDidEnter() {
     this.cargarColores();

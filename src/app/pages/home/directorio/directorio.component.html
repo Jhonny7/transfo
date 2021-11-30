@@ -5,7 +5,8 @@
     
     <div class="content" (mouseenter)="showSocialMedia(true, item)" (mouseleave)="showSocialMedia(false, item)" *ngFor="let item of directorio">
       <div id="card" class="card">
-          <div class="firstinfo"><img src="https://bootdey.com/img/Content/avatar/avatar6.png" />
+          <div class="firstinfo">
+            <section class="seccion"><img src="https://i.blogs.es/594843/chrome/450_1000.jpg" /></section>
               <div class="profileinfo">
                   <h1>{{item.nombre_contacto}}</h1>
                   <h3>+52 {{item.telefono}}</h3>

@@ -20,12 +20,15 @@ export class Tab2Page implements OnInit {
   viewFAQs = false;
   title: string;
   listMaterias: Array<string>;
+  user:any;
   constructor(
     private sqlGenericService: SqlGenericService,
     private loadingService: LoaderService,
     private genericService: GenericService,
     private localStorageEncryptService: LocalStorageEncryptService,
-  ) { }
+  ) {
+    this.user = localStorageEncryptService.getFromLocalStorage('userSessionEducacion');
+   }
 
   ngOnInit() {
 this.getMaterias();
@@ -37,7 +40,7 @@ this.getMaterias();
    */
   getFAQ(item) {
     this.title = item.label;
-    const sql = `SELECT * FROM preguntas_frecuentes WHERE id_empresa = ${idEmpresa} AND id_tema = ${item.value}`;
+    const sql = `SELECT * FROM preguntas_frecuentes WHERE id_empresa = ${idEmpresa} AND id_tema = ${item.value} AND (id_tipo_usuario = ${this.user.id_tipo_usuario} OR id_tipo_usuario = 170)`;
    this.loadingService.show('Espere...');
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       this.faqs = response.parameters;

@@ -22,6 +22,7 @@ import { SwiperModule } from 'ngx-swiper-wrapper';
 import { SWIPER_CONFIG } from 'ngx-swiper-wrapper';
 import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
 import { FormsModule } from '@angular/forms';
+import { DirectorioComponent } from './pages/home/directorio/directorio.component';
  
 const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
   direction: 'horizontal',
@@ -65,7 +66,8 @@ export function createTranslateLoader(http: HttpClient) {
     {
       provide: SWIPER_CONFIG,
       useValue: DEFAULT_SWIPER_CONFIG
-    }
+    },
+    DirectorioComponent,
   ],
   exports:[
     TranslateModule, 
