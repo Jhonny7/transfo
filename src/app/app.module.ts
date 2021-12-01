@@ -67,7 +67,7 @@ export function createTranslateLoader(http: HttpClient) {
       provide: SWIPER_CONFIG,
       useValue: DEFAULT_SWIPER_CONFIG
     },
-    DirectorioComponent,
+    
   ],
   exports:[
     TranslateModule, 

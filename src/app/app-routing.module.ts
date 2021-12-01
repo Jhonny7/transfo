@@ -15,6 +15,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { RootGuard } from './guards/root.guard';
 import { ThemeGuard } from './guards/theme.guard';
 import { DirectorioComponent } from './pages/home/directorio/directorio.component';
+import { AboutComponent } from './pages/home/about/about.component';
 
 const routes: Routes = [
   {
@@ -25,7 +26,13 @@ const routes: Routes = [
     path: 'inicio',
     component: TabsPage,
     canActivateChild: [AuthGuard],
-  }, {
+  },
+  {
+    path: 'about',
+    component: AboutComponent,
+    canActivateChild: [AuthGuard]
+  },
+  {
     path: "trivia",
     component: TriviaPage,
     canActivate: [AuthGuard, ThemeGuard],
