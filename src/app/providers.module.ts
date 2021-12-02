@@ -20,7 +20,7 @@ import { DirectorioComponent } from './pages/home/directorio/directorio.componen
       Device,
       DirectorioComponent,
       AppVersion,
-      //FCM
+      //FCM 
   ]
 })
 export class ProvidersModule {}
