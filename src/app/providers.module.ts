@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { Device } from '@ionic-native/device/ngx';
+import { AppVersion } from '@ionic-native/app-version/ngx';
 import { DirectorioComponent } from './pages/home/directorio/directorio.component';
 //import { FCM } from '@ionic-native/fcm/ngx';
 @NgModule({
@@ -17,7 +18,8 @@ import { DirectorioComponent } from './pages/home/directorio/directorio.componen
       Overlay,
       GooglePlus,
       Device,
-      DirectorioComponent
+      DirectorioComponent,
+      AppVersion,
       //FCM
   ]
 })

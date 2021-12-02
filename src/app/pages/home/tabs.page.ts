@@ -6,6 +6,7 @@ import { Tabs } from 'src/app/components/tabs/tabs';
 import { AdDirective } from 'src/app/directives/ad.directive';
 import { UtilService } from 'src/app/services/util.service';
 import { EventService } from '../../services/event.service';
+import { AboutComponent } from './about/about.component';
 import { Tab1Page } from './tab1/tab1.page';
 
 @Component({
@@ -26,7 +27,7 @@ export class TabsPage implements OnInit, OnDestroy{
     title: "Acerca de",
     icon: "apps",
     active: false,
-    component: Tab1Page,
+    component: AboutComponent,
     url: "inicio",
     reload: true
   }];
