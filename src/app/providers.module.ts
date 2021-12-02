@@ -19,7 +19,7 @@ import { DirectorioComponent } from './pages/home/directorio/directorio.componen
       GooglePlus,
       Device,
       DirectorioComponent,
-      AppVersion,
+      AppVersion, 
       //FCM
   ]
 })
