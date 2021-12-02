@@ -31,6 +31,7 @@ import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 import { GalleryComponent } from './components/gallery/gallery.component';
 import { TemaComponent } from './components/tema/tema';
 import { DirectorioComponent } from './pages/home/directorio/directorio.component';
+import { GalleryUrlComponent } from './components/gallery-url/gallery.component';
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, '../assets/i18n/', '.json');
 }
@@ -60,7 +61,8 @@ export function createTranslateLoader(http: HttpClient) {
         RegisterPage,
         LoginComponent,
         RecuperarPage,
-        DirectorioComponent
+        DirectorioComponent,
+        GalleryUrlComponent
     ],
     exports:[
         SpinnerOverlayComponent,
@@ -87,6 +89,7 @@ export function createTranslateLoader(http: HttpClient) {
         LoginComponent,
         RecuperarPage,
         DirectorioComponent,
+        GalleryUrlComponent
     ],
     imports: [
         CommonModule,

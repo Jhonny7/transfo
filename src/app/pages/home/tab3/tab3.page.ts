@@ -24,13 +24,18 @@ export class Tab3Page implements OnInit {
   descripcion: any;
   video: any;
   url = environment.getImagenIndividual;
+  public user: any = null;
+
   constructor(
     private loadingService: LoaderService,
     private sqlGenericService: SqlGenericService,
     private genericService: GenericService,
     private localStorageEncryptService: LocalStorageEncryptService,
     private domSanitizer: DomSanitizer,
-  ) { }
+  ) {
+    this.user = this.localStorageEncryptService.getFromLocalStorage("userSessionEducacion");
+  }
+
   ngOnInit() {
     this.getMaterias();
 
@@ -43,7 +48,7 @@ export class Tab3Page implements OnInit {
     $name = $data['name'];
     */
 
-    
+
   }
 
   getMaterias() {
@@ -56,16 +61,16 @@ export class Tab3Page implements OnInit {
       this.loadingService.hide();
       let temaID: any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
       console.log(temaID);
-      
-      let position = this.listMaterias.findIndex((o:any) => {
+
+      let position = this.listMaterias.findIndex((o: any) => {
         return o.value == temaID;
       });
       console.log(position);
-      
+
 
       let t = this.listMaterias[position];
       console.log(t);
-      
+
       this.getCapsulasList(t);
     });
   }
@@ -73,7 +78,7 @@ export class Tab3Page implements OnInit {
   getCapsulasList(item) {
     this.title = item.label;
     this.loadingService.show('Espere...');
-    const sql = `SELECT * FROM capsula WHERE id_empresa = ${idEmpresa} AND id_tema = ${item.value}`;
+    const sql = `SELECT * FROM capsula WHERE id_empresa = ${idEmpresa} AND id_tema = ${item.value} AND (id_tipo_usuario = 170 OR id_tipo_usuario = ${this.user.id_tipo_usuario})`;
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       console.log(response.parameters);
       this.capsulasInfo = response.parameters;
@@ -91,7 +96,7 @@ export class Tab3Page implements OnInit {
     this.viewCapsulasList = false;
     this.viewCapsulas = true;
   }
-  return(){
+  return() {
     window.history.back();
-  } 
+  }
 }

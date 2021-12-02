@@ -4,7 +4,7 @@
   [class]="tabConfig?.extraClass" >
     <section class="no-active" (click)="renderComponent(tab)" [class]="{ 'activo' : tab.active }">
       <ion-icon [name]="tab.active ? tab.icon : tab.icon + '-outline'"></ion-icon>
-      <p [ngStyle]="{'color': tab.active ? '#fff' : '#000'}">{{tab.title}}</p>
+      <p [ngStyle]="{'color': tab.active ? '#fff' : '#d6d6d6'}">{{tab.title}}</p>
     </section>
   </div>
-</section>
+</section> 

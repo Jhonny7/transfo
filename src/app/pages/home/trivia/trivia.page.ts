@@ -61,6 +61,7 @@ export class TriviaPage implements OnInit {
         WHERE 
         up.id_pregunta IS NULL AND
         t.id_complejidad = (SELECT id_referencia FROM catalogo WHERE id = ${this.user.id_nivel})
+        AND (t.id_tipo_usuario = 170 OR t.id_tipo_usuario = ${this.user.id_tipo_usuario})
         ORDER BY RAND()
         LIMIT 5`;
 

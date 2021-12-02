@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         } else if (expiredSession) {
             return new Date(expiredSession) > new Date();//Solo aplica a invitados
         } else {
-            return this.router.navigate(["/"]);
+            return this.router.navigate(["/","login"]);
         }
     }
 

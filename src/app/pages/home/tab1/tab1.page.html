@@ -8,7 +8,7 @@
 
     <container>
       <section class="secr">
-        <mat-select [(value)]="temaGlobal">
+        <mat-select [(value)]="temaGlobal" (selectionChange)="select()">
 
           <mat-option *ngFor="let category of temas" [value]="category.id">
 

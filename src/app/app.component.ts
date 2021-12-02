@@ -47,6 +47,8 @@ export class AppComponent implements OnInit{
     private fcmService: FcmService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.localStorageEncryptService.setToLocalStorage("theme", "#0783bc");
+    this.localStorageEncryptService.setToLocalStorage("themeClass", "primary2");
   }
 
   ngOnInit(){

@@ -309,3 +309,7 @@ table th {
 .mat-drawer-container{
     height: 100%;
 }
+
+.mat-checkbox-indeterminate.mat-accent .mat-checkbox-background, .mat-checkbox-checked.mat-accent .mat-checkbox-background {
+    background-color: #3498db !important;
+}

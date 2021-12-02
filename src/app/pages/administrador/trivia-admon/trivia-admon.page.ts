@@ -314,7 +314,8 @@ export class TriviaAdmonPage implements OnInit {
           telefono: "",
           email: "",
           ubicacion_maps: "",
-          links: ""
+          links: "",
+          servicios: ""
         };
         break;
       case 6:
@@ -431,7 +432,8 @@ export class TriviaAdmonPage implements OnInit {
           telefono: directorio.telefono,
           email: directorio.email,
           ubicacion_maps: directorio.ubicacion_maps,
-          links: directorio.links
+          links: directorio.links,
+          servicios: directorio.servicios
         }
         break;
       case 6:

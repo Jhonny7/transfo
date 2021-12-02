@@ -156,6 +156,10 @@ export class Tab1Page implements OnInit {
 
   }
 
+  select(){
+    this.localStorageEncryptService.setToLocalStorage("temaGlobal", this.temaGlobal);
+  }
+
   cargarCategorias() {
     let sql: string = `SELECT * FROM catalogo WHERE id_empresa = ${idEmpresa} and id_tipo_catalogo = 26 ORDER BY RAND()`;
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
@@ -179,17 +183,18 @@ export class Tab1Page implements OnInit {
     if (itm.notNeedSubject) {
       this.router.navigate(["/", itm.path])
     } else {
+      console.log("-----------------------");
+      
+      console.log(this.temaGlobal);
+      
       if (this.temaGlobal) {
         this.localStorageEncryptService.setToLocalStorage("temaGlobal", this.temaGlobal);
         if (itm.isTab) {
           this.eventService.send("tabChange", itm.id);
         } else {
-          console.log("no tab");
-          console.log(itm);
-
           this.router.navigate(["/", itm.path]);
           //this.router.navigateByUrl(itm.path);
-          //window.open(`/${itm.path}`, "_self");
+          window.open(`/${itm.path}`, "_self");
         }
       } else {
         this.alertService.warnAlert("Espera!", "Antes de continuar debes seleccionar un tema");
@@ -203,6 +208,8 @@ export class Tab1Page implements OnInit {
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
       this.temas = resp.parameters;
+      console.log(this.temas);
+      
       this.temas.unshift({
         id: 0,
         label: "[--Elige un tema--]",

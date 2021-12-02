@@ -24,6 +24,7 @@ export class GenericModalComponent implements OnInit {
   public img: any = environment.getImagenIndividual;
   public filesInfo: any = {};
   public temas: any[] = [];
+  public servicios: any[] = [];
   public perfiles: any[] = [];
   public redes: any[] = [];
   public municipios: any[] = [];
@@ -40,6 +41,7 @@ export class GenericModalComponent implements OnInit {
     link: ""
   };
   public redTemporales: any[] = [];
+  public servs: any[] = [];
   public elements: any[] = [];
 
   public Editor = DecoupledEditor;
@@ -98,7 +100,9 @@ export class GenericModalComponent implements OnInit {
       case 5:
         if (this.data.current.id) {
           this.redTemporales = JSON.parse(this.data.current.links);
+          this.servs = this.data.current.servicios.split(",");
         }
+        this.getServicios();
         this.getStates();
         this.getRedes();
         break;
@@ -636,22 +640,68 @@ export class GenericModalComponent implements OnInit {
 
   createDirectorio() {
     //console.log(this.data.current);
+    let error: number = 0;
+    this.servicios.forEach(serv => {
+      if (!serv.checked) {
+        error++;
+      }
+    });
 
     if (this.data.current.estado_combo.length == "0" ||
       this.data.current.domicilio.length == 0 ||
       this.data.current.nombre_lugar.length == 0 ||
-      this.data.current.nombre_contacto.length == 0 ||
-      this.data.current.telefono.length == 0 ||
-      this.data.current.email.length == 0 ||
-      this.data.current.ubicacion_maps.length == 0) {
+      error == this.servicios.length) {
       this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
     } else {
       let json = JSON.stringify(this.redTemporales);
+      let url: string = "";
+      let stringServs: string = "";
+      this.servicios.forEach(serv => {
+        console.log(serv);
+        if (serv.checked) {
+          stringServs += `${serv.label},`;
+        }
+      });
+      stringServs = stringServs.slice(0, -1);
+
+      switch (stringServs) {
+        case "s1":
+          url = "https://cdn.pixabay.com/photo/2012/04/23/16/12/click-38743_640.png";
+          break;
+        case "s2":
+          url = "https://cdn.pixabay.com/photo/2012/04/23/16/12/subway-38744_640.png";
+          break;
+        case "s3":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s4":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s1,s2":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s1,s3":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s1,s4":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s2,s3":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s2,s4":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s3,s4":
+          url = "https://picsum.photos/700/400?random";
+          break;
+      }
+
       let sqlTema2 = `INSERT INTO directorio (id_empresa, estado_combo, domicilio, municipio,
-        nombre_lugar,nombre_contacto,telefono,email,ubicacion_maps,links) VALUES 
+        nombre_lugar,nombre_contacto,telefono,email,ubicacion_maps,links,servicios,url) VALUES 
         (${idEmpresa}, '${this.data.current.estado_combo}', '${this.data.current.domicilio}', '${this.data.current.estado_combo}',
         '${this.data.current.nombre_lugar}','${this.data.current.nombre_contacto}','${this.data.current.telefono}',
-        '${this.data.current.email}', '${this.data.current.ubicacion_maps}', '${json}')`;
+        '${this.data.current.email}', '${this.data.current.ubicacion_maps}', '${json}','${stringServs}','${url}')`;
 
       this.sqlGenericService.excecuteQueryString(sqlTema2).subscribe((resp: any) => {
         //Se registra correctamente nuevo usuario
@@ -926,16 +976,63 @@ export class GenericModalComponent implements OnInit {
   }
 
   editDirectorio() {
+    let error: number = 0;
+    this.servicios.forEach(serv => {
+      if (!serv.checked) {
+        error++;
+      }
+    });
+
     if (this.data.current.estado_combo.length == "0" ||
       this.data.current.domicilio.length == 0 ||
       this.data.current.nombre_lugar.length == 0 ||
-      this.data.current.nombre_contacto.length == 0 ||
-      this.data.current.telefono.length == 0 ||
-      this.data.current.email.length == 0 ||
-      this.data.current.ubicacion_maps.length == 0) {
-      this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
+      error == this.servicios.length) {
+      this.alertService.warnAlert("Espera!", "Todos los campos marcados (*) son requeridos");
     } else {
       let json = JSON.stringify(this.redTemporales);
+
+      let url: string = "";
+      let stringServs: string = "";
+      this.servicios.forEach(serv => {
+        console.log(serv);
+        if (serv.checked) {
+          stringServs += `${serv.label},`;
+        }
+      });
+      stringServs = stringServs.slice(0, -1);
+
+      switch (stringServs) {
+        case "s1":
+          url = "https://cdn.pixabay.com/photo/2012/04/23/16/12/click-38743_640.png";
+          break;
+        case "s2":
+          url = "https://cdn.pixabay.com/photo/2012/04/23/16/12/subway-38744_640.png";
+          break;
+        case "s3":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s4":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s1,s2":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s1,s3":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s1,s4":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s2,s3":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s2,s4":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "s3,s4":
+          url = "https://picsum.photos/700/400?random";
+          break;
+      }
 
       let sqlTema = `UPDATE directorio SET 
       links = '${json}', 
@@ -946,7 +1043,9 @@ export class GenericModalComponent implements OnInit {
       nombre_contacto = '${this.data.current.nombre_contacto}',
       telefono = '${this.data.current.telefono}',
       email = '${this.data.current.email}',
-      ubicacion_maps = '${this.data.current.ubicacion_maps}'
+      ubicacion_maps = '${this.data.current.ubicacion_maps}',
+      url = '${url}',
+      servicios = '${stringServs}'
       WHERE id = ${this.data.current.id}`;
       //console.log(sqlTema);
 
@@ -1001,6 +1100,28 @@ export class GenericModalComponent implements OnInit {
       //Se registra correctamente nuevo usuario
       this.redes = resp.parameters;
       this.redes.unshift({ id: null, label: "[--Selecciona--]" });
+    }, (err: HttpErrorResponse) => {
+      this.loadingService.hide();
+    });
+  }
+
+  getServicios() {
+    let sql: string = `SELECT id, descripcion as label FROM catalogo WHERE id_tipo_catalogo = 38 AND id_empresa = ${idEmpresa}`;
+
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
+      //Se registra correctamente nuevo usuario
+      this.servicios = resp.parameters;
+      this.servicios.forEach(element => {
+        element.checked = false;
+        if (this.data.current.id) {
+          let positionServ: any = this.servs.findIndex((serv) => {
+            return serv == element.label;
+          });
+          if (positionServ >= 0) {
+            element.checked = true;
+          }
+        }
+      });
     }, (err: HttpErrorResponse) => {
       this.loadingService.hide();
     });
@@ -1118,10 +1239,9 @@ export class GenericModalComponent implements OnInit {
   deleteFile(idFile: number, obj: any, position: number = -1) {
     //console.log(idFile,obj,position);
 
-    let sql: string = `DELETE catalogo, archivo
+    let sql: string = `DELETE catalogo
      FROM catalogo
-     INNER JOIN archivo ON catalogo.id_archivo = archivo.id
-     WHERE catalogo.id_archivo = ${obj.elements[position].id_archivo}`;
+     WHERE id = ${obj.elements[position].id}`;
 
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       //console.log(response);

@@ -21,6 +21,7 @@ export class SabiasPage implements OnInit {
   public temaSelect: any = null;
   public sabiasSelect: any = null;
   public step: number = 2;
+  public user:any = null;
 
   constructor(
     private sqlGenericService: SqlGenericService,
@@ -28,7 +29,9 @@ export class SabiasPage implements OnInit {
     private loadingService: LoaderService,
     private domSanitizer: DomSanitizer,
     private localStorageEncryptService: LocalStorageEncryptService
-  ) { }
+  ) {
+    this.user = this.localStorageEncryptService.getFromLocalStorage("userSessionEducacion");
+   }
 
   ngOnInit() {
     this.cargarTemas();
@@ -37,7 +40,7 @@ export class SabiasPage implements OnInit {
   cargarSabias() {
     let temaID: any = this.localStorageEncryptService.getFromLocalStorage("temaGlobal");
 
-    let sql: string = `SELECT * FROM catalogo WHERE id_tema = ${Number(temaID)} AND id_empresa = ${idEmpresa}`;
+    let sql: string = `SELECT * FROM catalogo WHERE id_tema = ${Number(temaID)} AND id_empresa = ${idEmpresa} AND (id_tipo_usuario = 170 OR id_tipo_usuario = ${this.user.id_tipo_usuario})`;
     this.loadingService.show("Espere...");
     this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
       //Se registra correctamente nuevo usuario
@@ -67,7 +70,7 @@ export class SabiasPage implements OnInit {
           name: element.nombre,
           description: element.descripcion,
           buttonText: "Entrar",
-          image: element.id_archivo
+          image: element.url
         });
       });
       this.step = 3;

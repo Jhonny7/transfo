@@ -29,7 +29,7 @@ export class RootGuard implements CanActivate, CanActivateChild {
         if (userSessionEducacion && (userSessionEducacion.id_tipo_usuario == 169 || userSessionEducacion.id_tipo_usuario == "169")) {
             return true;
         } else {
-            return this.router.navigate(["/"]);
+            return this.router.navigate(["/","login"]);
         }
     }
 
