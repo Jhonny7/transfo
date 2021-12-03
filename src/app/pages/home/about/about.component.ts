@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppVersion } from '@ionic-native/app-version/ngx';
+import { MenuController } from '@ionic/angular';
 @Component({
   selector: 'app-about',
   templateUrl: './about.component.html',
@@ -11,8 +12,11 @@ versionCode: any;
 versionNumber: any;
 date: any;
   constructor(
-    private appVersion: AppVersion
-  ) { }
+    private appVersion: AppVersion,
+    private menu: MenuController,
+  ) {
+    this.menu.enable(false);
+  }
 
   ngOnInit() {
    this.appVersion.getAppName().then((response:any)=> {

@@ -10,7 +10,7 @@ import { Router, NavigationExtras } from '@angular/router';
 /* import { AngularFireAuth } from '@angular/fire/auth';
 import * as firebase from 'firebase/app'; */
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
-import { Platform } from '@ionic/angular';
+import { MenuController, Platform } from '@ionic/angular';
 import { environment } from 'src/environments/environment.prod';
 //import firebase from 'firebase'
 @Component({
@@ -43,8 +43,10 @@ export class LoginComponent implements OnInit {
     private googlePlus: GooglePlus,
     private sqlGenericService: SqlGenericService,
     private genericService: GenericService,
-    private localStorageEncryptService: LocalStorageEncryptService
-  ) {
+    private localStorageEncryptService: LocalStorageEncryptService,
+    private menu: MenuController,
+    ) {
+      this.menu.enable(false);
     //Se limpia siempre sesión al ingresar a login
     this.localStorageEncryptService.clearProperty("userSessionEducacion");
   }
@@ -152,6 +154,7 @@ export class LoginComponent implements OnInit {
       this.loadingService.hide();
       if (response.parameters.length > 0) {
         localStorage.setItem("userSessionEducacion", JSON.stringify(response.parameters[0]));
+        //this.menu.enable(true);
         this.router.navigate(["/", "inicio"]);
       } else {
         this.alertService.errorAlert("Oops", `Verifica usuario y/o contraseña`);

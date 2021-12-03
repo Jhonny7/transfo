@@ -10,6 +10,28 @@
     </div>
 
     <section class="input-login" *ngIf="invitado == 0">
+
+      <div class="input-format">
+        <label for="input-mail">Edad *</label>
+        <input [(ngModel)]="data.edad.value" type="number" id="input-mail" placeholder="18"
+          [ngClass]="{'error': data.edad.error}">
+
+      </div>
+
+      <div class="input-format">
+        <label for="input-mail">Municipio *</label>
+        <select [(ngModel)]="data.municipio.value" [ngClass]="{'error': data.municipio.error}">
+          <option [value]="municipio.name" *ngFor="let municipio of municipios"> {{ municipio.label }} </option>
+        </select>
+      </div>
+
+      <div class="input-format">
+        <label for="input-mail">Perfil *</label>
+        <select [(ngModel)]="data.rol.value" [ngClass]="{'error': data.rol.error}">
+          <option [value]="rol.value" *ngFor="let rol of roles"> {{ rol.label }} </option>
+        </select>
+      </div>
+
       <div class="input-format">
         <label for="input-mail">Username *</label>
         <input [(ngModel)]="data.email.value" type="text" id="input-mail" placeholder="educacion@gmail.com"
@@ -23,15 +45,9 @@
       </div>
 
       <div class="input-format">
-        <label for="input-mail">Apellido Paterno *</label>
+        <label for="input-mail">Apellidos *</label>
         <input [(ngModel)]="data.apellido_paterno.value" type="text" id="input-mail" placeholder="Gutierrez"
           [ngClass]="{'error': data.apellido_paterno.error}">
-      </div>
-
-      <div class="input-format">
-        <label for="input-mail">Apellido Materno</label>
-        <input [(ngModel)]="data.apellido_materno.value" type="text" id="input-mail" placeholder="Martínez"
-          [ngClass]="{'error': data.apellido_materno.error}">
       </div>
 
       <div class="input-format-dual">

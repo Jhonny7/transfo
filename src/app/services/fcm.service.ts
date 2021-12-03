@@ -3,20 +3,9 @@ import { LocalStorageEncryptService } from './local-storage-encrypt.service';
 import { LoaderService } from './loading-service';
 import { SqlGenericService } from './sqlGenericService';
 import { Injectable } from '@angular/core';
-import {
-    Plugins,
-} from '@capacitor/core';
 
 import { Router } from '@angular/router';
 
-import {
-    ActionPerformed,
-    PushNotificationSchema,
-    PushNotifications,
-    Token,
-    PushNotificationToken,
-    PushNotification,
-} from '@capacitor/push-notifications';
 
 import { Device } from '@ionic-native/device/ngx';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -43,8 +32,6 @@ export class FcmService {
     }
 
     private async registerPush() {
-        await PushNotifications.requestPermissions();
-        await PushNotifications.register();
 
        //console.log("For get token");
         
@@ -99,10 +86,7 @@ export class FcmService {
                 /** */
             })
             .catch((err) =>//console.log(err));
-
-        PushNotifications.addListener('registrationError', (error: any) => {
-           
-        }));
+            {});
 
         this.listenNotifications();
 
@@ -111,22 +95,6 @@ export class FcmService {
 
 
     public listenNotifications() {
-        PushNotifications.addListener(
-            'pushNotificationReceived',
-            async (notification: PushNotificationSchema) => {
-               //console.log('Push received: ' + JSON.stringify(notification));
-            }
-        );
-
-        PushNotifications.addListener(
-            'pushNotificationActionPerformed',
-            async (notification: ActionPerformed) => {
-                const data = notification.notification.data;
-               //console.log('Action performed: ' + JSON.stringify(notification.notification));
-                if (data.detailsId) {
-                    //this.router.navigateByUrl(`/home/${data.detailsId}`);
-                }
-            }
-        );
+        
     }
 }

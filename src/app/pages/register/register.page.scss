@@ -12,8 +12,10 @@
     }
 }
 
-.cmpt-login{
+.cmpt-login {
     background-color: #fff;
+    max-height: 600px;
+    min-height: 400px;
 }
 
 .register {
@@ -32,6 +34,6 @@
     }
 }
 
-.error{
+.error {
     border-bottom: 1px solid #ff0000 !important;
 }

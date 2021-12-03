@@ -8,7 +8,9 @@
 
     </ion-buttons>
 
-    <ion-title [style]="{'padding-inline': backActive ? '0' : '20px'}">{{ title | translate }}</ion-title>
+    <ion-title [style]="{'margin-left': backActive ? '-5%' : '0'}"
+    *ngIf="platform.is('android')">{{ title | translate }}</ion-title>
+    <ion-title *ngIf="platform.is('ios')">{{ title | translate }}</ion-title>
 
     <!-- <ion-buttons slot="end">
 

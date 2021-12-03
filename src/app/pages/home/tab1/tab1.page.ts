@@ -9,7 +9,8 @@ import { idEmpresa } from '../../../../environments/environment.prod';
 import { SqlGenericService } from '../../../services/sqlGenericService';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SwiperConfigInterface } from 'ngx-swiper-wrapper';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { MenuController } from '@ionic/angular';
 /* import SwiperCore, {
   Navigation,
   Pagination,
@@ -24,7 +25,7 @@ import { Component, Input, OnInit } from '@angular/core';
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
-export class Tab1Page implements OnInit {
+export class Tab1Page implements OnInit, OnDestroy {
 
   @Input() data: any;
 
@@ -134,19 +135,26 @@ export class Tab1Page implements OnInit {
 
   public temaGlobal: any = 0;
 
+  public sus: Subscription = null;
+
   constructor(
     private sqlGenericService: SqlGenericService,
     private themeService: ThemeService,
     private router: Router,
     private eventService: EventService,
     private alertService: AlertService,
-    private localStorageEncryptService: LocalStorageEncryptService
-  ) {
+    private localStorageEncryptService: LocalStorageEncryptService,
+    private menu: MenuController,
+    ) {
+    this.menu.enable(true);
     //console.log("------------------------tab 1---------------------");
 
   }
 
   ngOnInit() {
+    this.sus = this.eventService.get("menu").subscribe((data)=>{
+      this.goPage(data);
+    });
     //console.log(this.data);
     if (this.data.reload) {
       this.cargarCategorias();
@@ -156,7 +164,11 @@ export class Tab1Page implements OnInit {
 
   }
 
-  select(){
+  ngOnDestroy(){
+    this.sus.unsubscribe();
+  }
+
+  select() {
     this.localStorageEncryptService.setToLocalStorage("temaGlobal", this.temaGlobal);
   }
 
@@ -184,9 +196,9 @@ export class Tab1Page implements OnInit {
       this.router.navigate(["/", itm.path])
     } else {
       console.log("-----------------------");
-      
+
       console.log(this.temaGlobal);
-      
+
       if (this.temaGlobal) {
         this.localStorageEncryptService.setToLocalStorage("temaGlobal", this.temaGlobal);
         if (itm.isTab) {
@@ -209,7 +221,7 @@ export class Tab1Page implements OnInit {
       //Se registra correctamente nuevo usuario
       this.temas = resp.parameters;
       console.log(this.temas);
-      
+
       this.temas.unshift({
         id: 0,
         label: "[--Elige un tema--]",

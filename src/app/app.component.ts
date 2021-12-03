@@ -1,3 +1,4 @@
+import { EventService } from 'src/app/services/event.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -16,24 +17,41 @@ import { SqlGenericService } from './services/sqlGenericService';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
-  public menus: Menu[] = [{
-    name: "menu.home",
-    url: "/inicio",
-    icon: "assets/imgs/logo-sup.png",
-    active: true
+  public menus: any[] = [{
+    path: "sabias",
+    icon: "assets/imgs/home/sabias.png",
+    id: 0,
+    name: "Sabías que"
   }, {
-    name: "menu.news",
-    url: "/noticia",
-    icon: "assets/imgs/menu/periodico.png",
-    active: false
+    path: "trivia",
+    icon: "assets/imgs/home/trivia.png",
+    id: 1,
+    notNeedSubject: true,
+    name: "Trivia"
   }, {
-    name: "menu.product",
-    url: "/producto",
-    icon: "assets/imgs/menu/proteina.png",
-    active: false
-  }];
+    path: "capsula",
+    icon: "assets/imgs/home/capsula.png",
+    //isTab: true,
+    id: 2,
+    name: "Cápsula informativa"
+  }, {
+    path: "directorio",
+    icon: "assets/imgs/home/directorio.png",
+    id: 3,
+    notNeedSubject: true,
+    name: "Directorio"
+  }, {
+    path: "preguntas",
+    icon: "assets/imgs/home/faqs.png",
+    //isTab: true,
+    id: 4,
+    name: "Preguntas frecuentes"
+  },
+  ];
+
+  public user: any = null;
 
   constructor(
     private localStorageEncryptService: LocalStorageEncryptService,
@@ -41,17 +59,19 @@ export class AppComponent implements OnInit{
     private router: Router,
     private menu: MenuController,
     //private fcm: FCM,
-    
+
     private loadingService: LoaderService,
     private sqlGenericService: SqlGenericService,
-    private fcmService: FcmService
+    private fcmService: FcmService,
+    private eventService: EventService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.localStorageEncryptService.setToLocalStorage("theme", "#0783bc");
     this.localStorageEncryptService.setToLocalStorage("themeClass", "primary2");
+    this.user = this.localStorageEncryptService.getFromLocalStorage("userSessionEducacion");
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.cargaIdioma();
     this.cargarTema();
 
@@ -66,7 +86,7 @@ export class AppComponent implements OnInit{
     let registerToken: any = this.localStorageEncryptService.getFromLocalStorage("token-gym");
     if (!registerToken) {
       this.fcmService.initPush();
-    }else{
+    } else {
       //this.listenNotifications();
       this.fcmService.listenNotifications();
     }
@@ -75,42 +95,42 @@ export class AppComponent implements OnInit{
   registerTokenFake() {
     let registerToken: any = this.localStorageEncryptService.getFromLocalStorage("token-gym");
     if (!registerToken) {
-        //token is token of device
-        let uuid: any = "fakeUuidGym";
-        let token:string = "fakeTokenGym";
-        let sql: string = `INSERT INTO usuario (uuid, token) VALUES ('${uuid}', '${token}')`;
-        let sqlChecking: string = `SELECT * FROM usuario WHERE uuid = '${uuid}'`;
+      //token is token of device
+      let uuid: any = "fakeUuidGym";
+      let token: string = "fakeTokenGym";
+      let sql: string = `INSERT INTO usuario (uuid, token) VALUES ('${uuid}', '${token}')`;
+      let sqlChecking: string = `SELECT * FROM usuario WHERE uuid = '${uuid}'`;
 
-        this.loadingService.show();
+      this.loadingService.show();
 
-        //consultar uuid en base de datos antes de registrar nuevo token 
-        //Si encuentra el uuid se actualizará el token pero no creará nuevo usuario
+      //consultar uuid en base de datos antes de registrar nuevo token 
+      //Si encuentra el uuid se actualizará el token pero no creará nuevo usuario
 
-        this.sqlGenericService.excecuteQueryString(sqlChecking).subscribe((resp: any) => {
-         //console.log(resp);
-          
-          if (resp.parameters.length <= 0) {
-            this.sqlGenericService.excecuteQueryString(sql, 3).subscribe((resp: any) => {
-              //Se registra correctamente nuevo usuario
-              this.loadingService.hide();
-              this.localStorageEncryptService.setToLocalStorage("token-gym", token);
-              //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
-              //this.listenNotifications();
-            }, (err: HttpErrorResponse) => {
-              this.loadingService.hide();
-            });
-          }else{
+      this.sqlGenericService.excecuteQueryString(sqlChecking).subscribe((resp: any) => {
+        //console.log(resp);
+
+        if (resp.parameters.length <= 0) {
+          this.sqlGenericService.excecuteQueryString(sql, 3).subscribe((resp: any) => {
+            //Se registra correctamente nuevo usuario
             this.loadingService.hide();
-          }
-        }, (err: HttpErrorResponse) => {
+            this.localStorageEncryptService.setToLocalStorage("token-gym", token);
+            //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+            //this.listenNotifications();
+          }, (err: HttpErrorResponse) => {
+            this.loadingService.hide();
+          });
+        } else {
           this.loadingService.hide();
-        });
-    }else{
+        }
+      }, (err: HttpErrorResponse) => {
+        this.loadingService.hide();
+      });
+    } else {
       this.listenNotifications();
     }
   }
 
-  listenNotifications(){
+  listenNotifications() {
     /* this.fcm.onNotification().subscribe(data => {
      //console.log(data);
       if(data.wasTapped){
@@ -143,13 +163,12 @@ export class AppComponent implements OnInit{
     }
   }
 
-  openPage(itm: Menu) {
-    this.menus.forEach((itm: Menu) => {
-      itm.active = false;
-    });
+  openPage(itm: any) {
+    this.eventService.send("menu", itm);
+  }
 
-    itm.active = true;
-    this.router.navigate([itm.url], { replaceUrl: true });
-
+  close() {
+    this.localStorageEncryptService.clearProperty("userSessionEducacion");
+    this.router.navigate(["/", "login"]);
   }
 }

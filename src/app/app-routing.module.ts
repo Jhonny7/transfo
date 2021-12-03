@@ -22,15 +22,16 @@ const routes: Routes = [
     path: '',
     redirectTo: "inicio",
     pathMatch: "full"
-  }, {
+  }, 
+  {
     path: 'inicio',
     component: TabsPage,
-    canActivateChild: [AuthGuard],
+    canActivate: [AuthGuard],
   },
   {
     path: 'about',
     component: AboutComponent,
-    canActivateChild: [AuthGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: "trivia",

@@ -1,13 +1,13 @@
-<ion-menu side="start" contentId="main">
+<ion-menu side="start" contentId="main" *ngIf="user">
   <section class="header-menu">
-    <img class="img-header" src="assets/imgs/login/fondo.png" alt="">
+    <img class="img-header" src="assets/imgs/login/fondoSham.png" alt="">
 
     <section class="user">
       <img src="assets/imgs/logo-sup.png" alt="" class="img-logo">
 
       <div class="user-data">
-        <p>Juan López Sarrelague</p>
-        <p>sarrejuan@gmail.com</p>
+        <p>{{ user.nombre }} {{ user.apellido_paterno }}</p>
+        <p>{{ user.username }}</p>
       </div>
     </section>
 
@@ -25,6 +25,9 @@
     </div>
   </section>
 
+  <section>
+    <button class="close-sesion" (click)="close()">Cerrar sesión</button>
+  </section>
 </ion-menu>
 
 <ion-app>

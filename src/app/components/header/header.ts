@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { EventService } from 'src/app/services/event.service';
 import { ThemeService } from 'src/app/services/theme.service';
@@ -27,7 +27,8 @@ export class HeaderComponent implements OnDestroy, OnInit {
     public themeService: ThemeService,
     private popoverController: PopoverController,
     private eventService: EventService,
-    private genericService: GenericService
+    private genericService: GenericService,
+    private platform:Platform
   ) {
    //console.log('Hello HeaderComponent Component');
     this.text = 'Hello World';
