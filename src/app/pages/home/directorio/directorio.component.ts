@@ -16,6 +16,7 @@ export class DirectorioComponent implements OnInit {
   infoCard: any;
   socialMedia: boolean;
   flag: boolean = false;
+  user: any;
   social = [{
     id: 145,
     name: 'facebook'
@@ -50,6 +51,8 @@ export class DirectorioComponent implements OnInit {
 
   }
   getDirectorios() {
+    this.user = JSON.parse(localStorage.getItem("userSessionEducacion"));
+    
     this.loadingService.show('Espere...')
     let sql = `SELECT id AS value, estado_combo, domicilio, municipio, nombre_lugar, nombre_contacto, telefono, email, ubicacion_maps, links FROM directorio WHERE id_empresa = ${idEmpresa}`
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
