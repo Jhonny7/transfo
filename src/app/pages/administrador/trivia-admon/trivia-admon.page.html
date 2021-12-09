@@ -294,6 +294,46 @@
             Sin registros disponibles
           </div>
         </section>
+
+        <section *ngSwitchCase="7">
+          <table>
+            <caption>Examen</caption>
+            <thead>
+              <tr>
+                <th scope="col">Tema</th>
+                <th scope="col">Pregunta</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+
+              </tr>
+            </thead>
+
+            <tbody *ngIf="examenes && examenes.length > 0">
+
+              <tr *ngFor="let pregunta of examenes">
+                <td data-label="Tema">{{ pregunta.tema }}</td>
+                <td data-label="Pregunta">{{ pregunta.pregunta }}</td>
+
+                <td data-label="Editar" style="cursor: pointer;" (click)="edit(pregunta)">
+                  <span class="material-icons-outlined">
+                    build
+                  </span>
+                </td>
+
+                <td data-label="Eliminar" style="cursor: pointer;" (click)="delete(pregunta)">
+                  <span class="material-icons-outlined">
+                    delete
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="!examenes || examenes.length == 0 && menuActivo == 1" style="text-align: center;padding: 10px;">
+
+            Sin registros disponibles
+          </div>
+        </section>
+
         <div class="add">
           <button (click)="create()">
             <span class="material-icons-outlined">

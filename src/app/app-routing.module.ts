@@ -16,6 +16,7 @@ import { RootGuard } from './guards/root.guard';
 import { ThemeGuard } from './guards/theme.guard';
 import { DirectorioComponent } from './pages/home/directorio/directorio.component';
 import { AboutComponent } from './pages/home/about/about.component';
+import { ExamenPage } from './pages/examen/examen.page';
 
 const routes: Routes = [
   {
@@ -36,6 +37,11 @@ const routes: Routes = [
   {
     path: "trivia",
     component: TriviaPage,
+    canActivate: [AuthGuard, ThemeGuard],
+  },
+  {
+    path: "examen",
+    component: ExamenPage,
     canActivate: [AuthGuard, ThemeGuard],
   }, {
     path: "preguntas",

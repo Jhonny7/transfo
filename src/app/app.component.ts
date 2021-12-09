@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 //import { FCM } from '@ionic-native/fcm/ngx';
 import { MenuController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
-import { emulado } from './../environments/environment.prod';
+import { emulado, remastered } from './../environments/environment.prod';
 import { Menu } from './interfaces/menu.interface';
 import { FcmService } from './services/fcm.service';
 import { LoaderService } from './services/loading-service';
@@ -69,6 +69,17 @@ export class AppComponent implements OnInit {
     this.localStorageEncryptService.setToLocalStorage("theme", "#0783bc");
     this.localStorageEncryptService.setToLocalStorage("themeClass", "primary2");
     this.user = this.localStorageEncryptService.getFromLocalStorage("userSessionEducacion");
+
+    if (remastered) {
+      this.menus.push({
+        path: "examen",
+        icon: "assets/imgs/home/examenes.png",
+        id: 5,
+        notNeedSubject: true,
+        name:"Exámenes"
+      });
+    }
+    
   }
 
   ngOnInit() {

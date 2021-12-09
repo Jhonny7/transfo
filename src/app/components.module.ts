@@ -1,3 +1,4 @@
+import { ExamenPage } from './pages/examen/examen.page';
 import { RecuperarPage } from './pages/home/recuperar/recuperar.page';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterPage } from './pages/register/register.page';
@@ -64,7 +65,8 @@ export function createTranslateLoader(http: HttpClient) {
         RecuperarPage,
         DirectorioComponent,
         GalleryUrlComponent,
-        AboutComponent
+        AboutComponent,
+        ExamenPage
     ],
     exports:[
         SpinnerOverlayComponent,
@@ -93,6 +95,7 @@ export function createTranslateLoader(http: HttpClient) {
         DirectorioComponent,
         GalleryUrlComponent,
         AboutComponent,
+        ExamenPage
     ],
     imports: [
         CommonModule,

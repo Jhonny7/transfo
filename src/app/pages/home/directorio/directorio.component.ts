@@ -51,7 +51,7 @@ export class DirectorioComponent implements OnInit {
   }
   getDirectorios() {
     this.loadingService.show('Espere...')
-    let sql = `SELECT id AS value, estado_combo, domicilio, municipio, nombre_lugar, nombre_contacto, telefono, email, ubicacion_maps, links FROM directorio WHERE id_empresa = ${idEmpresa}`
+    let sql = `SELECT id AS value, estado_combo, domicilio, municipio, nombre_lugar, nombre_contacto, telefono, email, ubicacion_maps, links, servicios, url FROM directorio WHERE id_empresa = ${idEmpresa}`
     this.sqlGenericService.excecuteQueryString(sql).subscribe((response: any) => {
       console.log(response.parameters);
 

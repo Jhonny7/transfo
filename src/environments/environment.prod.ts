@@ -8,6 +8,8 @@ export const emulado = false;
 export const idEmpresa = 126;
 export const catalogoSabias = 149;
 
+export const remastered = false;
+
 export const environment = {
   production: true,
   //Services path

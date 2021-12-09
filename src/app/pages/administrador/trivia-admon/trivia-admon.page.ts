@@ -1,4 +1,4 @@
-import { catalogoSabias } from './../../../../environments/environment.prod';
+import { catalogoSabias, remastered } from './../../../../environments/environment.prod';
 import { AlertService } from './../../../services/alert.service';
 import { environment, idEmpresa } from 'src/environments/environment.prod';
 import { LoaderService } from './../../../services/loading-service';
@@ -42,7 +42,7 @@ export class TriviaAdmonPage implements OnInit {
       title: "Sabías qué...",
       icon: "priority_high",
       id: 6
-    }
+    },
   ];
 
   public menuActivo = 1;
@@ -53,6 +53,7 @@ export class TriviaAdmonPage implements OnInit {
   public sabias: any[] = [];
   public preguntas: any[] = [];
   public trivias: any[] = [];
+  public examenes: any[] = [];
   public triviaObj: any = {
     idTema: null,
     idComplejidad: null,
@@ -67,7 +68,15 @@ export class TriviaAdmonPage implements OnInit {
     private loadingService: LoaderService,
     private matDialog: MatDialog,
     private alertService: AlertService
-  ) { }
+  ) {
+    if (remastered) {
+      this.menus.push({
+        title: "Exámenes",
+        icon: "question_answer",
+        id: 7
+      });
+    }
+  }
 
   ngOnInit() {
     this.menu.enable(false);
@@ -96,6 +105,10 @@ export class TriviaAdmonPage implements OnInit {
         break;
       case 6:
         this.cargarSabias();
+        break;
+      case 7:
+        this.cargarExamenes();
+        this.cargarTemas();
         break;
       default:
         break;
@@ -254,6 +267,46 @@ export class TriviaAdmonPage implements OnInit {
     });
   }
 
+  cargarExamenes() {
+    this.loadingService.show("Cargando examenes...");
+    let sql: string = `SELECT 
+    pf.*,
+    t.nombre
+    FROM examen pf
+    INNER JOIN catalogo t
+    ON (t.id = pf.id_tema) 
+    WHERE pf.id_empresa = ${idEmpresa}
+    ORDER BY t.nombre ASC`;
+    console.log(sql);
+
+    this.examenes = [];
+    this.sqlGenericService.excecuteQueryString(sql).subscribe((resp: any) => {
+      //Se registra correctamente nuevo usuario
+      this.loadingService.hide();
+      resp.parameters.forEach(element => {
+        let json: any = JSON.parse(element.json_examen);
+        this.examenes.push({
+          pregunta: json.pregunta,
+          id: element.id,
+          tema: element.nombre,
+          json: json,
+          id_tema: element.id_tema,
+          respuestas: json.respuestas,
+          respuesta: json.respuesta,
+          id_tipo_usuario: element.id_tipo_usuario,
+          url: element.url,
+          nombre: element.nombre
+        });
+      });
+
+      console.log(this.examenes);
+      
+
+    }, (err: HttpErrorResponse) => {
+      this.loadingService.hide();
+    });
+  }
+
   create() {
     let data: any = {};
     data.id = this.menuActivo;
@@ -329,6 +382,20 @@ export class TriviaAdmonPage implements OnInit {
           id_tipo_usuario: null
         };
         break;
+
+      case 7:
+        data.status = false;
+        data.current = {
+          pregunta: "",
+          id: null,
+          tema: null,
+          json: null,
+          id_tema: null,
+          respuestas: [],
+          nombre: "",
+          b64: "",
+          url: null,
+        };
       default:
         break;
     }
@@ -354,6 +421,9 @@ export class TriviaAdmonPage implements OnInit {
           break;
         case 6:
           this.cargarSabias();
+          break;
+        case 7:
+          this.cargarExamenes();
           break;
         default:
           break;
@@ -451,6 +521,24 @@ export class TriviaAdmonPage implements OnInit {
           id_tipo_usuario: sabias.id_tipo_usuario
         }
         break;
+      case 7:
+        let examen = item;
+        data.status = true;
+        //console.log(trivia);
+
+        data.current = {
+          pregunta: examen.pregunta,
+          id: examen.id,
+          tema: examen.tema,
+          json: examen.json,
+          id_tema: examen.id_tema,
+          respuestas: examen.respuestas,
+          respuesta: examen.respuesta,
+          id_tipo_usuario: examen.id_tipo_usuario,
+          nombre: examen.nombre,
+          b64: "",
+          url: examen.url,
+        }
       default:
         break;
     }
@@ -477,6 +565,9 @@ export class TriviaAdmonPage implements OnInit {
           break;
         case 6:
           this.cargarSabias();
+          break;
+        case 7:
+          this.cargarExamenes();
           break;
         default:
           break;
@@ -524,6 +615,12 @@ export class TriviaAdmonPage implements OnInit {
         data.sql = sqlDelete;
         data.msj = "Se eliminará el registro permanentemente"
         break;
+      case 7:
+        let examen = item;
+        sqlDelete = `DELETE FROM examen WHERE id = ${examen.id}`;
+        data.sql = sqlDelete;
+        data.msj = "Se eliminará el registro permanentemente"
+        break;
       default:
         break;
     }
@@ -557,6 +654,9 @@ export class TriviaAdmonPage implements OnInit {
             break;
           case 6:
             this.cargarSabias();
+            break;
+          case 7:
+            this.cargarExamenes();
             break;
           default:
             break;

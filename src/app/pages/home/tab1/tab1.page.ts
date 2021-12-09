@@ -1,3 +1,4 @@
+import { remastered } from './../../../../environments/environment.prod';
 import { LocalStorageEncryptService } from './../../../services/local-storage-encrypt.service';
 import { AlertService } from 'src/app/services/alert.service';
 import { environment } from 'src/environments/environment.prod';
@@ -145,14 +146,21 @@ export class Tab1Page implements OnInit, OnDestroy {
     private alertService: AlertService,
     private localStorageEncryptService: LocalStorageEncryptService,
     private menu: MenuController,
-    ) {
+  ) {
     this.menu.enable(true);
     //console.log("------------------------tab 1---------------------");
-
+    if (remastered) {
+      this.secciones.push({
+        path: "examen",
+        icon: "assets/imgs/home/examenes.png",
+        id: 5,
+        notNeedSubject: true
+      });
+    }
   }
 
   ngOnInit() {
-    this.sus = this.eventService.get("menu").subscribe((data)=>{
+    this.sus = this.eventService.get("menu").subscribe((data) => {
       this.goPage(data);
     });
     //console.log(this.data);
@@ -164,7 +172,7 @@ export class Tab1Page implements OnInit, OnDestroy {
 
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.sus.unsubscribe();
   }
 

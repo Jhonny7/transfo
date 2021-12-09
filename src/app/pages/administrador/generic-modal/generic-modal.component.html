@@ -330,6 +330,91 @@
                 </section>
             </section>
         </section>
+
+        <section *ngSwitchCase="7">
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Perfil *</label>
+                <select [(ngModel)]="data.current.id_tipo_usuario">
+                    <option [value]="tema.value" *ngFor="let tema of perfiles">{{ tema.label }}</option>
+                </select>
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Tema *</label>
+                <select [(ngModel)]="data.current.id_tema">
+                    <option [value]="tema.id" *ngFor="let tema of temas">{{ tema.label }}</option>
+                </select>
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Imagen</label>
+                <label for="filere2" class="ctn-img">
+                    <img src="assets/imgs/noAvail.jpeg" alt=""
+                        *ngIf="!data.current.url && data.current.b64.length == 0">
+                    <img [src]="data.current.url" alt="" *ngIf="data.current.url && data.current.b64.length == 0">
+                    <img [src]="data.current.b64" alt="" *ngIf="!data.current.url && data.current.b64.length > 0">
+                </label>
+                <input type="file" id="filere2" style="visibility: hidden;padding: 0;height: 0px;"
+                    (change)="changeImg($event)">
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Nombre del examen *</label>
+                <input type="text" id="nombreee" [(ngModel)]="data.current.nombre" placeholder="Diagnóstico...">
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Pregunta *</label>
+                <input type="text" id="nombre" [(ngModel)]="preguntaTemporal" placeholder="¿Qué es...">
+            </div>
+
+            <div class="input-container" style="width: 100%;">
+                <label for="nomre">Tipo de respuesta *</label>
+                <select [(ngModel)]="tipoRespuesta">
+                    <option value="1">Opción múltiple</option>
+                    <option value="2">Respuesta Abierta</option>
+                </select>
+            </div>
+
+            <div class="input-container" style="width: 100%;position: relative;">
+                <label for="nomre">Respuesta</label>
+                <input type="text" id="nombre" [(ngModel)]="respuestaTemporal" placeholder="¿Qué es...">
+                <button class="aniadir" (click)="aniadir2()">Añadir</button>
+            </div>
+
+
+            <section class="respuestas" style="position: relative;">
+                <p>Respuestas</p>
+                <div>
+
+                    <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                        [(ngModel)]="data.current.respuesta">
+                        <mat-radio-button class="example-radio-button"
+                            *ngFor="let categoria of respuestasTemporales; let i = index" [value]="categoria.id"
+                            (change)="cambio($event)">
+                            {{ categoria.respuesta }}
+                            <button (click)="remove(i)" class="borrad">
+                                <span class="material-icons-outlined">
+                                    close
+                                </span>
+                            </button>
+                        </mat-radio-button>
+                    </mat-radio-group>
+
+
+                </div>
+
+                <button class="aniadir" (click)="save()">Guardar pregunta</button>
+            </section>
+
+            <section class="respuestas" *ngIf="examenTemporal.length > 0">
+                <p>Actual Examen</p>
+                <div *ngFor="let e of examenTemporal">
+                    <p>{{ e.pregunta }}</p>
+                </div>
+            </section>
+        </section>
     </section>
 
 

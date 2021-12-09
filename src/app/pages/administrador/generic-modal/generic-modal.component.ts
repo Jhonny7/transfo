@@ -31,6 +31,12 @@ export class GenericModalComponent implements OnInit {
   public complejidades: any[] = [];
   public respuestaTemporal: string = "";
   public respuestasTemporales: any[] = [];
+  //public examenTemporal: any = [];
+  public preguntaTemporal: string = "";
+
+  public examenTemporal:any = [];
+
+  public tipoRespuesta: number = 1;
 
   public fileInfo: any[] = [];
   public files: any[] = [];
@@ -91,6 +97,10 @@ export class GenericModalComponent implements OnInit {
         this.cargarPerfiles();
         this.cargarTemas();
         this.cargarComplejidades();
+        break;
+      case 7:
+        this.cargarPerfiles();
+        this.cargarTemas();
         break;
       case 4:
         //this.data.idArchivo = this.data.current.id_archivo;
@@ -181,7 +191,7 @@ export class GenericModalComponent implements OnInit {
   }
 
   changeImg(evt: any) {
-    //console.log("------------------------------------");
+    console.log("------------------------------------");
 
     let file: any = evt.target.files[0];
     if (file.size > 2000000) {
@@ -247,6 +257,10 @@ export class GenericModalComponent implements OnInit {
         } else {
           switch (this.data.id) {
             case 1:
+              this.data.current.b64 = reader.result;
+              this.data.current.url = null;
+              break;
+            case 7:
               this.data.current.b64 = reader.result;
               this.data.current.url = null;
               break;
@@ -357,6 +371,13 @@ export class GenericModalComponent implements OnInit {
           this.editTrivia();
         } else {
           this.createTrivia();
+        }
+        break;
+      case 7:
+        if (this.data.status) {
+          this.editExamen();
+        } else {
+          this.createExamen();
         }
         break;
 
@@ -566,6 +587,72 @@ export class GenericModalComponent implements OnInit {
     }
   }
 
+  createExamen() {
+    let error: number = 0;
+
+    this.data.current.respuestas.forEach(element => {
+      if (!element.correcto) {
+        error++;
+      }
+    });
+    //console.log(this.data.current);
+
+    if (this.data.current.pregunta.length == 0 ||
+      this.data.current.id_tema == 0 ||
+      this.data.current.id_tema == null ||
+      this.data.current.nombre.length == 0 ||
+      this.data.current.id_tipo_usuario == 0 ||
+      this.data.current.id_tipo_usuario == null) {
+      this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
+    } else if (this.data.current.respuestas.length < 1) {
+      this.alertService.warnAlert("Espera!", "Agrega por lo menos 1 respuesta");
+    } else if (!this.data.current.respuesta) {
+      this.alertService.warnAlert("Espera!", "Selecciona una respuesta correcta");
+    } else {
+      let jsonObj: any = {
+        pregunta: this.data.current.pregunta,
+        respuestas: this.data.current.respuestas,
+        respuesta: this.data.current.respuesta
+      };
+
+      let json = JSON.stringify(jsonObj);
+      let sqlTema2 = `INSERT INTO examen (id_tipo_usuario, id_tema, id_empresa, json_examen, nombre) VALUES (${this.data.current.id_tipo_usuario},${this.data.current.id_tema}, ${idEmpresa}, '${json}', '${this.data.current.nombre}')`;
+
+      this.sqlGenericService.excecuteQueryString(sqlTema2).subscribe((resp: any) => {
+        //Se registra correctamente nuevo usuario
+
+        let returnId: any = resp.parameters;
+        if (this.data.current.b64 && this.data.current.b64.length > 0) {
+          let requestFile: any = {
+            b64: this.data.current.b64,
+            id: returnId,
+            extension: "png",
+            table: "examen"
+          };
+          this.genericService.sendPostRequest(environment.loadFile, requestFile).subscribe((resp2: any) => {
+            //Se registra correctamente nuevo usuario
+            this.alertService.successAlert("Bien!", "Examen creado exitosamente");
+            this.parentDilogRef.close(false);
+            this.loadingService.hide();
+            //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+            //this.listenNotifications();
+          }, (err: HttpErrorResponse) => {
+            this.loadingService.hide();
+          });
+        } else {
+          this.alertService.successAlert("Bien!", "Examen creado exitosamente");
+          this.parentDilogRef.close(false);
+          this.loadingService.hide();
+        }
+        //this.fcm.subscribeToTopic('myGymGlobal');//se suscribe a notificaciones globales de la app
+        //this.listenNotifications();
+      }, (err: HttpErrorResponse) => {
+        this.loadingService.hide();
+      });
+
+    }
+  }
+
   createPregunta() {
     if (this.data.current.pregunta.length == 0 ||
       this.data.current.respuesta.length == 0 ||
@@ -656,43 +743,60 @@ export class GenericModalComponent implements OnInit {
       let json = JSON.stringify(this.redTemporales);
       let url: string = "";
       let stringServs: string = "";
+      let stringServs2: string = "";
       this.servicios.forEach(serv => {
         console.log(serv);
         if (serv.checked) {
-          stringServs += `${serv.label},`;
+          stringServs += `${serv.id},`;
+          stringServs2 += `${serv.label},`;
         }
       });
       stringServs = stringServs.slice(0, -1);
 
       switch (stringServs) {
-        case "s1":
+        case "173":
           url = "https://cdn.pixabay.com/photo/2012/04/23/16/12/click-38743_640.png";
           break;
-        case "s2":
+        case "174":
           url = "https://cdn.pixabay.com/photo/2012/04/23/16/12/subway-38744_640.png";
           break;
-        case "s3":
+        case "175":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s4":
+        case "176":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s1,s2":
+        case "173,174":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s1,s3":
+        case "173,175":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s1,s4":
+        case "173,176":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s2,s3":
+        case "173,174,175,176":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s2,s4":
+        case "173,174,175":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s3,s4":
+        case "173,175,176":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "173,175,176":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "174,175":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "174,176":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "174,175,176":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "175,176":
           url = "https://picsum.photos/700/400?random";
           break;
       }
@@ -701,7 +805,7 @@ export class GenericModalComponent implements OnInit {
         nombre_lugar,nombre_contacto,telefono,email,ubicacion_maps,links,servicios,url) VALUES 
         (${idEmpresa}, '${this.data.current.estado_combo}', '${this.data.current.domicilio}', '${this.data.current.estado_combo}',
         '${this.data.current.nombre_lugar}','${this.data.current.nombre_contacto}','${this.data.current.telefono}',
-        '${this.data.current.email}', '${this.data.current.ubicacion_maps}', '${json}','${stringServs}','${url}')`;
+        '${this.data.current.email}', '${this.data.current.ubicacion_maps}', '${json}','${stringServs2}','${url}')`;
 
       this.sqlGenericService.excecuteQueryString(sqlTema2).subscribe((resp: any) => {
         //Se registra correctamente nuevo usuario
@@ -975,6 +1079,74 @@ export class GenericModalComponent implements OnInit {
     }
   }
 
+  editExamen() {
+    let error: number = 0;
+    //console.log(this.data);
+
+    this.data.current.respuestas.forEach(element => {
+      if (!element.correcto) {
+        error++;
+      }
+    });
+    if (this.data.current.pregunta.length == 0 ||
+      this.data.current.id_tema == 0 ||
+      this.data.current.id_tema == null ||
+      this.data.current.nombre.length == 0 ||
+      this.data.current.id_tipo_usuario == 0 ||
+      this.data.current.id_tipo_usuario == null) {
+      this.alertService.warnAlert("Espera!", "Todos los campos son requeridos");
+    } else if (this.data.current.respuestas.length < 1) {
+      this.alertService.warnAlert("Espera!", "Agrega por lo menos 1 respuesta");
+    } else if (!this.data.current.respuesta) {
+      this.alertService.warnAlert("Espera!", "Selecciona una respuesta correcta");
+    } else {
+      let jsonObj: any = {
+        pregunta: this.data.current.pregunta,
+        respuestas: this.data.current.respuestas,
+        respuesta: this.data.current.respuesta
+      };
+
+      let json = JSON.stringify(jsonObj);
+      let sqlTema = `UPDATE examen 
+      SET 
+      id_tipo_usuario = ${this.data.current.id_tipo_usuario}, 
+      json_examen = '${json}', 
+      id_tema = ${this.data.current.id_tema}, 
+      nombre = '${this.data.current.nombre}'
+      WHERE id = ${this.data.current.id}`;
+      //console.log(sqlTema);
+
+      this.sqlGenericService.excecuteQueryString(sqlTema).subscribe((resp: any) => {
+        //Se registra correctamente nuevo usuario
+
+        if (this.data.current.b64 && this.data.current.b64.length > 0) {
+          let requestFile: any = {
+            b64: this.data.current.b64,
+            id: this.data.current.id,
+            extension: "png",
+            table: "examen"
+          };
+          this.genericService.sendPostRequest(environment.loadFile, requestFile).subscribe((resp2: any) => {
+
+            this.alertService.successAlert("Bien!", "Examen actualizado exitosamente");
+            this.parentDilogRef.close(false);
+            this.loadingService.hide();
+
+          }, (err: HttpErrorResponse) => {
+            this.loadingService.hide();
+          });
+        } else {
+          this.alertService.successAlert("Bien!", "Examen actualizado exitosamente");
+          this.parentDilogRef.close(false);
+          this.loadingService.hide();
+        }
+      }, (err: HttpErrorResponse) => {
+        this.loadingService.hide();
+      });
+
+    }
+  }
+
   editDirectorio() {
     let error: number = 0;
     this.servicios.forEach(serv => {
@@ -993,46 +1165,66 @@ export class GenericModalComponent implements OnInit {
 
       let url: string = "";
       let stringServs: string = "";
+      let stringServs2: string = "";
       this.servicios.forEach(serv => {
         console.log(serv);
         if (serv.checked) {
-          stringServs += `${serv.label},`;
+          stringServs += `${serv.id},`;
+          stringServs2 += `${serv.label},`;
         }
       });
       stringServs = stringServs.slice(0, -1);
+      console.log(stringServs);
 
       switch (stringServs) {
-        case "s1":
+        case "173":
           url = "https://cdn.pixabay.com/photo/2012/04/23/16/12/click-38743_640.png";
           break;
-        case "s2":
+        case "174":
           url = "https://cdn.pixabay.com/photo/2012/04/23/16/12/subway-38744_640.png";
           break;
-        case "s3":
+        case "175":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s4":
+        case "176":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s1,s2":
+        case "173,174":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s1,s3":
+        case "173,175":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s1,s4":
+        case "173,176":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s2,s3":
+        case "173,174,175,176":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s2,s4":
+        case "173,174,175":
           url = "https://picsum.photos/700/400?random";
           break;
-        case "s3,s4":
+        case "173,174,176":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "173,175,176":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "174,175":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "174,176":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "174,175,176":
+          url = "https://picsum.photos/700/400?random";
+          break;
+        case "175,176":
           url = "https://picsum.photos/700/400?random";
           break;
       }
+      console.log(url);
+
 
       let sqlTema = `UPDATE directorio SET 
       links = '${json}', 
@@ -1045,7 +1237,7 @@ export class GenericModalComponent implements OnInit {
       email = '${this.data.current.email}',
       ubicacion_maps = '${this.data.current.ubicacion_maps}',
       url = '${url}',
-      servicios = '${stringServs}'
+      servicios = '${stringServs2}'
       WHERE id = ${this.data.current.id}`;
       //console.log(sqlTema);
 
@@ -1162,6 +1354,33 @@ export class GenericModalComponent implements OnInit {
       });
       this.respuestaTemporal = "";
     }
+  }
+
+  /**Operaciones variadas */
+  aniadir2() {
+    let epoch = Date.now();
+    if (this.respuestaTemporal.length > 0) {
+      this.respuestasTemporales.push({
+        correcta: false,
+        respuesta: this.respuestaTemporal,
+        id: epoch,
+        pregunta: this.preguntaTemporal,
+        all: this.respuestasTemporales
+      });
+      this.respuestaTemporal = "";
+      //this.preguntaTemporal = "";
+    }
+  }
+
+  save(){
+    let epoch = Date.now();
+    this.examenTemporal.push({
+      pregunta: this.preguntaTemporal,
+      respuestas: this.respuestasTemporales,
+      id: epoch,
+      respuesta: this.respuestaTemporal,
+      correcta: false
+    });
   }
 
   remove(position) {
